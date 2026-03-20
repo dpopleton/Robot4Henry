@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robot4henry"
+description = "Qbot - AI powered robot brain for Henry"
+version = "0.1.0"
+requires-python = ">=3.10"
+
+dependencies = [
+    "ollama>=0.1.0",
+    "chromadb>=0.4.0",
+    "sqlalchemy>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+voice = [
+    "openai-whisper>=20230918",
+    "pyaudio>=0.2.13",
+]
+vision = [
+    "ultralytics>=8.0.0",
+    "opencv-python>=4.8.0",
+]
+
+[project.scripts]
+qbot = "main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "config*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.yaml"]
