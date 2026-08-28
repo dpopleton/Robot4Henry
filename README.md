@@ -239,28 +239,53 @@ General guidance for model selection:
 
 ## Project structure
 
+The layout mirrors biology: a **brain** for cognition and memory, a
+**nervous system** carrying messages, and **organs** for each physical
+subsystem. The brain never talks to hardware directly — it sends
+abstract commands ("blink", "set_expression: curious") through the
+nervous system, which routes them to the right organ's driver. Organs
+without hardware yet register a mock driver, so the brain and its
+tests never depend on anything being plugged in.
+
 ```
 Robot4Henry/
-├── core/
-│   ├── llm_client.py          # Ollama API wrapper
-│   ├── robot_brain.py         # Main brain, wires everything together
-│   ├── session_manager.py     # Inactivity detection, session lifecycle
-│   ├── raw_logger.py          # Logs every exchange to SQLite
-│   ├── rest_process.py        # Builds long term memory after sessions
-│   └── memory/
-│       ├── short_term.py      # In-memory conversation buffer
-│       ├── medium_term.py     # Within-session rolling summary
-│       ├── long_term.py       # ChromaDB vector store
-│       └── key_facts.py       # Structured fact store (reserved for future use)
+├── brain/                       # cognition, personality, memory
+│   ├── cognition/
+│   │   ├── llm_client.py          # Ollama API wrapper
+│   │   └── robot_brain.py         # Main brain, wires everything together
+│   ├── memory/
+│   │   ├── short_term.py           # In-memory conversation buffer
+│   │   ├── medium_term.py          # Within-session rolling summary
+│   │   ├── long_term.py            # ChromaDB vector store
+│   │   └── key_facts.py            # Structured fact store (reserved for future use)
+│   ├── session_manager.py         # Inactivity detection, session lifecycle
+│   ├── raw_logger.py              # Logs every exchange to SQLite
+│   └── rest_process.py            # Builds long term memory after sessions
+│
+├── nervous_system/               # comms fabric between brain and organs
+│   ├── protocol.py                 # shared message format (organ, cmd, payload)
+│   ├── serial_transport.py          # USB serial transport (pyserial)
+│   └── bus.py                       # organ registry, routes brain commands
+│
+├── organs/                        # one folder per physical subsystem
+│   ├── base.py                      # Organ interface + MockOrgan for dev/tests
+│   └── eyes/                        # LCD screens on a Raspberry Pi Pico
+│       ├── firmware/                  # MicroPython, runs on the Pico
+│       ├── driver.py                   # host-side driver, speaks the protocol
+│       └── README.md                   # wiring/pinout/flashing notes
+│
 ├── config/
-│   └── settings.py            # All configuration
+│   └── settings.py                # All configuration
 ├── storage/
-│   ├── chroma_db/             # Long term vector memory (gitignored)
-│   └── robot.db               # SQLite database (gitignored)
-├── tests/                     # Test suite
-├── main.py                    # Entry point
-├── wipe_memory.py             # Memory reset utility
-└── pyproject.toml             # Package configuration
+│   ├── chroma_db/                 # Long term vector memory (gitignored)
+│   └── robot.db                   # SQLite database (gitignored)
+├── tests/
+│   ├── brain/
+│   ├── nervous_system/
+│   └── organs/
+├── main.py                        # Entry point
+├── wipe_memory.py                 # Memory reset utility
+└── pyproject.toml                 # Package configuration
 ```
 
 ---
@@ -325,12 +350,12 @@ mkdir storage/chroma_db
 This project is being built in phases:
 
 - ✅ **Phase 1** — Conversational brain with memory system
-- 🔲 **Phase 2** — Emotional state and expression simulator (eyes and mouth screen)
-- 🔲 **Phase 3** — Voice (speech recognition and text-to-speech)
+- 🔲 **Phase 2** — Emotional state and expression simulator (`organs/eyes`, `organs/mouth`) over `nervous_system`
+- 🔲 **Phase 3** — Voice (`organs/ears` for speech recognition, `organs/voice` for text-to-speech)
 - 🔲 **Phase 4** — Safety layer and child-specific tuning
 - 🔲 **Phase 5** — Hardware integration (laptop into robot chassis)
 - 🔲 **Phase 6** — Vision and scene understanding
-- 🔲 **Phase 7** — Navigation and movement
+- 🔲 **Phase 7** — Navigation and movement (`organs/locomotion`)
 - 🔲 **Phase 8** — Full robot integration and polish
 
 ---

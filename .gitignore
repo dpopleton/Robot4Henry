@@ -1,0 +1,12 @@
+venv/
+.venv/
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+storage/chroma_db/
+storage/robot.db
+.env
+*.egg-info/
+dist/
+build/

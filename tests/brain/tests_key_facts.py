@@ -1,7 +1,7 @@
 import tempfile
 import pytest
 import os
-from core.memory.key_facts import KeyFactsStore
+from brain.memory.key_facts import KeyFactsStore
 
 TEST_DB = "storage/test_facts.db"
 

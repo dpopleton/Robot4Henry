@@ -1,9 +1,9 @@
 import threading
 from datetime import datetime
-from core.raw_logger import RawLogger
-from core.memory.long_term import LongTermMemory
-from core.memory.key_facts import KeyFactsStore
-from core.llm_client import LLMClient
+from brain.raw_logger import RawLogger
+from brain.memory.long_term import LongTermMemory
+from brain.memory.key_facts import KeyFactsStore
+from brain.cognition.llm_client import LLMClient
 
 
 class RestProcess:

@@ -1,7 +1,7 @@
 import tempfile
 import pytest
 import os
-from core.raw_logger import RawLogger
+from brain.raw_logger import RawLogger
 
 TEST_DB = "storage/test_raw.db"
 

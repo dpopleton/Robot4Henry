@@ -1,6 +1,6 @@
 import pytest
 import time
-from core.session_manager import SessionManager
+from brain.session_manager import SessionManager
 
 
 def test_session_starts_inactive():

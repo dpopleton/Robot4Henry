@@ -1,11 +1,11 @@
-from core.llm_client import LLMClient
-from core.memory.short_term import ShortTermMemory
-from core.memory.medium_term import MediumTermMemory
-from core.memory.key_facts import KeyFactsStore
-from core.memory.long_term import LongTermMemory
-from core.raw_logger import RawLogger
-from core.session_manager import SessionManager
-from core.rest_process import RestProcess
+from brain.cognition.llm_client import LLMClient
+from brain.memory.short_term import ShortTermMemory
+from brain.memory.medium_term import MediumTermMemory
+from brain.memory.key_facts import KeyFactsStore
+from brain.memory.long_term import LongTermMemory
+from brain.raw_logger import RawLogger
+from brain.session_manager import SessionManager
+from brain.rest_process import RestProcess
 from config.settings import PRIMARY_MODEL
 
 

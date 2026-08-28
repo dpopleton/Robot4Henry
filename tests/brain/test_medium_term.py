@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from core.memory.medium_term import MediumTermMemory
+from brain.memory.medium_term import MediumTermMemory
 
 
 @pytest.fixture

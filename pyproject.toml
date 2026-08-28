@@ -27,13 +27,16 @@ vision = [
     "ultralytics>=8.0.0",
     "opencv-python>=4.8.0",
 ]
+hardware = [
+    "pyserial>=3.5",
+]
 
 [project.scripts]
 qbot = "main:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["core*", "config*"]
+include = ["brain*", "config*", "nervous_system*", "organs*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

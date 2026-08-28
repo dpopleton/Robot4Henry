@@ -1,5 +1,5 @@
 import pytest
-from core.memory.short_term import ShortTermMemory
+from brain.memory.short_term import ShortTermMemory
 
 
 @pytest.fixture

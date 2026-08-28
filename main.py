@@ -1,4 +1,4 @@
-from core.robot_brain import RobotBrain
+from brain.cognition.robot_brain import RobotBrain
 
 
 def main():
