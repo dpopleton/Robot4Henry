@@ -14,8 +14,13 @@ class RestProcess:
         self.long_term = long_term
         self.key_facts = key_facts
 
-    def run(self):
-        """Fire and forget — called from session end callback."""
+    def run(self, blocking: bool = False):
+        """Fire and forget by default (called from session end callback).
+        blocking=True runs it inline and returns once done — used by
+        scenario tests/tools that need to inspect long term memory right after."""
+        if blocking:
+            self._process()
+            return
         thread = threading.Thread(target=self._process, daemon=True)
         thread.start()
 

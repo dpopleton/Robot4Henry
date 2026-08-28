@@ -3,8 +3,8 @@ from config.settings import CHROMA_PATH, LONG_TERM_RETRIEVE_COUNT
 
 
 class LongTermMemory:
-    def __init__(self):
-        self.client = chromadb.PersistentClient(path=CHROMA_PATH)
+    def __init__(self, chroma_path: str = CHROMA_PATH):
+        self.client = chromadb.PersistentClient(path=chroma_path)
         self.collection = self.client.get_or_create_collection(
             name="memories"
         )
