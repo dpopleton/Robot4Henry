@@ -23,6 +23,7 @@ physical movement.
 - Short term memory (current conversation, verbatim)
 - Medium term memory (older exchanges compressed within a session)
 - Long term memory (built during rest periods, persists across sessions)
+- Mood (`brain/limbic`) — a randomised wake-up mood that drifts turn to turn based on the conversation, colouring Qbot's tone
 - Session management with automatic reset after inactivity
 - Full conversation logging for debugging and memory review
 - Memory wipe utility for testing and reset
@@ -258,6 +259,10 @@ Robot4Henry/
 │   │   ├── medium_term.py          # Within-session rolling summary
 │   │   ├── long_term.py            # ChromaDB vector store
 │   │   └── key_facts.py            # Structured fact store (reserved for future use)
+│   ├── limbic/
+│   │   ├── mood.py                 # Mood(category, intensity) + random wake mood
+│   │   ├── state.py                # LimbicSystem — how mood drifts turn to turn
+│   │   └── parsing.py              # extracts the model's trailing MOOD tag
 │   ├── session_manager.py         # Inactivity detection, session lifecycle
 │   ├── raw_logger.py              # Logs every exchange to SQLite
 │   └── rest_process.py            # Builds long term memory after sessions
@@ -350,7 +355,7 @@ mkdir storage/chroma_db
 This project is being built in phases:
 
 - ✅ **Phase 1** — Conversational brain with memory system
-- 🔲 **Phase 2** — Emotional state and expression simulator (`organs/eyes`, `organs/mouth`) over `nervous_system`
+- 🟡 **Phase 2** — Emotional state and expression simulator: mood tracking (`brain/limbic`) done; driving `organs/eyes`/`organs/mouth` over `nervous_system` still to come
 - 🔲 **Phase 3** — Voice (`organs/ears` for speech recognition, `organs/voice` for text-to-speech)
 - 🔲 **Phase 4** — Safety layer and child-specific tuning
 - 🔲 **Phase 5** — Hardware integration (laptop into robot chassis)

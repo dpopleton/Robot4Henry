@@ -6,6 +6,8 @@ from brain.memory.long_term import LongTermMemory
 from brain.raw_logger import RawLogger
 from brain.session_manager import SessionManager
 from brain.rest_process import RestProcess
+from brain.limbic import LimbicSystem, CATEGORIES
+from brain.limbic.parsing import extract_mood_tag
 from config.settings import PRIMARY_MODEL
 
 
@@ -18,6 +20,9 @@ class RobotBrain:
         self.medium_term = MediumTermMemory(self.llm)
         self.key_facts = KeyFactsStore()
         self.long_term = LongTermMemory()
+
+        # Mood
+        self.limbic = LimbicSystem()
 
         # Logging and session management
         self.raw_logger = RawLogger()
@@ -37,6 +42,7 @@ class RobotBrain:
         # Ensure session is active
         if not self.session.is_active():
             self.raw_logger.start_session()
+            self.limbic.wake()
 
         # Log raw input immediately
         self.raw_logger.log("user", user_input)
@@ -50,7 +56,13 @@ class RobotBrain:
         ]
 
         # Get response
-        response = self.llm.chat(system_prompt, messages)
+        raw_response = self.llm.chat(system_prompt, messages)
+
+        # Pull the trailing mood tag out before this touches logs, memory,
+        # or the user — a missing/malformed tag just means no mood update.
+        response, mood_signal = extract_mood_tag(raw_response)
+        if mood_signal:
+            self.limbic.react(*mood_signal)
 
         # Log raw response
         self.raw_logger.log("assistant", response)
@@ -73,6 +85,7 @@ class RobotBrain:
 
         sections = [
             self._personality(),
+            self._mood_context(),
             # Maybe add this later. Doesn't work right now and is being a pain with little in return.
             # self.key_facts.format_for_prompt(),
             self._format_long_term(relevant_memories),
@@ -89,6 +102,18 @@ You are curious and love to learn alongside the child.
 You never say anything scary, mean, or inappropriate.
 If you are ever unsure whether something is suitable,
 you say you need to check with a grown-up first."""
+
+    def _mood_context(self) -> str:
+        mood = self.limbic.current
+        return f"""YOUR CURRENT MOOD: you are feeling {mood.describe()} right now.
+Let this mood colour your tone naturally — don't announce it outright.
+
+At the very end of your reply, on its own new line, add exactly one tag
+showing how this exchange made you feel, in this exact format:
+MOOD: <category>:<intensity>
+categories: {", ".join(CATEGORIES)}
+intensity: 1 (a little), 2 (quite), 3 (very)
+Example: MOOD: curious:2"""
 
     def _format_long_term(self, memories: list) -> str:
         if not memories:
