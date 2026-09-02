@@ -73,7 +73,11 @@ class GC9A01:
     WIDTH = 240
     HEIGHT = 240
 
-    def __init__(self, spi, cs: Pin, dc: Pin, rst: Pin, mirror_x: bool = False):
+    def __init__(self, spi, cs: Pin, dc: Pin, rst: Pin, mirror_x: bool = False, reset: bool = True):
+        """reset=False skips the hardware reset pulse — use this when rst is
+        shared across multiple displays and something else has already reset
+        the line, since resetting one panel's controller also resets any
+        other panel wired to the same RST pin."""
         self.spi = spi
         self.cs = cs
         self.dc = dc
@@ -81,7 +85,8 @@ class GC9A01:
         self.mirror_x = mirror_x
 
         self.cs.value(1)
-        self._reset()
+        if reset:
+            self._reset()
         self._init_display()
 
     def _reset(self):
@@ -137,6 +142,35 @@ class GC9A01:
     def fill(self, color: int):
         self.set_window(0, 0, self.WIDTH - 1, self.HEIGHT - 1)
         self._write_pixels(color, self.WIDTH * self.HEIGHT)
+
+    def fill_polygon(self, points, color: int):
+        """Scanline-fill a simple polygon (convex or concave) given as a
+        list of (x, y) vertices, in order. Used for eyelids, brows,
+        tears, and other non-circular expression shapes."""
+        ys = [p[1] for p in points]
+        y_top = max(0, int(min(ys)))
+        y_bottom = min(self.HEIGHT - 1, int(max(ys)))
+        n = len(points)
+
+        for y in range(y_top, y_bottom + 1):
+            xs = []
+            for i in range(n):
+                x0, y0 = points[i]
+                x1, y1 = points[(i + 1) % n]
+                if y0 == y1:
+                    continue
+                if min(y0, y1) <= y < max(y0, y1):
+                    t = (y - y0) / (y1 - y0)
+                    xs.append(x0 + t * (x1 - x0))
+            xs.sort()
+
+            for i in range(0, len(xs) - 1, 2):
+                x_start = max(0, int(round(xs[i])))
+                x_end = min(self.WIDTH - 1, int(round(xs[i + 1])))
+                if x_end < x_start:
+                    continue
+                self.set_window(x_start, y, x_end, y)
+                self._write_pixels(color, x_end - x_start + 1)
 
     def fill_circle(self, cx: int, cy: int, r: int, color: int):
         for y in range(max(0, cy - r), min(self.HEIGHT, cy + r + 1)):

@@ -196,6 +196,53 @@ python wipe_memory.py --facts-only
 
 ---
 
+## Testing
+
+There are two tiers:
+
+**Fast unit tests** — pure logic, no LLM calls, run in a few seconds:
+
+```bash
+python -m pytest tests/ -v
+```
+
+**Scenario tests** — full multi-turn conversations against the real model
+(needs `ollama serve` running), checking internal state (mood, long term
+memory) rather than parsing the reply text, since the model's exact
+wording changes between runs but whether a fact got stored/recalled or a
+mood actually shifted does not. Excluded from the default run above via
+the `llm` pytest marker:
+
+```bash
+python -m pytest -m llm -v
+```
+
+Or run one interactively and watch it play out turn by turn:
+
+```bash
+python run_scenario.py --list
+python run_scenario.py remembers_name_across_sessions
+python run_scenario.py mood_shifts_when_angered
+python run_scenario.py mood_shifts_when_angered --real-storage  # uses storage/ instead of a disposable temp dir
+```
+
+Scenarios live in `tests/scenarios/conversations.py` as plain lists of
+steps (`Say`, `EndSession`, `Restart`, `SetMood`, `ExpectReplyContains`,
+`ExpectMood`, `ExpectLongTermRecall` — see `tests/scenarios/steps.py`).
+Add a new one there and it's picked up by both the pytest suite and
+`run_scenario.py` automatically. Two things worth knowing when writing
+new ones:
+
+- `rest_process.py` only builds long term memories from a conversation
+  with 4+ logged lines (roughly 2+ exchanges) — a single message won't
+  get remembered no matter how memorable.
+- Mood assertions should start from `SetMood(...)` rather than the
+  random wake mood — moods drift/fade rather than snap, so checking an
+  exact category against an unknown random starting point isn't a fair
+  test.
+
+---
+
 ## Configuration
 
 All configuration lives in `config/settings.py`:
@@ -278,6 +325,10 @@ Robot4Henry/
 │       ├── firmware/                  # MicroPython, runs on the Pico
 │       ├── driver.py                   # host-side driver, speaks the protocol
 │       └── README.md                   # wiring/pinout/flashing notes
+│
+├── anatomy/                       # physical build docs — the anatomy/ half of organs/
+│   ├── eyes/, mouth/                # per-organ: measurements.yaml -> generate.py -> exports/*.step,*.stl
+│   └── head/                        # assembly: shell that eyes+mouth mount into
 │
 ├── config/
 │   └── settings.py                # All configuration

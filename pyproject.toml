@@ -30,6 +30,10 @@ vision = [
 hardware = [
     "pyserial>=3.5",
 ]
+anatomy = [
+    "cadquery>=2.4.0",
+    "pyyaml>=6.0",
+]
 
 [project.scripts]
 qbot = "main:main"
@@ -41,6 +45,10 @@ include = ["brain*", "config*", "nervous_system*", "organs*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "llm: exercises the real Ollama model — slow, needs `ollama serve` running, non-deterministic",
+]
+addopts = "-m 'not llm'"
 
 [tool.setuptools.package-data]
 "*" = ["*.json", "*.yaml"]

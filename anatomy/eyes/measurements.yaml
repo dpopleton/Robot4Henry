@@ -1,0 +1,28 @@
+# Physical mount for the two GC9A01 round displays described in
+# organs/eyes/README.md (that file covers wiring/pinout; this covers
+# how they're physically held in place).
+#
+# Every numeric value here is a placeholder — measure the real board
+# with calipers before printing anything. Re-run `generate.py` after
+# editing to regenerate exports/*.step and exports/*.stl.
+
+display:
+  name: "GC9A01 1.28in round SPI TFT"
+  outer_diameter_mm: 37.6   # TODO measure — the black PCB disc, not just the glass
+  glass_diameter_mm: 32.4   # TODO measure — the visible round screen area
+  pcb_thickness_mm: 1.6     # TODO measure
+  connector_side: "bottom"  # which edge the ribbon/pin header exits from
+
+mount:
+  socket_clearance_mm: 0.3    # gap added around outer_diameter_mm for a snug push-fit
+  socket_depth_mm: 6.0        # TODO — how far the display sits into the socket
+  rim_width_mm: 2.0           # plastic left visible around the glass, front-facing
+  eye_spacing_mm: 45.0        # TODO — center-to-center distance between the two eyes
+  plate_thickness_mm: 8.0     # thickness of the printed mounting plate itself
+  wire_channel_width_mm: 6.0  # cutout for the ribbon/wires to exit the back
+  hole_inset_mm: 4.0          # corner mounting holes, inset from each edge
+  mounting_hole_diameter_mm: 3.2  # M3 clearance hole
+
+print:
+  material: "PLA"  # TODO confirm — fine unless it ends up somewhere hot
+  orientation_notes: "print face-down so the socket lips don't need supports"

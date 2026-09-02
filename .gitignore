@@ -10,3 +10,4 @@ storage/robot.db
 *.egg-info/
 dist/
 build/
+anatomy/**/exports/

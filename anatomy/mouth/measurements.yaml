@@ -1,0 +1,29 @@
+# organs/mouth doesn't exist in software yet (see README roadmap,
+# Phase 2) — the mechanism itself isn't decided. This file assumes a
+# single servo-driven hinged jaw, since that's the most physically
+# demanding option to leave room for; if you land on something else
+# (e.g. an LED matrix, or a static shape lit from behind) rewrite this
+# file and generate.py rather than bending them to fit.
+#
+# Every numeric value is a placeholder — nothing here has been
+# measured against a real part yet.
+
+mechanism:
+  type: "servo-driven jaw"    # TODO confirm/replace
+  servo_model: "SG90 micro servo"  # TODO confirm — SG90 assumed as a common cheap default
+  servo_body_width_mm: 23.0   # TODO measure your actual servo
+  servo_body_height_mm: 12.2  # TODO measure
+  servo_body_depth_mm: 29.0   # TODO measure
+
+mount:
+  plate_width_mm: 70.0        # TODO
+  plate_height_mm: 50.0       # TODO
+  plate_thickness_mm: 6.0
+  opening_width_mm: 40.0      # TODO — the visible mouth opening
+  opening_height_mm: 20.0     # TODO
+  hole_inset_mm: 4.0
+  mounting_hole_diameter_mm: 3.2
+
+print:
+  material: "PLA"
+  orientation_notes: "TODO once the mechanism is settled — jaw hinge parts likely need different orientation than the plate"

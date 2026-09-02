@@ -1,0 +1,28 @@
+# The shell that anatomy/eyes/ and anatomy/mouth/ mount into. This is
+# the "assembly" layer: it doesn't repeat eyes/mouth numbers, it just
+# says how big the shell is and where those two parts sit on its front
+# face. generate.py reads eyes/measurements.yaml and
+# mouth/measurements.yaml directly to size the cutout windows, so
+# there's exactly one place each number lives.
+#
+# Every value is a placeholder — nothing here reflects a real design
+# decision yet (dome vs. box, one-piece vs. split-for-printing, etc.).
+
+shell:
+  width_mm: 160.0    # TODO — overall head width, side to side
+  depth_mm: 130.0    # TODO — overall head depth, front to back
+  height_mm: 140.0   # TODO — overall head height, base to top
+  wall_thickness_mm: 3.0
+  shape_notes: "TODO — currently a plain hollow box as a placeholder; decide dome vs. box vs. organic shell before printing anything at this size"
+
+layout:
+  eyes_center_height_mm: 90.0    # TODO — height of the eyes plate's center above the shell's base
+  mouth_center_height_mm: 32.0   # TODO — height of the mouth plate's center above the shell's base
+  # ^ picked to keep the eyes/mouth windows from overlapping given the
+  # current placeholder plate sizes — re-check this gap in the drawing
+  # (anatomy/head/drawing.py) any time either plate's size changes.
+  eyes_plate_margin_mm: 3.0      # extra clearance around the eyes plate footprint so it can be fitted/glued from inside
+  mouth_plate_margin_mm: 3.0     # same, for the mouth plate
+
+print:
+  split_notes: "TODO — decide whether this prints as one shell or splits front/back for printer bed size; nothing here assumes either yet"

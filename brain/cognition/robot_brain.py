@@ -8,24 +8,26 @@ from brain.session_manager import SessionManager
 from brain.rest_process import RestProcess
 from brain.limbic import LimbicSystem, CATEGORIES
 from brain.limbic.parsing import extract_mood_tag
-from config.settings import PRIMARY_MODEL
+from config.settings import PRIMARY_MODEL, DB_PATH, CHROMA_PATH
 
 
 class RobotBrain:
-    def __init__(self):
+    def __init__(self, db_path: str = DB_PATH, chroma_path: str = CHROMA_PATH):
+        """db_path/chroma_path are overridable so tests and tools can point
+        a brain at isolated, disposable storage instead of the real thing."""
         self.llm = LLMClient(model=PRIMARY_MODEL)
 
         # Memory layers
         self.short_term = ShortTermMemory()
         self.medium_term = MediumTermMemory(self.llm)
-        self.key_facts = KeyFactsStore()
-        self.long_term = LongTermMemory()
+        self.key_facts = KeyFactsStore(db_path=db_path)
+        self.long_term = LongTermMemory(chroma_path=chroma_path)
 
         # Mood
         self.limbic = LimbicSystem()
 
         # Logging and session management
-        self.raw_logger = RawLogger()
+        self.raw_logger = RawLogger(db_path=db_path)
         self.session = SessionManager(
             on_session_end=self._handle_session_end
         )
@@ -123,10 +125,14 @@ Example: MOOD: curious:2"""
 
     def _handle_session_end(self):
         print("[Session ended — clearing short and medium term memory]")
+        self.force_rest(blocking=False)
 
-        # Trigger rest process first — needs the session marked ended
+    def force_rest(self, blocking: bool = False):
+        """End the session and run the rest process now. blocking=True waits
+        for long term memory to actually be written before returning —
+        used by scenario tests/tools, not the real inactivity-timeout path."""
         self.raw_logger.end_session()
-        self.rest_process.run()
+        self.rest_process.run(blocking=blocking)
 
         # Clear in-session memory
         self.medium_term.clear()
