@@ -20,6 +20,40 @@ half of that, not used by the bring-up test).
 - `firmware/backlight.py`, `firmware/main.py` — Pico-only; not usable
   from the desktop simulator.
 - `simulate.py` — desktop preview, see below. Not flashed to the Pico.
+- `expression_status.py` / `EXPRESSIONS.md` — see "Tracking expressions"
+  below.
+
+## How expressions move
+
+`Eye` tracks a look direction (`dx, dy`) and a current expression
+together — calling `look()` moves the pupil (or whatever stands in for
+it) under whatever expression is showing, rather than the two being
+separate modes. `Face` (also in `eyes.py`) coordinates a left/right
+`Eye` pair so they always look the same way, and drives idle motion via
+`tick()`: mostly holding still on `look_at()`'s target — the long-term
+hook for "look at whoever's talking" — with brief glances away and
+occasional blinks, plus per-expression flourishes like a twitching
+eyebrow or dripping tears (`animates` in the registry below).
+
+Not every expression moves the same way — `firmware/expressions.py`'s
+`REGISTRY` declares, per expression, whether it's `trackable` (can look
+around at all), `blinks`, and `animates`. "dead" and "sleeping" are
+`trackable=False`: their render functions ignore `dx`/`dy` outright, so
+they're fully static by design, not just idle-still.
+
+## Tracking expressions
+
+```bash
+python organs/eyes/expression_status.py   # regenerates EXPRESSIONS.md
+```
+
+`firmware/expressions.py`'s `REGISTRY` is the single source of truth
+for every expression — implemented or not — including which drawing
+it's based on, what's still unclear, and what Henry needs to redraw.
+`EXPRESSIONS.md` is generated from it, so it can't drift out of sync
+with the code; re-run the script after editing `REGISTRY` (new
+expression, changed behavior, a drawing finally deciphered) rather than
+hand-editing the `.md`.
 
 ## Previewing expressions without hardware
 
@@ -30,8 +64,9 @@ python organs/eyes/simulate.py
 Opens a window with both eyes, a button per expression, look-direction
 arrows, and a Blink button — the same `eyes.py`/`expressions.py` code
 that runs on the Pico, just drawn to a Tkinter canvas instead of the
-real panels over SPI. Good for iterating on how an expression should
-look before wiring anything up or flashing.
+real panels over SPI. Idle movement runs automatically (uncheck "Idle
+movement" to freeze a frame for a close look). Good for iterating on
+how an expression should look before wiring anything up or flashing.
 
 ## Wiring
 
@@ -76,7 +111,8 @@ Notes:
    the `.uf2` from [micropython.org/download/rp2-pico](https://micropython.org/download/rp2-pico/)
    onto the mounted drive.
 2. It should boot into MicroPython REPL
-2. Copy `firmware/gc9a01.py`, `firmware/eyes.py`, `firmware/backlight.py`,
+2. Copy `firmware/gc9a01.py`, `firmware/eye_geometry.py`,
+   `firmware/expressions.py`, `firmware/eyes.py`, `firmware/backlight.py`,
    and `firmware/main.py` onto the Pico, keeping the same filenames —
    they import each other — with either [Thonny](https://thonny.org)
    (File → Save As → Raspberry Pi Pico) or the command line, below.
@@ -96,6 +132,8 @@ ls /dev/ttyACM*
 
 # copy the files onto the Pico's root filesystem
 mpremote connect auto fs cp organs/eyes/firmware/gc9a01.py :gc9a01.py
+mpremote connect auto fs cp organs/eyes/firmware/eye_geometry.py :eye_geometry.py
+mpremote connect auto fs cp organs/eyes/firmware/expressions.py :expressions.py
 mpremote connect auto fs cp organs/eyes/firmware/eyes.py :eyes.py
 mpremote connect auto fs cp organs/eyes/firmware/backlight.py :backlight.py
 mpremote connect auto fs cp organs/eyes/firmware/main.py :main.py
@@ -138,9 +176,7 @@ speak the shared protocol from `nervous_system/protocol.py`:
 | `set_expression`  | `{"mood": "curious"}`      |
 
 `set_expression`'s mood/activity names are whatever's registered in
-`firmware/expressions.py` (`EXPRESSIONS`) — currently: `happy`, `singing`,
-`sad`, `mad` (alias `angry`), `serious`, `sleepy`, `sleeping`, `dead`,
-`zombie`, `spy`. Anything else (including the `brain/limbic/mood.py`
-categories with no artwork yet — `calm`, `curious`, `excited`, `scared`)
-falls back to the plain neutral eye. "Pointing" isn't an expression —
-it's just `look()` aimed wherever the robot is pointing.
+`firmware/expressions.py` (`REGISTRY`) — see `EXPRESSIONS.md` (or
+"Tracking expressions" above) for the current list and what's still
+pending. Anything not registered (including mood categories with no
+artwork yet) falls back to the plain neutral eye.

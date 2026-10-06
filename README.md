@@ -326,10 +326,6 @@ Robot4Henry/
 │       ├── driver.py                   # host-side driver, speaks the protocol
 │       └── README.md                   # wiring/pinout/flashing notes
 │
-├── anatomy/                       # physical build docs — the anatomy/ half of organs/
-│   ├── eyes/, mouth/                # per-organ: measurements.yaml -> generate.py -> exports/*.step,*.stl
-│   └── head/                        # assembly: shell that eyes+mouth mount into
-│
 ├── config/
 │   └── settings.py                # All configuration
 ├── storage/

@@ -108,7 +108,7 @@ class SimulatorApp:
         look_frame = tk.Frame(controls)
         look_frame.grid(row=row_after_expr + 1, column=0, columnspan=2, sticky="w")
         for i, (label, dx, dy) in enumerate(LOOK_BUTTONS):
-            tk.Button(look_frame, text=label, width=3, command=lambda dx=dx, dy=dy: self.face.look(dx, dy)).grid(
+            tk.Button(look_frame, text=label, width=3, command=lambda dx=dx, dy=dy: self.face.look_at(dx, dy)).grid(
                 row=i // 3, column=i % 3
             )
 
