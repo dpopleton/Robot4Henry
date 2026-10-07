@@ -1,6 +1,7 @@
 # An "eye" that can look around, blink, and show a named expression
-# (expressions.py) — look direction and expression combine, so an
-# expression's pupil/tracking element moves rather than sitting frozen.
+# (expressions.py) at an intensity — look direction and expression
+# combine, so an expression's pupil/tracking element moves rather than
+# sitting frozen.
 
 import random
 import time
@@ -21,17 +22,32 @@ class Eye:
         """mirror: flips asymmetric decorative shapes (e.g. a scowling
         eyebrow) so they point inward on this eye — see expressions.py.
         Never affects look direction itself, so both eyes still look the
-        same way when told to."""
+        same way when told to.
+
+        driver may optionally have show(): drivers that draw into an
+        off-screen buffer (firmware/framebuffer.py) push the finished
+        frame to the panel there, once per redraw."""
         self.driver = driver
         self.mirror = mirror
         self.expression = None
+        self.intensity = expressions.DEFAULT_INTENSITY
         self.dx = 0.0
         self.dy = 0.0
         self.t = 0
-        self._render()
+        self._show = getattr(driver, "show", None)
+        self.render()
 
-    def _render(self):
-        expressions.render(self.expression, self.driver, dx=self.dx, dy=self.dy, mirror=self.mirror, t=self.t)
+    def render(self):
+        expressions.render(self.expression, self.driver, dx=self.dx, dy=self.dy,
+                           mirror=self.mirror, t=self.t, intensity=self.intensity)
+        if self._show:
+            self._show()
+
+    def close(self):
+        """Draw the eye shut (first half of a blink) without waiting."""
+        self.driver.fill(BACKGROUND_COLOR)
+        if self._show:
+            self._show()
 
     def look(self, dx: float, dy: float):
         """dx, dy each in [-1, 1] — direction to look. A no-op for
@@ -39,29 +55,33 @@ class Eye:
         since their render functions ignore dx/dy entirely — stored
         anyway so it takes effect if the expression changes later."""
         self.dx, self.dy = dx, dy
-        self._render()
+        self.render()
 
     def center(self):
         self.look(0.0, 0.0)
 
-    def set_expression(self, name: str):
+    def set_expression(self, name: str, intensity: int = None):
         """Switch to a named mood/activity expression (see
-        expressions.py), keeping the current look direction."""
+        expressions.py), keeping the current look direction. intensity
+        None = the expression's default."""
         self.expression = name
-        self._render()
+        self.intensity = expressions.DEFAULT_INTENSITY if intensity is None else intensity
+        self.render()
 
     def advance(self, t: int):
         """Bump the animation clock and redraw — used for idle
         flourishes (e.g. an eyebrow twitch, dripping tears) that keep
         moving even when look direction isn't changing. Only worth
-        calling for expressions whose spec marks animates=True."""
+        calling for expressions whose spec says they animate."""
         self.t = t
-        self._render()
+        self.render()
 
     def blink(self):
-        self.driver.fill(BACKGROUND_COLOR)
+        """Blocking blink — fine for the bring-up test, but Face.blink()
+        is what anything that also has to stay responsive should use."""
+        self.close()
         sleep_ms(180)
-        self._render()
+        self.render()
 
 
 class Face:
@@ -72,6 +92,10 @@ class Face:
     tick() regularly (e.g. every ~150ms) from whatever loop is running:
     a plain while-loop on the Pico, or a Tkinter .after() callback in
     the simulator.
+
+    update() is the one entry point for outside commands (direction,
+    expression, or both) — it redraws at most once however many fields
+    change, and not at all if nothing did.
 
     Whether idle movement/blinking/animation happens at all depends on
     the current expression's spec in expressions.REGISTRY — "dead" and
@@ -85,54 +109,102 @@ class Face:
     def __init__(self, left: Eye, right: Eye):
         self.left = left
         self.right = right
+        self.eyes = (left, right)
         self.attention = (0.0, 0.0)
         self._glance_until = 0
+        self._blinking = False
         self._t = 0
 
-    def set_expression(self, name: str):
-        self.left.set_expression(name)
-        self.right.set_expression(name)
+    def _spec(self):
+        return expressions.spec_for(self.left.expression)
+
+    def _render(self):
+        self._blinking = False
+        for eye in self.eyes:
+            eye.render()
+
+    def update(self, expression=None, intensity=None, direction=None):
+        """Apply any combination of a new expression (+ intensity, None =
+        default) and a new attention direction (dx, dy). None means
+        "leave as is". Returns True if it redrew."""
+        changed = False
+        if expression is not None:
+            if intensity is None:
+                intensity = expressions.DEFAULT_INTENSITY
+            if expression != self.left.expression or intensity != self.left.intensity:
+                for eye in self.eyes:
+                    eye.expression, eye.intensity = expression, intensity
+                changed = True
+
+        if direction is not None:
+            # An explicit command beats an idle glance — cut it short.
+            self.attention = direction
+            self._glance_until = 0
+        # Re-aim even when only the expression changed: switching from a
+        # non-trackable expression (e.g. "sleeping") must pick up wherever
+        # attention moved meanwhile.
+        if self._spec().trackable and self._t >= self._glance_until:
+            dx, dy = self.attention
+            if (dx, dy) != (self.left.dx, self.left.dy):
+                for eye in self.eyes:
+                    eye.dx, eye.dy = dx, dy
+                changed = True
+
+        if changed or self._blinking:
+            self._render()
+        return changed
+
+    def set_expression(self, name: str, intensity: int = None):
+        self.update(expression=name, intensity=intensity)
 
     def look_at(self, dx: float, dy: float):
         """Where to rest the gaze when not mid-glance — this is what a
         future "look at whoever's talking" would call. Takes effect
-        immediately unless a glance-away is currently mid-flight, and
-        is a no-op for non-trackable expressions."""
-        self.attention = (dx, dy)
-        spec = expressions.REGISTRY.get(self.left.expression, expressions.NEUTRAL_SPEC)
-        if spec.trackable and self._t >= self._glance_until:
-            self._apply_look(dx, dy)
-
-    def _apply_look(self, dx, dy):
-        self.left.look(dx, dy)
-        self.right.look(dx, dy)
+        immediately (cutting short any idle glance), and is a no-op for
+        non-trackable expressions."""
+        self.update(direction=(dx, dy))
 
     def blink(self):
-        self.left.blink()
-        self.right.blink()
+        """Close both eyes now; the next tick() (or update()) reopens
+        them. Non-blocking, so commands keep flowing mid-blink."""
+        for eye in self.eyes:
+            eye.close()
+        self._blinking = True
 
     def tick(self):
         """Advance idle animation by one step. Cheap to call often —
         expressions that don't animate/track/blink just skip straight
         through with no redraw at all."""
         self._t += 1
-        spec = expressions.REGISTRY.get(self.left.expression, expressions.NEUTRAL_SPEC)
+        if self._blinking:
+            self._render()  # second half of the blink
+            return
+
+        spec = self._spec()
+        redraw = False
 
         if spec.trackable:
             if self._t < self._glance_until:
                 pass  # mid-glance — hold until it's over
             elif self._glance_until:
-                self._apply_look(*self.attention)  # glance just ended — return to attention
+                for eye in self.eyes:  # glance just ended — return to attention
+                    eye.dx, eye.dy = self.attention
                 self._glance_until = 0
+                redraw = True
             elif random.random() < self.GLANCE_CHANCE:
                 gx = max(-1.0, min(1.0, self.attention[0] + random.uniform(-1, 1)))
                 gy = max(-1.0, min(1.0, self.attention[1] + random.uniform(-0.5, 0.5)))
-                self._apply_look(gx, gy)
+                for eye in self.eyes:
+                    eye.dx, eye.dy = gx, gy
                 self._glance_until = self._t + random.randint(*self.GLANCE_TICKS)
+                redraw = True
+
+        if spec.animates_at(self.left.intensity):
+            for eye in self.eyes:
+                eye.t = self._t
+            redraw = True
 
         if spec.blinks and random.random() < self.BLINK_CHANCE:
             self.blink()
-
-        if spec.animates:
-            self.left.advance(self._t)
-            self.right.advance(self._t)
+        elif redraw:
+            self._render()

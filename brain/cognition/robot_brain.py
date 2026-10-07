@@ -7,7 +7,7 @@ from brain.raw_logger import RawLogger
 from brain.session_manager import SessionManager
 from brain.rest_process import RestProcess
 from brain.limbic import LimbicSystem, CATEGORIES
-from brain.limbic.parsing import extract_mood_tag
+from brain.cognition.response_schema import CHAT_RESPONSE_SCHEMA, parse_chat_response
 from config.settings import PRIMARY_MODEL, DB_PATH, CHROMA_PATH
 
 
@@ -57,12 +57,15 @@ class RobotBrain:
             {"role": "user", "content": user_input}
         ]
 
-        # Get response
-        raw_response = self.llm.chat(system_prompt, messages)
+        # Get response — format=CHAT_RESPONSE_SCHEMA constrains the model
+        # to a {"reply": ..., "mood": {...}} shape rather than hoping it
+        # remembers to append a free-text tag.
+        raw_response = self.llm.chat(system_prompt, messages, format=CHAT_RESPONSE_SCHEMA)
 
-        # Pull the trailing mood tag out before this touches logs, memory,
-        # or the user — a missing/malformed tag just means no mood update.
-        response, mood_signal = extract_mood_tag(raw_response)
+        # A missing/malformed mood object just means no mood update this
+        # turn; a broken `reply` falls back to the raw text (see
+        # parse_chat_response) so a structure slip never costs an answer.
+        response, mood_signal = parse_chat_response(raw_response)
         if mood_signal:
             self.limbic.react(*mood_signal)
 
@@ -88,6 +91,7 @@ class RobotBrain:
         sections = [
             self._personality(),
             self._mood_context(),
+            self._response_format(),
             # Maybe add this later. Doesn't work right now and is being a pain with little in return.
             # self.key_facts.format_for_prompt(),
             self._format_long_term(relevant_memories),
@@ -108,14 +112,14 @@ you say you need to check with a grown-up first."""
     def _mood_context(self) -> str:
         mood = self.limbic.current
         return f"""YOUR CURRENT MOOD: you are feeling {mood.describe()} right now.
-Let this mood colour your tone naturally — don't announce it outright.
+Let this mood colour your tone naturally — don't announce it outright."""
 
-At the very end of your reply, on its own new line, add exactly one tag
-showing how this exchange made you feel, in this exact format:
-MOOD: <category>:<intensity>
-categories: {", ".join(CATEGORIES)}
-intensity: 1 (a little), 2 (quite), 3 (very)
-Example: MOOD: curious:2"""
+    def _response_format(self) -> str:
+        return f"""Respond with a JSON object with exactly two fields:
+  "reply": your spoken reply to the child, as plain text.
+  "mood": how this exchange made you feel, as {{"category": ..., "intensity": ...}}
+    categories: {", ".join(CATEGORIES)}
+    intensity: 1 (a little), 2 (quite), 3 (very)"""
 
     def _format_long_term(self, memories: list) -> str:
         if not memories:

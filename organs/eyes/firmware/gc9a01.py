@@ -143,6 +143,15 @@ class GC9A01:
         self.set_window(0, 0, self.WIDTH - 1, self.HEIGHT - 1)
         self._write_pixels(color, self.WIDTH * self.HEIGHT)
 
+    def blit(self, buf):
+        """Send a whole frame (WIDTH*HEIGHT big-endian RGB565 pixels) in
+        one SPI write — see framebuffer.py."""
+        self.set_window(0, 0, self.WIDTH - 1, self.HEIGHT - 1)
+        self.cs.value(0)
+        self.dc.value(1)
+        self.spi.write(buf)
+        self.cs.value(1)
+
     def fill_polygon(self, points, color: int):
         """Scanline-fill a simple polygon (convex or concave) given as a
         list of (x, y) vertices, in order. Used for eyelids, brows,

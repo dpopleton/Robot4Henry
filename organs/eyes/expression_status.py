@@ -19,6 +19,7 @@ from expressions import REGISTRY  # noqa: E402
 STATUS_LABELS = {
     "implemented": "✅ implemented",
     "needs_redraw": "✏️ needs redraw",
+    "placeholder": "🧪 placeholder art — Henry to draw",
     "planned": "🕓 planned, no art yet",
     "not_an_expression": "ℹ️ not an expression",
 }
@@ -27,6 +28,8 @@ STATUS_LABELS = {
 def _bool(value):
     if value is None:
         return "—"
+    if isinstance(value, tuple):
+        return "at " + "/".join(str(v) for v in value)
     return "yes" if value else "no"
 
 

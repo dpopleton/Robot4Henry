@@ -4,11 +4,14 @@ Two 1.28" round GC9A01 SPI TFT displays on a Raspberry Pi Pico, standing
 in as "eyes" — look direction, blinking, and a set of named mood/activity
 expressions (see `firmware/expressions.py`), based on Henry's drawings.
 
-**Current status:** standalone hardware bring-up test. `firmware/main.py`
-animates both eyes on its own; it does not yet listen for commands over
-`nervous_system` (that integration comes once this actually needs to be
-driven by the brain — see `driver.py`, which is the future host-side
-half of that, not used by the bring-up test).
+**Current status:** `firmware/main.py` listens on USB serial for two
+inputs — **direction** and **expression** (with intensity 1-3) — sent
+separately or together by `driver.py`, and idles naturally in between.
+Every `brain/limbic/mood.py` category has an expression at all three
+intensities (calm/curious/excited/scared are placeholder art until
+Henry draws them). Not yet wired into the brain itself: nothing calls
+`EyesOrgan.show_mood()` yet. The original standalone wiring test is
+`firmware/bringup.py`.
 
 ## Files
 
@@ -17,8 +20,13 @@ half of that, not used by the bring-up test).
   so the same code runs unmodified on the Pico and in `simulate.py`.
 - `firmware/gc9a01.py` — the real SPI panel driver (MicroPython/`machine`
   only). `simulate.py`'s `SimDriver` is a drop-in stand-in for this.
-- `firmware/backlight.py`, `firmware/main.py` — Pico-only; not usable
-  from the desktop simulator.
+- `firmware/eye_protocol.py` — the compact wire format (see "Protocol"
+  below). Pure Python, imported by both the Pico and `driver.py`.
+- `firmware/framebuffer.py` — draws into RAM with MicroPython's
+  `framebuf`, then sends each eye to its panel in one SPI write.
+- `firmware/panels.py`, `firmware/backlight.py`, `firmware/main.py`,
+  `firmware/bringup.py` — Pico-only; not usable from the desktop
+  simulator.
 - `simulate.py` — desktop preview, see below. Not flashed to the Pico.
 - `expression_status.py` / `EXPRESSIONS.md` — see "Tracking expressions"
   below.
@@ -61,8 +69,9 @@ hand-editing the `.md`.
 python organs/eyes/simulate.py
 ```
 
-Opens a window with both eyes, a button per expression, look-direction
-arrows, and a Blink button — the same `eyes.py`/`expressions.py` code
+Opens a window with both eyes, a button per expression, intensity 1-3,
+look-direction arrows, a Blink button, and a "Command" box that takes
+the exact lines the host sends the Pico (e.g. `Ehappy:3 D-40,25`) — the same `eyes.py`/`expressions.py` code
 that runs on the Pico, just drawn to a Tkinter canvas instead of the
 real panels over SPI. Idle movement runs automatically (uncheck "Idle
 movement" to freeze a frame for a close look). Good for iterating on
@@ -101,9 +110,9 @@ Notes:
   straight to the LED with no onboard driver, don't connect it directly
   to a GPIO (check the LED's current draw against the GPIO's ~12mA
   recommended limit first, or drive it through a transistor instead).
-- `main.py` runs both panels at 40MHz SPI. If the picture is garbled or
-  noisy (common on breadboard jumpers), the first thing to try is
-  dropping `baudrate` in `main.py` to `20_000_000` or `10_000_000`.
+- Both panels run at 40MHz SPI. If the picture is garbled or noisy
+  (common on breadboard jumpers), the first thing to try is dropping
+  `baudrate` in `panels.py` to `20_000_000` or `10_000_000`.
 
 ## Flashing
 
@@ -111,13 +120,12 @@ Notes:
    the `.uf2` from [micropython.org/download/rp2-pico](https://micropython.org/download/rp2-pico/)
    onto the mounted drive.
 2. It should boot into MicroPython REPL
-2. Copy `firmware/gc9a01.py`, `firmware/eye_geometry.py`,
-   `firmware/expressions.py`, `firmware/eyes.py`, `firmware/backlight.py`,
-   and `firmware/main.py` onto the Pico, keeping the same filenames —
+2. Copy every `.py` in `firmware/` except `__init__.py` onto the Pico,
+   keeping the same filenames —
    they import each other — with either [Thonny](https://thonny.org)
    (File → Save As → Raspberry Pi Pico) or the command line, below.
-3. Power-cycle the Pico. `main.py` runs automatically and both eyes
-   should start looking around within a couple of seconds.
+3. Power-cycle the Pico. `main.py` runs automatically: both eyes open
+   within a couple of seconds and idle until commands arrive.
 
 ### Command line, instead of Thonny
 
@@ -131,12 +139,11 @@ pip install mpremote
 ls /dev/ttyACM*
 
 # copy the files onto the Pico's root filesystem
-mpremote connect auto fs cp organs/eyes/firmware/gc9a01.py :gc9a01.py
-mpremote connect auto fs cp organs/eyes/firmware/eye_geometry.py :eye_geometry.py
-mpremote connect auto fs cp organs/eyes/firmware/expressions.py :expressions.py
-mpremote connect auto fs cp organs/eyes/firmware/eyes.py :eyes.py
-mpremote connect auto fs cp organs/eyes/firmware/backlight.py :backlight.py
-mpremote connect auto fs cp organs/eyes/firmware/main.py :main.py
+cd organs/eyes/firmware
+for f in gc9a01 eye_geometry eye_protocol expressions eyes framebuffer backlight panels bringup main; do
+  mpremote connect auto fs cp $f.py :$f.py
+done
+cd -
 
 # soft-reset so it boots into the freshly copied main.py
 mpremote connect /dev/ttyACM0 reset
@@ -153,6 +160,9 @@ once you're happy with it so it survives a power cycle standalone.
 
 ## What the bring-up test does
 
+`mpremote run organs/eyes/firmware/bringup.py` (with the other files
+already copied over) — it replaces `main.py` until the next reset.
+
 Both eyes look in the same random direction together most of the time.
 Every 5th cycle, one or both blink independently instead — that's
 deliberate: if a CS pin is wired to the wrong display, this is where
@@ -164,19 +174,50 @@ Both panels are plain, non-handed GC9A01 boards, mounted the same way
 one flips its horizontal axis, so the two converge/diverge instead of
 tracking together (cross-eyed).
 
-## Protocol (future)
+## Protocol
 
-Once this is wired into `nervous_system` (see `driver.py`), it will
-speak the shared protocol from `nervous_system/protocol.py`:
+The host sends one ASCII line per update, built and parsed by the same
+`firmware/eye_protocol.py` on both ends. Every field is optional, so
+direction and expression can go separately or together:
 
-| cmd              | payload                  |
-|-------------------|---------------------------|
-| `blink`           | `{}`                       |
-| `look`            | `{"direction": "left"}`    |
-| `set_expression`  | `{"mood": "curious"}`      |
+| line               | meaning                                                  |
+|--------------------|----------------------------------------------------------|
+| `D-40,25`          | look direction, dx,dy in [-100, 100] (+x screen-right, +y down) |
+| `Ehappy:3`         | expression + intensity 1-3                               |
+| `Ehappy`           | expression at its default intensity (2)                  |
+| `B`                | blink                                                    |
+| `Ehappy:3 D-40,25` | both at once — one redraw, not two                       |
 
-`set_expression`'s mood/activity names are whatever's registered in
-`firmware/expressions.py` (`REGISTRY`) — see `EXPRESSIONS.md` (or
-"Tracking expressions" above) for the current list and what's still
-pending. Anything not registered (including mood categories with no
-artwork yet) falls back to the plain neutral eye.
+From Python:
+
+```python
+from nervous_system.serial_transport import SerialTransport
+from organs.eyes.driver import EyesOrgan
+
+eyes = EyesOrgan(SerialTransport("/dev/ttyACM0"))
+eyes.connect()
+eyes.look((-0.4, 0.25))              # direction only
+eyes.set_expression("scared", 3)     # expression only
+eyes.show_mood(mood, direction="left")  # a brain.limbic Mood, plus direction, in one line
+```
+
+Or type lines straight into a serial terminal (`mpremote connect auto`
+won't do — it interrupts `main.py`; use e.g. `picocom /dev/ttyACM0`).
+
+Why it's fast:
+- **Small:** a direction update is at most 11 bytes (vs ~70 as JSON).
+  ASCII rather than binary because a 0x03 byte would hit MicroPython's
+  Ctrl-C handler and kill `main.py`.
+- **Latest wins:** `main.py` drains *every* waiting line before drawing
+  and merges them, so if the host streams direction faster than the
+  panels can redraw, stale positions are skipped instead of queuing up.
+  A repeat of the current state doesn't redraw at all.
+- **One SPI write per eye:** shapes are filled in C by `framebuf` into a
+  RAM buffer, then pushed whole (~23ms per eye at 40MHz) — no
+  per-scanline Python loop, no visible half-drawn frames.
+- **Never blocks:** blinks are non-blocking, and an incoming direction
+  cuts short any idle glance.
+
+Expression names are whatever's in `firmware/expressions.py`'s
+`REGISTRY` — see `EXPRESSIONS.md`. Anything unregistered (including
+`neutral`) shows the plain neutral eye.

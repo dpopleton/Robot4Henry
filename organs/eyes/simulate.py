@@ -9,6 +9,10 @@ unchanged — SimDriver below just satisfies the same driver contract
 (fill/fill_circle/fill_polygon) that gc9a01.py does, standing in for
 the SPI panel.
 
+The "Command" box takes the exact lines the host sends the Pico (e.g.
+`Ehappy:3 D-40,25` — see firmware/eye_protocol.py), parsed by the same
+code main.py uses, so you can try the wire format without hardware.
+
 Usage:
     python organs/eyes/simulate.py
 """
@@ -22,9 +26,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "fir
 from eye_geometry import WIDTH, HEIGHT  # noqa: E402
 from eyes import Eye, Face  # noqa: E402
 from expressions import EXPRESSIONS  # noqa: E402
+from eye_protocol import parse, MIN_INTENSITY, MAX_INTENSITY  # noqa: E402
 
 SCALE = 1.5       # canvas is bigger than the real 240x240 panel, for visibility
 IDLE_TICK_MS = 150  # how often Face.tick() runs — see eyes.py for what it does per tick
+BLINK_MS = 150     # how long a Blink-button blink stays shut (main.py holds it one tick)
 
 
 def _rgb565_to_hex(color: int) -> str:
@@ -97,10 +103,21 @@ class SimulatorApp:
         for i, name in enumerate(names):
             tk.Button(
                 controls, text=name, width=10,
-                command=lambda n=name: self.face.set_expression(n),
+                command=lambda n=name: self.face.set_expression(n, self.intensity.get()),
             ).grid(row=1 + i // 4, column=i % 4, padx=2, pady=2, sticky="ew")
 
         row_after_expr = 1 + (len(names) + 3) // 4
+
+        intensity_frame = tk.Frame(controls)
+        intensity_frame.grid(row=row_after_expr, column=0, columnspan=4, sticky="w", pady=(6, 0))
+        tk.Label(intensity_frame, text="Intensity", font=("", 10, "bold")).pack(side="left")
+        self.intensity = tk.IntVar(value=2)
+        for level in range(MIN_INTENSITY, MAX_INTENSITY + 1):
+            tk.Radiobutton(
+                intensity_frame, text=str(level), value=level, variable=self.intensity,
+                command=self._apply_intensity,
+            ).pack(side="left")
+        row_after_expr += 1
 
         tk.Label(controls, text="Look direction", font=("", 10, "bold")).grid(
             row=row_after_expr, column=0, columnspan=4, sticky="w", pady=(10, 0)
@@ -114,12 +131,37 @@ class SimulatorApp:
 
         actions = tk.Frame(controls)
         actions.grid(row=row_after_expr + 1, column=2, columnspan=2, sticky="n")
-        tk.Button(actions, text="Blink", width=10, command=self.face.blink).pack(pady=2)
-        tk.Button(actions, text="Neutral", width=10, command=lambda: self.face.set_expression(None)).pack(pady=2)
+        tk.Button(actions, text="Blink", width=10, command=self._blink).pack(pady=2)
+        tk.Button(actions, text="Neutral", width=10, command=lambda: self.face.set_expression("neutral")).pack(pady=2)
         self.idle_enabled = tk.BooleanVar(value=True)
         tk.Checkbutton(actions, text="Idle movement", variable=self.idle_enabled).pack(pady=2)
 
+        command_frame = tk.Frame(controls)
+        command_frame.grid(row=row_after_expr + 2, column=0, columnspan=4, sticky="ew", pady=(10, 0))
+        tk.Label(command_frame, text="Command", font=("", 10, "bold")).pack(side="left")
+        self.command = tk.Entry(command_frame, width=28)
+        self.command.pack(side="left", padx=4)
+        self.command.insert(0, "Ehappy:3 D-40,25")
+        self.command.bind("<Return>", lambda _e: self._send_command())
+        tk.Button(command_frame, text="Send", command=self._send_command).pack(side="left")
+
         self._schedule_tick()
+
+    def _apply_intensity(self):
+        if self.face.left.expression is not None:
+            self.face.set_expression(self.face.left.expression, self.intensity.get())
+
+    def _blink(self):
+        self.face.blink()
+        self.root.after(BLINK_MS, self.face.update)  # reopen, even with idle movement off
+
+    def _send_command(self):
+        update = parse(self.command.get())
+        self.face.update(update.expression, update.intensity, update.direction)
+        if update.intensity is not None:
+            self.intensity.set(update.intensity)
+        if update.blink:
+            self._blink()
 
     def _schedule_tick(self):
         if self.idle_enabled.get():

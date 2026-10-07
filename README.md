@@ -326,6 +326,10 @@ Robot4Henry/
 │       ├── driver.py                   # host-side driver, speaks the protocol
 │       └── README.md                   # wiring/pinout/flashing notes
 │
+├── anatomy/                       # teaching reference for Henry — not wired up yet
+│   ├── eyes/, head/, mouth/         # per-part: images/, models/, manifest.yaml (titles + descriptions)
+│   └── README.md                    # how to add material, see anatomy/README.md
+│
 ├── config/
 │   └── settings.py                # All configuration
 ├── storage/
@@ -403,6 +407,7 @@ This project is being built in phases:
 
 - ✅ **Phase 1** — Conversational brain with memory system
 - 🟡 **Phase 2** — Emotional state and expression simulator: mood tracking (`brain/limbic`) done; driving `organs/eyes`/`organs/mouth` over `nervous_system` still to come
+- 🔲 **Phase 2b** — Teaching mode: `organs/eyes` flashes through build photos/CAD diagrams for a part, then shows a rotating 3D model while explaining how it works — content lives in `anatomy/` (see `anatomy/README.md`), playback not built yet
 - 🔲 **Phase 3** — Voice (`organs/ears` for speech recognition, `organs/voice` for text-to-speech)
 - 🔲 **Phase 4** — Safety layer and child-specific tuning
 - 🔲 **Phase 5** — Hardware integration (laptop into robot chassis)

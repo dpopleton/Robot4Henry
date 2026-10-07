@@ -24,6 +24,13 @@ class SerialTransport:
             raise RuntimeError(f"Not connected to {self.port} — call connect() first.")
         self._serial.write(message.encode())
 
+    def write(self, data: bytes):
+        """Send pre-encoded bytes as-is — for organs with their own
+        compact wire format (e.g. organs/eyes) instead of JSON Messages."""
+        if not self._serial:
+            raise RuntimeError(f"Not connected to {self.port} — call connect() first.")
+        self._serial.write(data)
+
     def receive(self) -> Message | None:
         """Read one line and decode it. Returns None on timeout/empty read."""
         if not self._serial:
