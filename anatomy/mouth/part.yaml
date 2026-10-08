@@ -1,0 +1,12 @@
+# Structured facts about this part — the brain will look parts up by alias
+# (R-905). summary_for_henry is drafted by an agent; set henry_text_approved
+# to true once Dan has checked it.
+name: mouth
+aliases: [mouth, smile]
+status: idea            # idea | designing | building | built
+organ: organs/mouth            # code that drives it
+summary_for_henry: >
+  Qbot's mouth is a small screen under its eyes. When Qbot is quiet it shows a line — smiley or frowny depending on its mood — and when Qbot talks the line wiggles like sound waves.
+henry_text_approved: false
+related: [head, speaker]
+roadmap: [R-210]

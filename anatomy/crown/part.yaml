@@ -1,0 +1,12 @@
+# Structured facts about this part — the brain will look parts up by alias
+# (R-905). summary_for_henry is drafted by an agent; set henry_text_approved
+# to true once Dan has checked it.
+name: crown
+aliases: [crown, ears, microphones, mics]
+status: idea            # idea | designing | building | built
+organ: crown            # firmware not written yet — will live in its own folder
+summary_for_henry: >
+  Qbot's crown isn't just for looking royal — hidden inside are four tiny microphones. Sound reaches each one at a very slightly different time, and that's how Qbot works out where your voice is coming from so it can look at you.
+henry_text_approved: false
+related: [head, eyes]
+roadmap: [R-301, R-302, R-303, R-305]

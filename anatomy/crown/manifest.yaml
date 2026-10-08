@@ -1,0 +1,22 @@
+# Teaching-reference manifest for the crown build.
+#
+# Each entry becomes one frame in the "how this part works" flash-through,
+# shown in order, followed by the rotating 3D model (if `model` is set on
+# the last entry, or once we decide how that is picked).
+#
+# Schema:
+# - file: images/<filename>       # path relative to this folder
+#   title: "Short title"
+#   description: >
+#     Plain-English explanation, written for Henry to hear out loud.
+#   kind: photo                   # photo | cad
+#   model: models/<filename>      # optional — only once a finished 3D model exists
+#
+# Example (remove the leading "# " once a real entry is added):
+# - file: images/example.jpg
+#   title: "Example title"
+#   description: >
+#     Example description.
+#   kind: photo
+
+images: []

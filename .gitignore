@@ -11,3 +11,4 @@ storage/robot.db
 dist/
 build/
 anatomy/**/exports/
+.claude/settings.local.json

@@ -1,0 +1,12 @@
+# Structured facts about this part — the brain will look parts up by alias
+# (R-905). summary_for_henry is drafted by an agent; set henry_text_approved
+# to true once Dan has checked it.
+name: lights
+aliases: [lights, q, glowing q, antenna, leds]
+status: idea            # idea | designing | building | built
+organ: organs/lights            # not written yet
+summary_for_henry: >
+  The glowing Q on Qbot's forehead and the light on top of its antenna are tiny coloured lights shining through frosted plastic. They can glow lots of different colours.
+henry_text_approved: false
+related: [head]
+roadmap: [R-211]

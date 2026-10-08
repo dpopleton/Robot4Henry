@@ -1,0 +1,12 @@
+# Structured facts about this part — the brain will look parts up by alias
+# (R-905). summary_for_henry is drafted by an agent; set henry_text_approved
+# to true once Dan has checked it.
+name: eyes
+aliases: [eyes, eye, screens, displays]
+status: building            # idea | designing | building | built
+organ: organs/eyes            # code that drives it
+summary_for_henry: >
+  Qbot's eyes are two little round screens, each with its own tiny computer telling it what to draw. They can look around, blink, and change shape to show how Qbot is feeling — happy, sad, sleepy and more.
+henry_text_approved: false
+related: [head]
+roadmap: [R-201, R-202, R-203, R-204]

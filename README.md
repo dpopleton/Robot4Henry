@@ -14,9 +14,11 @@ conversational AI with a multi-layered memory system that lets the robot remembe
 your child across sessions — their name, their pets, their interests, and the 
 conversations you have had together.
 
-This repository contains Phase 1 of the project: the conversational brain and 
-memory system. Future phases will add voice, emotional expression, vision, and 
-physical movement.
+This repository holds the brain (conversation, memory, mood), the firmware
+and drivers for each physical part as it gets built, and the plans and build
+notes for the whole robot. The head comes first — eyes, mouth, glowing Q,
+a mic-array crown, a speaker — then a tracked body, vision and arms. See the
+[roadmap](docs/roadmap/README.md).
 
 ### Current features
 - Friendly, child-appropriate conversational AI
@@ -24,6 +26,7 @@ physical movement.
 - Medium term memory (older exchanges compressed within a session)
 - Long term memory (built during rest periods, persists across sessions)
 - Mood (`brain/limbic`) — a randomised wake-up mood that drifts turn to turn based on the conversation, colouring Qbot's tone
+- Eyes (`organs/eyes`) — two round screens on a Pico showing every mood at three intensities, with a desktop simulator (not yet driven by the brain)
 - Session management with automatic reset after inactivity
 - Full conversation logging for debugging and memory review
 - Memory wipe utility for testing and reset
@@ -153,26 +156,11 @@ Start talking. Type `quit` or `exit` to stop, or press `Ctrl+C`.
 
 ---
 
-## How the memory system works
+## How it works
 
-Qbot has three layers of memory:
-
-**Short term** — the current conversation, kept verbatim. Qbot remembers 
-everything said in the current session exactly. After 10 exchanges older 
-messages are compressed into medium term memory.
-
-**Medium term** — a rolling summary of older exchanges within the current 
-session. Keeps the context of a long conversation without overwhelming the 
-model. Wiped at session end.
-
-**Long term** — built during rest periods after a session ends. Memorable 
-facts and moments are extracted from the raw conversation log and stored 
-in a vector database. Retrieved semantically when relevant in future sessions.
-
-**Session reset** — after 5 minutes of inactivity Qbot considers the 
-conversation over, clears short and medium term memory, and processes 
-the session into long term memory. The next conversation starts fresh 
-while still having access to long term memories from previous sessions.
+See [`docs/architecture.md`](docs/architecture.md) for how the brain,
+memory, mood, nervous system and organs fit together, and the README in
+each code area for detail (e.g. [`organs/eyes`](organs/eyes/README.md)).
 
 ---
 
@@ -287,62 +275,11 @@ General guidance for model selection:
 
 ## Project structure
 
-The layout mirrors biology: a **brain** for cognition and memory, a
-**nervous system** carrying messages, and **organs** for each physical
-subsystem. The brain never talks to hardware directly — it sends
-abstract commands ("blink", "set_expression: curious") through the
-nervous system, which routes them to the right organ's driver. Organs
-without hardware yet register a mock driver, so the brain and its
-tests never depend on anything being plugged in.
-
-```
-Robot4Henry/
-├── brain/                       # cognition, personality, memory
-│   ├── cognition/
-│   │   ├── llm_client.py          # Ollama API wrapper
-│   │   └── robot_brain.py         # Main brain, wires everything together
-│   ├── memory/
-│   │   ├── short_term.py           # In-memory conversation buffer
-│   │   ├── medium_term.py          # Within-session rolling summary
-│   │   ├── long_term.py            # ChromaDB vector store
-│   │   └── key_facts.py            # Structured fact store (reserved for future use)
-│   ├── limbic/
-│   │   ├── mood.py                 # Mood(category, intensity) + random wake mood
-│   │   ├── state.py                # LimbicSystem — how mood drifts turn to turn
-│   │   └── parsing.py              # extracts the model's trailing MOOD tag
-│   ├── session_manager.py         # Inactivity detection, session lifecycle
-│   ├── raw_logger.py              # Logs every exchange to SQLite
-│   └── rest_process.py            # Builds long term memory after sessions
-│
-├── nervous_system/               # comms fabric between brain and organs
-│   ├── protocol.py                 # shared message format (organ, cmd, payload)
-│   ├── serial_transport.py          # USB serial transport (pyserial)
-│   └── bus.py                       # organ registry, routes brain commands
-│
-├── organs/                        # one folder per physical subsystem
-│   ├── base.py                      # Organ interface + MockOrgan for dev/tests
-│   └── eyes/                        # LCD screens on a Raspberry Pi Pico
-│       ├── firmware/                  # MicroPython, runs on the Pico
-│       ├── driver.py                   # host-side driver, speaks the protocol
-│       └── README.md                   # wiring/pinout/flashing notes
-│
-├── anatomy/                       # teaching reference for Henry — not wired up yet
-│   ├── eyes/, head/, mouth/         # per-part: images/, models/, manifest.yaml (titles + descriptions)
-│   └── README.md                    # how to add material, see anatomy/README.md
-│
-├── config/
-│   └── settings.py                # All configuration
-├── storage/
-│   ├── chroma_db/                 # Long term vector memory (gitignored)
-│   └── robot.db                   # SQLite database (gitignored)
-├── tests/
-│   ├── brain/
-│   ├── nervous_system/
-│   └── organs/
-├── main.py                        # Entry point
-├── wipe_memory.py                 # Memory reset utility
-└── pyproject.toml                 # Package configuration
-```
+The layout mirrors biology — a **brain**, a **nervous system** carrying
+messages, **organs** for each physical subsystem, and **anatomy** for the
+physical build itself. The full tree is in
+[`docs/architecture.md`](docs/architecture.md#project-structure), and
+[`docs/README.md`](docs/README.md) is the map of all the docs.
 
 ---
 
@@ -403,17 +340,9 @@ mkdir storage/chroma_db
 
 ## Roadmap
 
-This project is being built in phases:
-
-- ✅ **Phase 1** — Conversational brain with memory system
-- 🟡 **Phase 2** — Emotional state and expression simulator: mood tracking (`brain/limbic`) done; driving `organs/eyes`/`organs/mouth` over `nervous_system` still to come
-- 🔲 **Phase 2b** — Teaching mode: `organs/eyes` flashes through build photos/CAD diagrams for a part, then shows a rotating 3D model while explaining how it works — content lives in `anatomy/` (see `anatomy/README.md`), playback not built yet
-- 🔲 **Phase 3** — Voice (`organs/ears` for speech recognition, `organs/voice` for text-to-speech)
-- 🔲 **Phase 4** — Safety layer and child-specific tuning
-- 🔲 **Phase 5** — Hardware integration (laptop into robot chassis)
-- 🔲 **Phase 6** — Vision and scene understanding
-- 🔲 **Phase 7** — Navigation and movement (`organs/locomotion`)
-- 🔲 **Phase 8** — Full robot integration and polish
+See [`docs/roadmap/README.md`](docs/roadmap/README.md) — what's planned, in
+progress and done, phase by phase — and the weekly
+[`journal`](docs/journal/README.md).
 
 ---
 

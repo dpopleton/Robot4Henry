@@ -1,0 +1,12 @@
+# Structured facts about this part — the brain will look parts up by alias
+# (R-905). summary_for_henry is drafted by an agent; set henry_text_approved
+# to true once Dan has checked it.
+name: head
+aliases: [head, face, shell, box]
+status: building            # idea | designing | building | built
+organ: null            # no code — it's structure
+summary_for_henry: >
+  Qbot's head is a box a bit bigger than a football — 25 centimetres wide, 25 tall and 15 deep. We 3D-printed it in pieces, and the back has a see-through door so you can look at all the wires and little computers inside.
+henry_text_approved: false
+related: [eyes, mouth, crown, lights]
+roadmap: [R-212, R-306, R-402]
