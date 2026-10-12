@@ -12,6 +12,7 @@ and the plans.
 | One file per piece of work | [roadmap/items/](roadmap/items/) |
 | Why things are built the way they are | [decisions/README.md](decisions/README.md) |
 | What happened each week — code, physical build, Henry's ideas | [journal/README.md](journal/README.md) |
+| Suggestions for next week (a menu, not a plan) | [next-week.md](next-week.md) |
 | The physical robot: build notes, wiring, photos, CAD | [../anatomy/](../anatomy/README.md) |
 
 Code areas with their own README:

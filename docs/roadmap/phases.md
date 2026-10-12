@@ -11,7 +11,8 @@ so each item carries a rough `cost_gbp`.
 
 Every head part is **mounted in the head as its code is developed**, so
 "mounted and working in the head" is part of every head item's definition
-of done, not a separate phase.
+of done, not a separate phase. Likewise every organ also works in the
+virtual robot (D-012, R-209), so it can be tested without the hardware.
 
 The headings below are read by `docs/build_index.py` — keep the
 `## Phase <n> · <name>` / `## Ongoing` format.

@@ -6,9 +6,9 @@ status: planned
 area: organs/lights
 kind: both
 depends_on: []
-decisions: [D-008, D-009]
+decisions: [D-008, D-009, D-012]
 cost_gbp: 12
-updated: 2026-10-08
+updated: 2026-10-12
 ---
 ## Goal
 Multi-colour LEDs behind diffusers for the Q on the forehead and the antenna tip.
@@ -21,6 +21,7 @@ A second way to show mood/activity, and part of the look.
 - [ ] Own Pico, probably (D-009)
 - [ ] Diffusers in the shell
 - [ ] Colour meanings — decided with Henry
+- [ ] Works in the virtual robot (D-012); decide what it fakes as input and what it only displays
 
 ## Done when
 The Q and antenna light up from the router, mounted in the head.
@@ -31,3 +32,4 @@ The Q and antenna light up from the router, mounted in the head.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-10-12: added the virtual-robot task (D-012).

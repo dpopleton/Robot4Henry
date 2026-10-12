@@ -73,9 +73,13 @@ def main():
 
     if args.facts_only:
         print("Wiping key facts...")
-        if not args.dry_run:
+        if not args.dry_run and os.path.exists(DB_PATH):
             conn = sqlite3.connect(DB_PATH)
-            conn.execute("DELETE FROM key_facts")
+            tables = {row[0] for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            )}
+            if "key_facts" in tables:
+                conn.execute("DELETE FROM key_facts")
             conn.commit()
             conn.close()
             print("  [ok] Key facts cleared")
@@ -86,29 +90,34 @@ def main():
             wipe_chroma(CHROMA_PATH)
 
     else:
-        # Default — wipe working memory but preserve raw logs
-        print("Wiping working memory (key facts + long term)...")
+        # Default — wipe durable memory but preserve reviewable raw logs.
+        print("Wiping durable memory (key facts + long term)...")
         if not args.dry_run:
-            # Clear key facts
+            # Clear key facts if the application has created its table.
             if os.path.exists(DB_PATH):
                 conn = sqlite3.connect(DB_PATH)
-                conn.execute("DELETE FROM key_facts")
-                conn.execute("DELETE FROM conversation_summary")
-                conn.execute("DELETE FROM raw_conversations")
-                conn.execute("DELETE FROM sessions") 
+                tables = {row[0] for row in conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                )}
+                if "key_facts" in tables:
+                    conn.execute("DELETE FROM key_facts")
                 conn.commit()
                 conn.close()
-                print(f"  [ok] Key facts and summary cleared in {DB_PATH}")
+                print(f"  [ok] Key facts cleared in {DB_PATH}")
 
             # Wipe ChromaDB
             wipe_chroma(CHROMA_PATH)
 
         if args.all:
             print("Wiping raw conversation logs...")
-            if not args.dry_run:
+            if not args.dry_run and os.path.exists(DB_PATH):
                 conn = sqlite3.connect(DB_PATH)
-                conn.execute("DELETE FROM raw_conversations")
-                conn.execute("DELETE FROM sessions")
+                tables = {row[0] for row in conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                )}
+                for table in ("raw_conversations", "sessions"):
+                    if table in tables:
+                        conn.execute(f"DELETE FROM {table}")
                 conn.commit()
                 conn.close()
                 print(f"  [ok] Raw logs cleared")

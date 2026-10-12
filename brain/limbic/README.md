@@ -66,7 +66,7 @@ limbic.current.describe()      # "very scared"
 
 ## Status and known gaps
 
-- Mood isn't sent to the face yet ([R-208](../../docs/roadmap/items/R-208-brain-sends-its-mood-to-the-router.md)).
+- Mood isn't sent to the face yet ([R-208](../../docs/roadmap/items/programming/R-208-brain-sends-its-mood-to-the-router.md)).
 - No "activity" state yet (listening/thinking/talking/asleep) — needed for
-  the antenna light and the thinking look ([R-206](../../docs/roadmap/items/R-206-thinking-look-and-backlight-dimming.md)).
+  the antenna light and the thinking look ([R-206](../../docs/roadmap/items/programming/R-206-thinking-look-and-backlight-dimming.md)).
 - Moods don't decay over time on their own — only from conversation turns.

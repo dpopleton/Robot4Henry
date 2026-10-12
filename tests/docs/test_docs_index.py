@@ -13,7 +13,7 @@ _spec.loader.exec_module(build_index)
 
 def _sources():
     return (
-        build_index._load(build_index.ITEMS_DIR, "R-"),
+        build_index.load_items(),
         build_index._load(build_index.DECISIONS_DIR, "D-"),
         build_index.load_phases(),
     )
@@ -34,3 +34,21 @@ def test_validation_catches_broken_references():
     assert any("R-999" in e for e in errors)
     assert any("D-999" in e for e in errors)
     assert any("unknown status" in e for e in errors)
+
+
+def test_items_are_filed_by_status_then_kind():
+    assert build_index.folder_for({"status": "done", "kind": "code"}) == "done"
+    assert build_index.folder_for({"status": "blocked", "kind": "physical"}) == "blocked"
+    assert build_index.folder_for({"status": "in-progress", "kind": "planning"}) == "in_progress"
+    assert build_index.folder_for({"status": "planned", "kind": "code"}) == "programming"
+    assert build_index.folder_for({"status": "next", "kind": "both"}) == "physical"
+    assert build_index.folder_for({"status": "idea", "kind": "planning"}) == "planning"
+    assert build_index.misfiled(build_index.load_items()) == []
+
+
+def test_item_link_pattern_finds_items_in_any_folder():
+    for path in ("items/R-207-router-process.md",
+                 "../docs/roadmap/items/Complete/R-207-router-process.md",
+                 "items/in_progress/R-207-router-process.md"):
+        match = build_index.ITEM_LINK.search(path)
+        assert match and match.group(1) == "R-207", path

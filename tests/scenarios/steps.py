@@ -56,3 +56,10 @@ class ExpectLongTermRecall:
     """Query long term memory and check that at least one hit mentions substring."""
     query: str
     substring: str
+
+
+@dataclass
+class ExpectKeyFact:
+    """Check a durable structured fact after a session boundary or restart."""
+    key: str
+    value: str

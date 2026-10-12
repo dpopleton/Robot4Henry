@@ -10,7 +10,7 @@ import yaml
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 PARTS = sorted(glob.glob(os.path.join(ROOT, "anatomy", "*", "part.yaml")))
 ITEM_IDS = {os.path.basename(p).split("-")[0] + "-" + os.path.basename(p).split("-")[1]
-            for p in glob.glob(os.path.join(ROOT, "docs", "roadmap", "items", "R-*.md"))}
+            for p in glob.glob(os.path.join(ROOT, "docs", "roadmap", "items", "**", "R-*.md"), recursive=True)}
 STATUSES = {"idea", "designing", "building", "built"}
 
 

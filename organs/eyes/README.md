@@ -164,14 +164,14 @@ regenerate `EXPRESSIONS.md`.
 ## Status and known gaps
 
 - **The new firmware hasn't run on the Pico yet** — only the old
-  bring-up test has ([R-201](../../docs/roadmap/items/R-201-eyes-firmware-on-the-real-pico.md)).
+  bring-up test has ([R-201](../../docs/roadmap/items/physical/R-201-eyes-firmware-on-the-real-pico.md)).
 - Calm, curious, excited and scared are **placeholder art** until Henry
-  draws them ([R-204](../../docs/roadmap/items/R-204-henry-draws-the-placeholder-moods.md)).
+  draws them ([R-204](../../docs/roadmap/items/planning/R-204-henry-draws-the-placeholder-moods.md)).
 - Serious, singing and zombie are **disabled** with TODOs in `REGISTRY`
-  ([R-205](../../docs/roadmap/items/R-205-rework-the-disabled-expressions.md)).
+  ([R-205](../../docs/roadmap/items/programming/R-205-rework-the-disabled-expressions.md)).
 - No "thinking" look or per-expression backlight dimming yet
-  ([R-206](../../docs/roadmap/items/R-206-thinking-look-and-backlight-dimming.md)).
+  ([R-206](../../docs/roadmap/items/programming/R-206-thinking-look-and-backlight-dimming.md)).
 - Nothing calls the driver yet — waiting on the router
-  ([R-207](../../docs/roadmap/items/R-207-router-process.md)) and the brain hookup
-  ([R-208](../../docs/roadmap/items/R-208-brain-sends-its-mood-to-the-router.md)).
+  ([R-207](../../docs/roadmap/items/blocked/R-207-router-process.md)) and the brain hookup
+  ([R-208](../../docs/roadmap/items/programming/R-208-brain-sends-its-mood-to-the-router.md)).
 - The `.jpg` here is Henry's original expressions drawing, which the art is based on.

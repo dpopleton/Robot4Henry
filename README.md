@@ -169,7 +169,8 @@ each code area for detail (e.g. [`organs/eyes`](organs/eyes/README.md)).
 A utility script is included for wiping memory during testing or resetting Qbot:
 
 ```bash
-# Wipe everything (recommended for a clean start)
+# Wipe durable memory (key facts + long-term memories); retain conversation
+# logs for the weekly supervised review
 python wipe_memory.py
 
 # See what would be wiped without doing it
@@ -180,6 +181,9 @@ python wipe_memory.py --long-term-only
 
 # Wipe key facts only
 python wipe_memory.py --facts-only
+
+# Wipe everything, including reviewable conversation logs
+python wipe_memory.py --all
 ```
 
 ---

@@ -12,9 +12,10 @@ runs locally on the robot's own computer; no cloud.
 | Big picture, data flow | `docs/architecture.md` |
 | Roadmap overview (generated) | `docs/roadmap/README.md` |
 | Phases, definition of done, safety policy | `docs/roadmap/phases.md` |
-| One file per piece of work | `docs/roadmap/items/R-*.md` |
+| One file per piece of work | `docs/roadmap/items/<folder>/R-*.md` — `done/`, `blocked/`, `in_progress/`, else by kind: `physical/` (physical + both), `programming/`, `planning/` |
 | Why things are the way they are | `docs/decisions/D-*.md` |
 | Weekly journal | `docs/journal/YYYY-Www.md` |
+| Suggestions for next week (a menu, rewritten weekly) | `docs/next-week.md` |
 | Physical robot: build notes, wiring, photos, CAD | `anatomy/<part>/` (`part.yaml`, `build.md`, `manifest.yaml`) |
 | How a code area works | `README.md` beside the code (`organs/eyes/`, `brain/limbic/`, `nervous_system/`, …) |
 
@@ -29,7 +30,8 @@ When you finish a piece of work:
 1. **Roadmap item:** update its `status`, tick its tasks, bump `updated`,
    and add a dated line to its Log. Add an item if the work wasn't on the
    roadmap. If you find new work, add it as an `idea` or `planned` item
-   rather than leaving it only in chat.
+   rather than leaving it only in chat. Don't move item files by hand:
+   regenerating (step 5) files them into their folder and fixes links.
 2. **Decisions:** a non-obvious choice (one with real alternatives) gets a
    new `docs/decisions/D-*.md`. Never rewrite an old decision — supersede it.
 3. **Area README:** update its "Status and known gaps" section, and any
@@ -55,6 +57,8 @@ When you finish a piece of work:
 - **Firmware:** Pico code in `organs/<organ>/firmware/` must stay
   MicroPython-compatible. Keep the drawing/protocol logic plain Python so
   the simulator and tests run it unchanged. The crown will be C (D-004).
+- **Virtual robot:** every organ also works in the virtual robot (D-012,
+  R-209); what it fakes as input is decided per organ.
 - **Costs:** give roadmap items a rough `cost_gbp` for what's still to buy.
 
 ## Commands

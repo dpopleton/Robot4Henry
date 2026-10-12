@@ -6,6 +6,7 @@ suite (test_conversations.py) and run_scenario.py.
 
 from tests.scenarios.steps import (
     Say, EndSession, Restart, SetMood, ExpectReplyContains, ExpectMood, ExpectLongTermRecall,
+    ExpectKeyFact,
 )
 
 
@@ -18,6 +19,7 @@ def remembers_name_across_sessions():
         Say("I really like dinosaurs."),
         EndSession(),
         Restart(),
+        ExpectKeyFact(key="name", value="Henry"),
         Say("Hey, do you remember my name?"),
         ExpectLongTermRecall(query="name", substring="Henry"),
         ExpectReplyContains("Henry"),

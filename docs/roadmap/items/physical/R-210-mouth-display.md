@@ -6,9 +6,9 @@ status: planned
 area: organs/mouth
 kind: both
 depends_on: []
-decisions: [D-008, D-009]
+decisions: [D-008, D-009, D-012]
 cost_gbp: 5
-updated: 2026-10-08
+updated: 2026-10-12
 ---
 ## Goal
 A rectangular display (already bought) showing a flat-line mouth, sound-wave shapes while Qbot talks, and mood when quiet.
@@ -22,6 +22,7 @@ Part of the face; shows that Qbot is speaking.
 - [ ] Flat line + mood shapes
 - [ ] Sound waves while talking
 - [ ] Mount in the front frame
+- [ ] Works in the virtual robot (D-012); decide what it fakes as input and what it only displays
 
 ## Done when
 The mouth shows mood when quiet and moves while Qbot talks, mounted in the head.
@@ -32,3 +33,4 @@ The mouth shows mood when quiet and moves while Qbot talks, mounted in the head.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-10-12: added the virtual-robot task (D-012).

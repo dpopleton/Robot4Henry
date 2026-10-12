@@ -25,6 +25,16 @@ def test_manual_end_fires_callback():
     assert not sm.is_active()
 
 
+def test_manual_end_is_idempotent():
+    fired = []
+    sm = SessionManager(on_session_end=lambda: fired.append(True))
+    sm.record_activity()
+
+    assert sm.end_session_manually()
+    assert not sm.end_session_manually()
+    assert fired == [True]
+
+
 def test_timeout_fires_callback():
     fired = []
     sm = SessionManager(

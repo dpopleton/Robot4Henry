@@ -45,6 +45,10 @@ class RobotBrain:
         if not self.session.is_active():
             self.raw_logger.start_session()
             self.limbic.wake()
+            # Start the inactivity clock before the LLM call.  Otherwise a
+            # failed first call leaves an open raw-log session that a retry
+            # silently abandons.
+            self.session.record_activity()
 
         # Log raw input immediately
         self.raw_logger.log("user", user_input)
@@ -60,7 +64,19 @@ class RobotBrain:
         # Get response — format=CHAT_RESPONSE_SCHEMA constrains the model
         # to a {"reply": ..., "mood": {...}} shape rather than hoping it
         # remembers to append a free-text tag.
-        raw_response = self.llm.chat(system_prompt, messages, format=CHAT_RESPONSE_SCHEMA)
+        try:
+            raw_response = self.llm.chat(system_prompt, messages, format=CHAT_RESPONSE_SCHEMA)
+        except Exception as error:
+            # The robot remains usable if Ollama is restarting or unavailable.
+            # Record the failure as a normal, reviewable exchange rather than
+            # leaving the session half-open.
+            print(f"[LLM] Chat failed: {error}")
+            response = "I'm having trouble thinking right now. Please try me again in a moment."
+            self.raw_logger.log("assistant", response)
+            self.short_term.add("user", user_input)
+            self.short_term.add("assistant", response)
+            self.session.record_activity()
+            return response
 
         # A missing/malformed mood object just means no mood update this
         # turn; a broken `reply` falls back to the raw text (see
@@ -92,8 +108,7 @@ class RobotBrain:
             self._personality(),
             self._mood_context(),
             self._response_format(),
-            # Maybe add this later. Doesn't work right now and is being a pain with little in return.
-            # self.key_facts.format_for_prompt(),
+            self.key_facts.format_for_prompt(),
             self._format_long_term(relevant_memories),
             self.medium_term.format_for_prompt(),
         ]
@@ -135,6 +150,7 @@ Let this mood colour your tone naturally — don't announce it outright."""
         """End the session and run the rest process now. blocking=True waits
         for long term memory to actually be written before returning —
         used by scenario tests/tools, not the real inactivity-timeout path."""
+        self.session.end_session_manually(notify=False)
         self.raw_logger.end_session()
         self.rest_process.run(blocking=blocking)
 
@@ -142,6 +158,11 @@ Let this mood colour your tone naturally — don't announce it outright."""
         self.medium_term.clear()
         self.short_term.clear()
 
+    def end_session(self, blocking: bool = False):
+        """Public, idempotent session end used by the terminal UI."""
+        if self.session.end_session_manually(notify=False):
+            self.force_rest(blocking=blocking)
+
     def shutdown(self):
-        self.session.end_session_manually()
+        self.end_session()
         self.session.stop()

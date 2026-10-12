@@ -6,9 +6,9 @@ status: planned
 area: nervous_system
 kind: code
 depends_on: [R-303, R-207]
-decisions: [D-006]
+decisions: [D-006, D-012]
 cost_gbp: null
-updated: 2026-10-08
+updated: 2026-10-12
 ---
 ## Goal
 Work out the speaker's direction from the four raw channels (GCC-PHAT) on the brain computer and feed it to the router.
@@ -23,9 +23,11 @@ Prototype where it's easy to see and tweak (D-006).
 - [ ] Confidence + voice-active output
 - [ ] Plots for tuning
 - [ ] Feed the router (R-207)
+- [ ] Works in the virtual robot (D-012); decide what it fakes as input and what it only displays
 
 ## Done when
 The eyes turn towards whoever is talking.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-10-12: added the virtual-robot task (D-012).

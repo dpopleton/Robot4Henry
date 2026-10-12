@@ -43,7 +43,7 @@ brain ──send("eyes", "set_expression", …)──▶ NervousSystem ──▶
 
 ## Where this is heading
 
-The **router** ([R-207](../docs/roadmap/items/R-207-router-process.md),
+The **router** ([R-207](../docs/roadmap/items/blocked/R-207-router-process.md),
 [D-003](../docs/decisions/D-003-brain-computer-is-the-hub.md)) — an
 always-running process on the brain computer, separate from `chat()`, that:
 
@@ -65,6 +65,31 @@ ns.send("eyes", "set_expression", expression="happy", intensity=2)
 ns.has_organ("mouth")   # False
 ```
 
+### Router
+
+`RobotRouter` is the fast, hardware-facing state machine.  Feed it a
+`Mood`, crown bearings (clockwise degrees from straight ahead) and the TTS
+speaking state; run it with `RouterProcess` independently of the chat loop.
+It combines expression and gaze into one eyes update, ignores low-confidence
+and jittery bearings, holds a gaze briefly, then smoothly returns it to
+centre.  It stores `last_voice_bearing` for the brain, but never calls the
+brain or waits for it.
+
+```python
+from nervous_system import RobotRouter, RouterProcess
+
+router = RobotRouter(ns)
+RouterProcess(router).start()
+router.hear_direction(315, confidence=0.9)  # look left
+router.set_mood(Mood("curious", 2))
+```
+
+The process retries its complete state periodically.  A failed organ send is
+treated as a disconnected Pico rather than a chat failure, so reconnecting an
+organ receives its current expression and gaze.  For real Picos, configure
+their ports using `/dev/serial/by-id/...`, not a renumbering `/dev/ttyACM*`
+path.
+
 ## Running and testing
 
 - `tests/nervous_system/test_bus.py`.
@@ -77,5 +102,7 @@ ns.has_organ("mouth")   # False
 
 - Nothing creates a `NervousSystem` yet — `main.py` and `RobotBrain` don't
   use it (R-208).
-- No router yet (R-207).
+- `router.py` provides the independent router loop (R-207).  It currently
+  maps moods to the eyes; mouth and lights gain mappings with their drivers.
+  Nothing starts it yet (R-208), and the simulator demo is still to do.
 - `SerialTransport` has no reconnect logic.

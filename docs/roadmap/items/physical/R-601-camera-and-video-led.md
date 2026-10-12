@@ -6,9 +6,9 @@ status: idea
 area: organs/vision
 kind: both
 depends_on: []
-decisions: [D-007, D-010]
+decisions: [D-007, D-010, D-012]
 cost_gbp: null
-updated: 2026-10-08
+updated: 2026-10-12
 ---
 ## Goal
 A camera at the top of the front face, above the Q, with a video indicator LED driven by the camera hardware.
@@ -20,9 +20,11 @@ Vision is needed for faces and objects.
 - [ ] Space reserved in the front frame now (R-212)
 - [ ] Video LED wired per D-007
 - [ ] Off while asleep (D-010)
+- [ ] Works in the virtual robot (D-012); decide what it fakes as input and what it only displays
 
 ## Done when
 The camera streams to the brain computer, and the video LED is lit exactly while it does.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-10-12: added the virtual-robot task (D-012).

@@ -28,9 +28,15 @@ class RawLogger:
                 started_at TIMESTAMP NOT NULL,
                 ended_at TIMESTAMP,
                 processed INTEGER DEFAULT 0,
+                processing INTEGER DEFAULT 0,
                 compressed_log TEXT
             )
         """)
+        # Existing robot databases predate the processing claim.  SQLite has
+        # no ADD COLUMN IF NOT EXISTS, so inspect first for a safe migration.
+        columns = {row[1] for row in self.conn.execute("PRAGMA table_info(sessions)")}
+        if "processing" not in columns:
+            self.conn.execute("ALTER TABLE sessions ADD COLUMN processing INTEGER DEFAULT 0")
         self.conn.commit()
 
     def start_session(self) -> str:
@@ -71,9 +77,35 @@ class RawLogger:
         rows = self.conn.execute("""
             SELECT session_id FROM sessions
             WHERE processed = 0
+            AND processing = 0
             AND ended_at IS NOT NULL
         """).fetchall()
         return [row[0] for row in rows]
+
+    def claim_session_for_processing(self, session_id: str) -> bool:
+        """Atomically claim a finished session for one rest worker.
+
+        The claim is stored in SQLite rather than just guarded by a Python
+        lock, so a second Qbot process cannot build duplicate memories.
+        """
+        cursor = self.conn.execute("""
+            UPDATE sessions
+            SET processing = 1
+            WHERE session_id = ?
+              AND processed = 0
+              AND processing = 0
+              AND ended_at IS NOT NULL
+        """, (session_id,))
+        self.conn.commit()
+        return cursor.rowcount == 1
+
+    def release_processing_claim(self, session_id: str):
+        """Make a failed rest attempt available for a later retry."""
+        self.conn.execute("""
+            UPDATE sessions SET processing = 0
+            WHERE session_id = ? AND processed = 0
+        """, (session_id,))
+        self.conn.commit()
 
     def get_session_messages(self, session_id: str) -> list:
         rows = self.conn.execute("""
@@ -90,14 +122,12 @@ class RawLogger:
     def mark_processed(self, session_id: str, compressed_log: str):
         """
         Called by rest process after long term memory is built.
-        Stores compressed version for debugging, removes raw messages.
+        Stores a compressed version for quick review while retaining the raw
+        messages for the project's weekly supervised-log review.
         """
         self.conn.execute("""
             UPDATE sessions
-            SET processed = 1, compressed_log = ?
+            SET processed = 1, processing = 0, compressed_log = ?
             WHERE session_id = ?
         """, (compressed_log, session_id))
-        self.conn.execute("""
-            DELETE FROM raw_conversations WHERE session_id = ?
-        """, (session_id,))
         self.conn.commit()

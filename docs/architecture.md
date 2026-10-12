@@ -90,7 +90,16 @@ and moments are pulled from the raw log and stored in ChromaDB (a vector
 database), then retrieved by meaning when relevant later. The rest process
 only builds memories from conversations with 4+ logged lines.
 
-**Key facts** — a structured fact store, currently switched off (R-103).
+**Raw logs** — the verbatim local transcript remains in SQLite after rest so
+the supervised weekly review can inspect what Qbot actually said; rest also
+stores a short compressed summary for quick browsing.
+
+**Key facts** — durable, structured details that the child directly states,
+such as their name, pets and favourites. During rest, Qbot extracts candidate
+facts from the user's lines only (at temperature 0) and keeps a fact only if
+every word of its value appears in what the user actually said, before
+writing it to SQLite (D-011). They are included in every later conversation prompt; extraction is
+kept out of the turn path so it adds no reply latency.
 
 **Session reset** — after 5 minutes of inactivity the conversation is
 over: short and medium-term memory are cleared, and the session is

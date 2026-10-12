@@ -26,11 +26,13 @@ class LLMClient:
         )
         return response["message"]["content"]
 
-    def complete(self, prompt: str) -> str:
-        """Simple single prompt completion."""
+    def complete(self, prompt: str, options: dict | None = None) -> str:
+        """Simple single prompt completion. `options` passes Ollama model
+        options through (e.g. {"temperature": 0} for repeatable extraction)."""
         response = self.client.chat(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            options=options,
         )
         return response["message"]["content"]
 

@@ -14,7 +14,8 @@ it as an open question on the relevant item).
 - The latest `docs/journal/*.md`: its `reviewed` date (the last review)
   and `grill_next` (the phase to grill this time).
 - `git log --since=<reviewed>` plus `git status` — what changed in code and docs.
-- Roadmap items (`docs/roadmap/items/`):
+- Roadmap items (`docs/roadmap/items/<folder>/`, filed by status then kind —
+  `python docs/build_index.py` moves them when their status changes):
   - `in-progress` with `updated` more than ~2 weeks old (stuck?);
   - `next` items, and whether their `depends_on` are done;
   - `blocked` items.
@@ -50,6 +51,13 @@ odd in the logs. Then ask about what git can't see:
   `proposed` if Dan hasn't confirmed it.
 - **Anatomy:** physical progress into `anatomy/<part>/build.md`. Draft
   manifest entries for new photos (Henry-facing, `henry_text_approved` stays false).
+- **Suggestions for next week:** rewrite `docs/next-week.md` (same layout as
+  the current one, `week` and `written` updated). It's a menu, not a plan:
+  Dan doesn't follow the plan exactly. Lead with "If you only do one thing",
+  then Code / Physical / With Henry / On the robot laptop / To buy, each line
+  linking its item and saying why now. Fit it to the hours and budget Dan
+  mentioned, and drop sections with nothing in them. The journal's "Next
+  week" section keeps just the top 1–3.
 - Run `python docs/build_index.py`, then `python -m pytest tests/docs`.
 
 ## 4. Check the current phase
@@ -76,5 +84,5 @@ into the items and `phases.md`, then re-run step 3's regeneration.
 ## 6. Close
 
 End with one short message: what changed in the docs, the top 1–3 things
-for next week, and any open questions left for Dan. Don't commit unless
+for next week (full menu in `docs/next-week.md`), and any open questions left for Dan. Don't commit unless
 Dan asks.

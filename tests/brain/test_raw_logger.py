@@ -64,9 +64,21 @@ def test_mark_processed(logger):
     unprocessed = logger.get_unprocessed_sessions()
     assert session_id not in unprocessed
 
-    # Raw messages should be deleted
+    # Raw messages stay available for the weekly supervised-log review.
     messages = logger.get_session_messages(session_id)
-    assert len(messages) == 0
+    assert [message["content"] for message in messages] == ["Hello", "Hi"]
+
+
+def test_only_one_worker_can_claim_a_session(logger):
+    logger.start_session()
+    logger.log("user", "Hello")
+    session_id = logger.current_session_id
+    logger.end_session()
+
+    assert logger.claim_session_for_processing(session_id)
+    assert not logger.claim_session_for_processing(session_id)
+    logger.release_processing_claim(session_id)
+    assert logger.claim_session_for_processing(session_id)
 
 
 def test_session_manager_integration(logger):

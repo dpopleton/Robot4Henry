@@ -35,9 +35,12 @@ class RestProcess:
         print(f"[Rest process] Processing {len(sessions)} session(s)...")
 
         for session_id in sessions:
+            if not self.raw_logger.claim_session_for_processing(session_id):
+                continue
             try:
                 self._process_session(session_id)
             except Exception as e:
+                self.raw_logger.release_processing_claim(session_id)
                 print(f"[Rest process] Error processing {session_id}: {e}")
 
         print("[Rest process] Complete.")
@@ -46,13 +49,15 @@ class RestProcess:
         messages = self.raw_logger.get_session_messages(session_id)
 
         if not messages:
+            self.raw_logger.mark_processed(session_id, "")
             return
 
         formatted = self._format_messages(messages)
 
-        # Step 1 — extract and update key facts
-        #Skipping this for now
-        #self._extract_key_facts(formatted)
+        # Step 1 — extract and update key facts.  This belongs in rest rather
+        # than the turn path: it has no effect on reply latency and works from
+        # the complete, durable transcript once a session has ended.
+        self._extract_key_facts(formatted)
 
         # Step 2 — build long term memory chunks
         self._build_long_term_memories(formatted, session_id)
@@ -75,32 +80,35 @@ class RestProcess:
         print(f"[Rest process] User lines:\n{user_lines}")
 
         prompt = f"""Read only what the USER said in this conversation.
-    List any personal facts the user directly stated.
-    One fact per line. If nothing stated, write NONE.
+    List stable personal facts the user directly stated, such as their name,
+    age, pets, favourites or important preferences. Do not infer anything and
+    do not repeat questions or facts said by the assistant.
+    Write each fact as a concise `key: value` line (for example, `name: Henry`
+    or `favourite animal: dinosaur`). If nothing qualifies, write NONE.
 
     USER lines only:
     {user_lines}
 
     Facts (one per line):"""
 
-        response = self.llm.complete(prompt).strip()
+        # Temperature 0: the 1B model otherwise sometimes answers a bare NONE
+        # for a conversation that plainly contains facts.
+        response = self.llm.complete(prompt, options={"temperature": 0}).strip()
         print(f"[Rest process] Raw facts response: {response}")
 
-        if not response or "NONE" in response.upper():
-            return
-
-        # Second pass — verify each candidate against conversation
-        candidates = [l.strip() for l in response.split("\n") if l.strip()]
-        for candidate in candidates:
-            if not self._verify_fact(candidate, conversation):
+        # Judge each line on its own.  The model pads its list with lines
+        # like `pets: NONE` and invented favourites, so a NONE anywhere must
+        # not throw away the real facts beside it.
+        for candidate in (l.strip() for l in response.split("\n")):
+            kv = self._parse_fact_line(candidate)
+            if not kv:
+                continue
+            key, value = kv
+            if not self._is_grounded(value, user_lines):
                 print(f"[Rest process] Rejected hallucinated fact: {candidate}")
                 continue
-            # Parse into key/value
-            kv = self._parse_fact_line(candidate)
-            if kv:
-                key, value = kv
-                self.key_facts.set(key, value)
-                print(f"[Rest process] Fact stored: {key} = {value}")
+            self.key_facts.set(key, value)
+            print(f"[Rest process] Fact stored: {key} = {value}")
 
     def _user_only(self, conversation: str) -> str:
         """Extract only USER lines from conversation."""
@@ -110,30 +118,30 @@ class RestProcess:
                 lines.append(line)
         return "\n".join(lines) if lines else conversation
 
-    def _verify_fact(self, fact: str, conversation: str) -> bool:
-        """Ask the model to confirm the fact actually appears in the conversation."""
-        prompt = f"""Does this conversation contain this fact?
-    Answer YES or NO only.
-
-    CONVERSATION:
-    {conversation}
-
-    FACT: {fact}
-
-    Answer:"""
-        response = self.llm.complete(prompt).strip().upper()
-        return response.startswith("YES")
+    @staticmethod
+    def _is_grounded(value: str, user_lines: str) -> bool:
+        """True if every word of the fact's value appears in what the user
+        said (ignoring a plural "s"). A plain check rather than asking the
+        model "is this true?" — on a 1B model that question is close to a
+        coin flip, while invented values (sushi, age 30) never appear in the
+        user's own words. See D-011."""
+        import re
+        def words(text):
+            return {w.removesuffix("s") for w in re.findall(r"[a-z0-9']+", text.lower())}
+        value_words = words(value)
+        return bool(value_words) and value_words <= words(user_lines)
 
     def _parse_fact_line(self, line: str) -> tuple | None:
-        """Parse 'name is Henry' or 'name: Henry' into (key, value)."""
+        """Parse a concise ``key: value`` or ``key is value`` fact line."""
         import re
+        line = re.sub(r'^(?:[-*]|\d+[.)])\s*', '', line.strip())
         # Try "key: value" or "key is value" patterns
         match = re.match(r'^(.+?)(?:\s+is\s+|:\s*)(.+)$', line, re.IGNORECASE)
         if match:
             key = match.group(1).strip().lower()
             value = match.group(2).strip()
             # Skip if value looks hallucinated
-            if value.lower() in ("unknown", "none", "not mentioned", "no one", "n/a"):
+            if not value or value.lower() in ("unknown", "none", "not mentioned", "no one", "n/a"):
                 return None
             if len(key) > 30 or len(value) > 100:
                 return None
@@ -216,5 +224,3 @@ class RestProcess:
 
     Summary:"""
         return self.llm.complete(prompt).strip()
-
-        return self.llm.complete(prompt)

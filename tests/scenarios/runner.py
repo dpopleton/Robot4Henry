@@ -8,6 +8,7 @@ run_scenario.py for interactive manual runs.
 from brain.limbic.mood import Mood
 from tests.scenarios.steps import (
     Say, EndSession, Restart, SetMood, ExpectReplyContains, ExpectMood, ExpectLongTermRecall,
+    ExpectKeyFact,
 )
 
 
@@ -80,6 +81,12 @@ def run_scenario(make_brain, steps, verbose: bool = False) -> ScenarioResult:
             found = any(step.substring.lower() in m.lower() for m in memories)
             desc = f"long term recall for {step.query!r} mentions {step.substring!r}"
             _record(result, desc, found, f"retrieved={memories}", verbose)
+
+        elif isinstance(step, ExpectKeyFact):
+            actual = brain.key_facts.get(step.key)
+            ok = actual == step.value
+            desc = f"key fact {step.key!r} equals {step.value!r}"
+            _record(result, desc, ok, f"actual={actual!r}", verbose)
 
         else:
             raise TypeError(f"Unknown scenario step: {step!r}")

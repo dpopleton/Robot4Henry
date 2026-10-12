@@ -17,7 +17,7 @@ def main():
                 break
             if user_input.lower() == "rest":
                 print("[Forcing rest process...]")
-                brain._handle_session_end()
+                brain.end_session()
                 continue
             response = brain.chat(user_input)
             print(f"Qbot: {response}\n")

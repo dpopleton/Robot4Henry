@@ -16,3 +16,5 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-008](D-008-brain-sends-mood-router-composes-face.md) | The brain only sends a mood; the router decides what each face part shows | accepted | 2026-10-08 | `nervous_system` |
 | [D-009](D-009-one-pico-per-organ.md) | One microcontroller per organ | accepted | 2026-10-08 | `organs` |
 | [D-010](D-010-asleep-means-deaf-and-blind.md) | Asleep means mics and cameras off; awake means it listens to everything | accepted | 2026-10-08 | `brain` |
+| [D-011](D-011-key-facts-grounded-by-word-match.md) | Key facts are checked against the user's own words, not by asking the model | accepted | 2026-10-12 | `brain/memory` |
+| [D-012](D-012-every-organ-ships-a-virtual-version.md) | Every organ ships a virtual version that runs in the virtual robot | accepted | 2026-10-12 | `virtual_robot` |
