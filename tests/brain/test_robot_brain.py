@@ -1,4 +1,5 @@
 from brain.cognition.robot_brain import RobotBrain
+import time
 from unittest.mock import MagicMock
 
 
@@ -78,5 +79,95 @@ def test_key_fact_survives_restart_and_is_added_to_later_prompt(tmp_path):
 
     for brain in (first_brain, restarted_brain):
         brain.session.stop()
+        brain.raw_logger.conn.close()
+        brain.key_facts.conn.close()
+
+
+def test_timeout_during_a_slow_reply_keeps_the_turn_in_one_session(tmp_path):
+    """The reply to a message sent just before the timeout belongs to the
+    same session as the message, and the timeout doesn't fire mid-turn."""
+    brain = RobotBrain(
+        db_path=str(tmp_path / "robot.db"),
+        chroma_path=str(tmp_path / "chroma"),
+    )
+    brain.session._timeout_seconds = 0.3
+    brain.rest_process.run = MagicMock()
+
+    def slow_chat(*args, **kwargs):
+        time.sleep(0.5)  # longer than the timeout
+        return '{"reply": "Hello!", "mood": {"category": "happy", "intensity": 1}}'
+    brain.llm.chat = slow_chat
+
+    brain.chat("Hello")
+    session_id = brain.raw_logger.current_session_id
+    messages = brain.raw_logger.get_session_messages(session_id)
+    assert [m["role"] for m in messages] == ["user", "assistant"]
+    assert brain.session.is_active()
+    brain.rest_process.run.assert_not_called()
+
+    time.sleep(0.5)  # now idle past the timeout
+    assert not brain.session.is_active()
+    brain.rest_process.run.assert_called_once_with(blocking=False)
+    brain.raw_logger.conn.close()
+
+
+def _fact_brain(tmp_path):
+    brain = RobotBrain(
+        db_path=str(tmp_path / "robot.db"),
+        chroma_path=str(tmp_path / "chroma"),
+    )
+    brain.llm = FactExtractingLLM()
+    brain.rest_process.llm = brain.llm
+    return brain
+
+
+def _slow_rest(brain):
+    """Make rest take a moment, as it does on the robot laptop."""
+    process = brain.rest_process._process
+    brain.rest_process._process = lambda: (time.sleep(0.3), process())
+
+
+def test_shutdown_rests_the_last_session_before_returning(tmp_path):
+    """Quitting straight after a conversation still stores its key facts."""
+    brain = _fact_brain(tmp_path)
+    _slow_rest(brain)
+    brain.chat("My name is Henry.")
+
+    brain.shutdown()
+
+    assert brain.key_facts.get("name") == "Henry"
+    brain.raw_logger.conn.close()
+    brain.key_facts.conn.close()
+
+
+def test_shutdown_waits_for_a_rest_already_running(tmp_path):
+    """A timeout's background rest isn't killed by quitting."""
+    brain = _fact_brain(tmp_path)
+    _slow_rest(brain)
+    brain.chat("My name is Henry.")
+    brain.end_session()  # background rest, like the timeout path
+
+    brain.shutdown()
+
+    assert brain.key_facts.get("name") == "Henry"
+    brain.raw_logger.conn.close()
+    brain.key_facts.conn.close()
+
+
+def test_startup_recovers_a_session_cut_off_by_a_crash(tmp_path):
+    db_path = str(tmp_path / "robot.db")
+    chroma_path = str(tmp_path / "chroma")
+    crashed = RobotBrain(db_path=db_path, chroma_path=chroma_path)
+    crashed.llm = FactExtractingLLM()
+    crashed.chat("My name is Henry.")
+    crashed.session.stop()  # power cut: no shutdown, no rest
+
+    restarted = RobotBrain(db_path=db_path, chroma_path=chroma_path)
+    restarted.llm = FactExtractingLLM()
+    restarted.rest_process.llm = restarted.llm
+    restarted.force_rest(blocking=True)
+
+    assert restarted.key_facts.get("name") == "Henry"
+    for brain in (crashed, restarted):
         brain.raw_logger.conn.close()
         brain.key_facts.conn.close()

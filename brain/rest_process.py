@@ -13,6 +13,7 @@ class RestProcess:
         self.raw_logger = raw_logger
         self.long_term = long_term
         self.key_facts = key_facts
+        self._threads = []
 
     def run(self, blocking: bool = False):
         """Fire and forget by default (called from session end callback).
@@ -23,6 +24,14 @@ class RestProcess:
             return
         thread = threading.Thread(target=self._process, daemon=True)
         thread.start()
+        self._threads = [t for t in self._threads if t.is_alive()] + [thread]
+
+    def wait(self):
+        """Block until background rest runs finish.  The threads are
+        daemons, so without this, quitting would kill them part-way."""
+        for thread in self._threads:
+            thread.join()
+        self._threads = []
 
     def _process(self):
         """Process all unprocessed sessions into long term memory."""

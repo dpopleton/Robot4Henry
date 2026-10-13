@@ -19,7 +19,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | Phase | Done | Total | Est. remaining spend |
 |---|---|---|---|
-| 1 · Brain | 3 | 7 | — |
+| 1 · Brain | 4 | 10 | — |
 | 2 · Face | 1 | 12 | £35 |
 | 3 · Hearing and voice | 0 | 12 | £47 |
 | 4 · Neck and head finish | 0 | 2 | — |
@@ -39,6 +39,9 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 📋 | [R-105](items/planning/R-105-latency-budget-for-a-spoken-reply.md) Latency budget for a spoken reply | planning | `brain` | R-104 | — |
 | 📋 | [R-106](items/planning/R-106-qbot-s-personality-sheet.md) Qbot's personality sheet | planning | `brain` | — | — |
 | 💡 | [R-107](items/planning/R-107-doing-things-unprompted.md) Doing things unprompted | planning | `brain` | — | — |
+| ✅ | [R-108](items/done/R-108-session-lifecycle-fixes.md) Session lifecycle fixes: quitting and slow replies | code | `brain` | R-101 | — |
+| 💡 | [R-109](items/programming/R-109-check-what-goes-back-into-memory.md) Check what goes back into memory | code | `brain` | — | — |
+| 💡 | [R-110](items/programming/R-110-tidy-up-storage-threading.md) Tidy up storage threading | code | `brain` | — | — |
 
 ## Phase 2 · Face
 

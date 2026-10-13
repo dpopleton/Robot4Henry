@@ -1,3 +1,4 @@
+import threading
 from brain.cognition.llm_client import LLMClient
 from brain.memory.short_term import ShortTermMemory
 from brain.memory.medium_term import MediumTermMemory
@@ -28,6 +29,12 @@ class RobotBrain:
 
         # Logging and session management
         self.raw_logger = RawLogger(db_path=db_path)
+        recovered = self.raw_logger.recover_interrupted_sessions()
+        if recovered:
+            print(f"[Recovered {recovered} interrupted session(s) for the next rest]")
+        # Turns and session endings take this lock so the timeout thread
+        # never ends a session underneath a turn.
+        self._turn_lock = threading.RLock()
         self.session = SessionManager(
             on_session_end=self._handle_session_end
         )
@@ -41,15 +48,23 @@ class RobotBrain:
         )
 
     def chat(self, user_input: str) -> str:
-        # Ensure session is active
-        if not self.session.is_active():
-            self.raw_logger.start_session()
-            self.limbic.wake()
-            # Start the inactivity clock before the LLM call.  Otherwise a
-            # failed first call leaves an open raw-log session that a retry
-            # silently abandons.
-            self.session.record_activity()
+        with self._turn_lock:
+            # begin_turn() holds off the inactivity timeout until the turn
+            # ends, however slow the reply.
+            was_active = self.session.begin_turn()
+            try:
+                if not was_active:
+                    # Rest any session a timeout ended before its own
+                    # clean-up got the lock, so it isn't mixed into this one.
+                    if self.raw_logger.current_session_id:
+                        self._rest(blocking=False)
+                    self.raw_logger.start_session()
+                    self.limbic.wake()
+                return self._turn(user_input)
+            finally:
+                self.session.end_turn()
 
+    def _turn(self, user_input: str) -> str:
         # Log raw input immediately
         self.raw_logger.log("user", user_input)
 
@@ -75,7 +90,6 @@ class RobotBrain:
             self.raw_logger.log("assistant", response)
             self.short_term.add("user", user_input)
             self.short_term.add("assistant", response)
-            self.session.record_activity()
             return response
 
         # A missing/malformed mood object just means no mood update this
@@ -95,9 +109,6 @@ class RobotBrain:
         # Compress evicted exchange into medium term
         if evicted:
             self.medium_term.update(evicted)
-
-        # Record activity — resets inactivity timer
-        self.session.record_activity()
 
         return response
 
@@ -143,14 +154,16 @@ Let this mood colour your tone naturally — don't announce it outright."""
         return "RELEVANT MEMORIES:\n" + "\n".join(lines)
 
     def _handle_session_end(self):
-        print("[Session ended — clearing short and medium term memory]")
-        self.force_rest(blocking=False)
+        """Inactivity timeout, on the timer thread."""
+        with self._turn_lock:
+            # A turn that started after the timeout fired has already
+            # rested the old session and opened a new one.
+            if self.session.is_active():
+                return
+            print("[Session ended — clearing short and medium term memory]")
+            self._rest(blocking=False)
 
-    def force_rest(self, blocking: bool = False):
-        """End the session and run the rest process now. blocking=True waits
-        for long term memory to actually be written before returning —
-        used by scenario tests/tools, not the real inactivity-timeout path."""
-        self.session.end_session_manually(notify=False)
+    def _rest(self, blocking: bool):
         self.raw_logger.end_session()
         self.rest_process.run(blocking=blocking)
 
@@ -158,11 +171,24 @@ Let this mood colour your tone naturally — don't announce it outright."""
         self.medium_term.clear()
         self.short_term.clear()
 
+    def force_rest(self, blocking: bool = False):
+        """End the session and run the rest process now. blocking=True waits
+        for long term memory to actually be written before returning —
+        used by scenario tests/tools, not the real inactivity-timeout path."""
+        with self._turn_lock:
+            self.session.end_session_manually(notify=False)
+            self._rest(blocking=blocking)
+
     def end_session(self, blocking: bool = False):
         """Public, idempotent session end used by the terminal UI."""
-        if self.session.end_session_manually(notify=False):
-            self.force_rest(blocking=blocking)
+        with self._turn_lock:
+            if self.session.end_session_manually(notify=False):
+                self._rest(blocking=blocking)
 
     def shutdown(self):
-        self.end_session()
+        """Rest the last session and wait for any rest still running, so
+        quitting never loses the final conversation's memories."""
         self.session.stop()
+        print("[Resting before shutdown...]")
+        self.end_session(blocking=True)
+        self.rest_process.wait()

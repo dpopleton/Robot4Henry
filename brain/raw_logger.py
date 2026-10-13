@@ -72,6 +72,27 @@ class RawLogger:
         self.conn.commit()
         self.current_session_id = None
 
+    def recover_interrupted_sessions(self) -> int:
+        """Make sessions left behind by a crash or power cut restable.
+
+        Call at startup, before this process opens a session.  A session
+        with no end time was cut off mid-conversation; a ``processing``
+        claim with nothing running was cut off mid-rest.  Either way rest
+        would skip it forever.  Assumes one Qbot process per database.
+        Returns how many sessions were recovered.
+        """
+        now = datetime.now().isoformat()
+        unended = self.conn.execute("""
+            UPDATE sessions SET ended_at = ?
+            WHERE ended_at IS NULL
+        """, (now,)).rowcount
+        unclaimed = self.conn.execute("""
+            UPDATE sessions SET processing = 0
+            WHERE processing = 1 AND processed = 0
+        """).rowcount
+        self.conn.commit()
+        return unended + unclaimed
+
     def get_unprocessed_sessions(self) -> list:
         """Called by rest process to find sessions needing processing."""
         rows = self.conn.execute("""

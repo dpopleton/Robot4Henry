@@ -63,3 +63,34 @@ def test_activity_resets_timer():
     time.sleep(0.5)
     assert len(fired) == 1
     sm.stop()
+
+
+def test_timeout_waits_for_a_turn_in_progress():
+    """A slow reply that straddles the timeout doesn't end the session."""
+    fired = []
+    sm = SessionManager(
+        on_session_end=lambda: fired.append(True),
+        timeout_seconds=0.3
+    )
+    sm.record_activity()
+    time.sleep(0.2)
+    assert sm.begin_turn()
+    time.sleep(0.4)  # the turn outlasts the timeout
+    assert fired == []
+    assert sm.is_active()
+
+    sm.end_turn()  # the clock restarts from the end of the turn
+    time.sleep(0.2)
+    assert fired == []
+    time.sleep(0.3)
+    assert fired == [True]
+    sm.stop()
+
+
+def test_begin_turn_reports_a_new_session():
+    sm = SessionManager(on_session_end=lambda: None)
+    assert not sm.begin_turn()
+    sm.end_turn()
+    assert sm.begin_turn()
+    sm.end_turn()
+    sm.stop()

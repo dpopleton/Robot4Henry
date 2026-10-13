@@ -13,6 +13,7 @@ class SessionManager:
         self._timeout_seconds = timeout_seconds
         self._last_activity = time.time()
         self._active = False
+        self._in_turn = False
         self._timer = None
         self._lock = threading.Lock()
 
@@ -28,6 +29,30 @@ class SessionManager:
             self._active = True
             self._reset_timer()
 
+    def begin_turn(self) -> bool:
+        """Mark the session active and hold off the timeout until
+        end_turn().  A reply can take seconds on the robot laptop, so a
+        message that arrives just before the timeout must not be cut in two.
+
+        Returns whether the session was already active.
+        """
+        with self._lock:
+            was_active = self._active
+            self._active = True
+            self._in_turn = True
+            if self._timer:
+                self._timer.cancel()
+                self._timer = None
+            return was_active
+
+    def end_turn(self):
+        """The turn is over (whether or not it succeeded): restart the clock."""
+        with self._lock:
+            self._in_turn = False
+            self._last_activity = time.time()
+            if self._active:
+                self._reset_timer()
+
     def _reset_timer(self):
         if self._timer:
             self._timer.cancel()
@@ -40,7 +65,9 @@ class SessionManager:
 
     def _handle_timeout(self):
         with self._lock:
-            if not self._active:
+            # A timer that was already firing as a turn began; end_turn()
+            # starts a fresh one.
+            if not self._active or self._in_turn:
                 return
             self._active = False
             self._timer = None

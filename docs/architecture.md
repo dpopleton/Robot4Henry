@@ -74,7 +74,8 @@ Key choices (see `docs/decisions/`):
 4. The mood signal nudges `LimbicSystem` (see `brain/limbic/README.md`).
 5. The exchange is logged and added to short-term memory, and evicted
    exchanges are compressed into medium-term.
-6. Activity resets the session's inactivity timer.
+6. The inactivity timer is paused for the whole turn and restarts when the
+   reply is done, so a slow reply is never split across two sessions.
 
 ## Memory
 
@@ -103,7 +104,8 @@ kept out of the turn path so it adds no reply latency.
 
 **Session reset** — after 5 minutes of inactivity the conversation is
 over: short and medium-term memory are cleared, and the session is
-processed into long-term memory.
+processed into long-term memory. Quitting rests the last session and waits
+for it to finish; sessions cut off by a crash are picked up at the next start.
 
 ## Project structure
 

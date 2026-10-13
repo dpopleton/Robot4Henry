@@ -95,3 +95,18 @@ def test_session_manager_integration(logger):
 
     unprocessed = logger.get_unprocessed_sessions()
     assert len(unprocessed) == 2
+
+
+def test_recover_interrupted_sessions(logger):
+    # Cut off mid-conversation: never ended.
+    unended = logger.start_session()
+    logger.log("user", "Hello")
+    # Cut off mid-rest: claimed but never marked processed.
+    claimed = logger.start_session()
+    logger.end_session()
+    assert logger.claim_session_for_processing(claimed)
+    logger.current_session_id = None
+
+    assert logger.get_unprocessed_sessions() == []
+    assert logger.recover_interrupted_sessions() == 2
+    assert set(logger.get_unprocessed_sessions()) == {unended, claimed}
