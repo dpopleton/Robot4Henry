@@ -12,3 +12,4 @@ dist/
 build/
 anatomy/**/exports/
 .claude/settings.local.json
+storage/voices/

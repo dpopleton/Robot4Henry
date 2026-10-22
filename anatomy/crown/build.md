@@ -15,12 +15,18 @@ by the crown Pico itself whenever it's streaming (D-007).
 - [ ] Design the crown around them (R-302)
 
 ## Design rules
-- Left/right mics as far apart as the head allows.
-- Front pair as far apart **vertically** as possible (crown top + brow?) —
+- The crown spans the head's full **25 cm** width and is about **10 cm tall**.
+- Left/right mics at its ends, about 25 cm apart.
+- Front pair stacked as far apart **vertically** as the crown allows —
   close together, height can only be guessed coarsely.
+- The crown Pico handles everything on the crown: mics, recording LED and
+  the hidden wake button (D-014).
 - Each mic needs an open hole (a few mm) with the board pressed against it
   from inside. Don't cover it with crown material.
-- Mount on foam, away from the speaker.
+- Mount on foam, away from the speakers.
+- **Gems** (Henry): cheap plastic gems glued into printed sockets. Keep glue
+  and gems clear of the mic holes.
+- Shape: Henry's design (to be drawn up).
 
 ## Parts list
 | Part | Qty | Cost | Notes |

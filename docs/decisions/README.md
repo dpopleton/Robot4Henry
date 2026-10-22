@@ -18,3 +18,5 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-010](D-010-asleep-means-deaf-and-blind.md) | Asleep means mics and cameras off; awake means it listens to everything | accepted | 2026-10-08 | `brain` |
 | [D-011](D-011-key-facts-grounded-by-word-match.md) | Key facts are checked against the user's own words, not by asking the model | accepted | 2026-10-12 | `brain/memory` |
 | [D-012](D-012-every-organ-ships-a-virtual-version.md) | Every organ ships a virtual version that runs in the virtual robot | accepted | 2026-10-12 | `virtual_robot` |
+| [D-013](D-013-head-has-its-own-hub-and-sound-card.md) | The head has its own USB hub and sound card; one cable bundle leaves it | accepted | 2026-10-14 | `head` |
+| [D-014](D-014-crown-pico-handles-everything-on-the-crown.md) | The crown Pico handles everything on the crown, including the wake button | accepted | 2026-10-14 | `crown` |

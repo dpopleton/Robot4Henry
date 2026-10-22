@@ -6,4 +6,6 @@ One file per ISO week (`YYYY-Www.md`): what got built — code *and* physical �
 
 | Week | Summary |
 |---|---|
+| [2026-W43](2026-W43.md) | Henry days — head assembled, Qbot got his voice (Northern English) and a personality (a boy who crash-landed from the sun); crown chosen first; eyes stuck on a bad soldering iron. |
+| [2026-W42](2026-W42.md) | Head frame printed and test-fitted (corners, beams, a side, back and door); head plan grilled into power/hub, touch and speaker items; session lifecycle fixes and the router built. |
 | [2026-W41](2026-W41.md) | Eyes got every mood at three intensities and a fast wire format; head shell sides printed; first full phase review and the docs/roadmap system set up. |

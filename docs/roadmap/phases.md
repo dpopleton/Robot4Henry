@@ -39,30 +39,39 @@ conversation.
 ## Phase 3 · Hearing and voice
 
 The crown's four-mic array (built from scratch — D-004), speech-to-text,
-direction-finding so the eyes look at whoever's talking, the speaker and
+direction-finding so the eyes look at whoever's talking, the speakers and
 Qbot's voice, and waking/sleeping (D-010). Teaching mode sits here too,
-since it needs voice and screens.
+since it needs voice and screens. Speech-to-text and Qbot's voice are built
+first in the virtual robot, using the machine's own mic and speakers, so
+they don't wait for the crown or the speakers.
 
 **Done when:** you press the wake button, talk to Qbot through the crown,
-its eyes look at you, and it answers through its own speaker.
+its eyes look at you, and it answers through its own speakers. How fast is
+fast enough, and whether you can talk over it, get decided by trying it
+(R-105, R-309).
 
-## Phase 4 · Neck and head finish
+## Phase 4 · Head finish
 
-The head looks around on a neck (tilt still undecided), and gets a final
-tidy-up pass into one finished unit.
+A final tidy-up pass that makes the head one finished unit, in its thin
+aluminium skin with the crown on top. The neck has moved to the body (Phase 5):
+it's built alongside the body's frame and sits directly on it.
 
-**Done when:** the head is finished and turns towards voices out of the
-eyes' range.
+**Done when:** every head panel is designed and printed (bar the bottom panel,
+which is designed with the neck), the aluminium skin is on, the wiring
+behind the clear panel is tidy, the back door has its hinge pin, and only one
+USB lead and one power lead leave the head (R-402).
 
 ## Phase 5 · Body
 
 A self-designed, 3D-printed tracked body holding everything not in the
 head, including the laptop. Indoors on all sorts of floors, maybe pavement
-outside — no stairs.
+outside — no stairs. The **neck** is the body's second step, built with its
+frame: the head (~2–2.5 kg) sits on it and can turn and tilt (R-401).
 
-**Done when:** it drives safely indoors. **Motion safety is part of done:**
-speed limits, bump sensors, drop sensors (so it can't drive off a step),
-and an easy-to-reach stop button (R-503).
+**Done when:** it drives safely indoors, and the head turns towards voices
+beyond the eyes' range. **Motion safety is part of done:** speed limits,
+bump sensors, drop sensors (so it can't drive off a step), an easy-to-reach
+stop button (R-503), and firm stops and motion limits on the neck.
 
 ## Phase 6 · Vision
 

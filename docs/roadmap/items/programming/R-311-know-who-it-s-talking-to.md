@@ -8,7 +8,7 @@ kind: code
 depends_on: [R-304]
 decisions: []
 cost_gbp: null
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 ## Goal
 Qbot recognises Henry vs his sister (and grown-ups), with separate memories.
@@ -30,3 +30,4 @@ Qbot greets each child by name and remembers their own things.
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
 - 2026-10-13: added key-fact notes from an outside code review.
+- 2026-10-14: Phase 3 grill: it must handle several speakers at some point (Henry, his sister, grown-ups); when is open.

@@ -8,7 +8,7 @@ kind: physical
 depends_on: []
 decisions: [D-004]
 cost_gbp: 30
-updated: 2026-10-08
+updated: 2026-10-22
 ---
 ## Goal
 Buy and breadboard the crown: Pico 2, four INMP441-type I2S MEMS mics (two front stacked vertically, left, right), plus a debug probe.
@@ -26,3 +26,4 @@ Four mics capture in sync on a breadboard.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-10-22: Henry chose the crown before the speakers; parts to order in the next two weeks.

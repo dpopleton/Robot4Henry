@@ -9,8 +9,8 @@ The code that runs on it is in `organs/eyes/` (see its README).
 ## Status
 - [x] Running on a breadboard (bring-up test)
 - [ ] New firmware tested on the Pico (R-201)
-- [ ] Enclosure designed and printed to bolt into the front frame (R-202)
-- [ ] Soldered and mounted
+- [x] Eye panel designed and printed to bolt into the front main panel (R-202)
+- [ ] Soldered and mounted (waiting on the new TS21 iron)
 
 ## Wiring
 Both displays share the SPI bus, DC, and RST lines — only chip-select
