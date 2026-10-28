@@ -62,7 +62,7 @@ Key choices (see `docs/decisions/`):
 - **One Pico per organ** (D-009). **The crown is one USB device with audio +
   serial** (D-005). **Direction maths runs in Python first** (D-006).
 - **Indicator LEDs are driven by the hardware they report on** (D-007).
-  **Asleep means mics and cameras off** (D-010).
+  **Asleep means mics and cameras off** (D-016).
 
 ## A conversation turn
 

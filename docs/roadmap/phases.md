@@ -40,10 +40,13 @@ conversation.
 
 The crown's four-mic array (built from scratch — D-004), speech-to-text,
 direction-finding so the eyes look at whoever's talking, the speakers and
-Qbot's voice, and waking/sleeping (D-010). Teaching mode sits here too,
+Qbot's voice, and waking/sleeping (D-016). Teaching mode sits here too,
 since it needs voice and screens. Speech-to-text and Qbot's voice are built
 first in the virtual robot, using the machine's own mic and speakers, so
-they don't wait for the crown or the speakers.
+they don't wait for the crown or the speakers. The speakers and their amp board
+come from a salvaged soundbar (D-017). **Safety needs for this phase:** a
+hardware volume ceiling fixed in the mouth Pico's firmware (D-017), and a
+decision on the board's Bluetooth before unsupervised use (R-314).
 
 **Done when:** you press the wake button, talk to Qbot through the crown,
 its eyes look at you, and it answers through its own speakers. How fast is
@@ -94,7 +97,7 @@ Things that run alongside every phase.
 - **Safety policy.** Henry uses Qbot **supervised** for now, and the logs are
   reviewed regularly (part of the weekly review — R-901). Safety isn't its
   own phase: each phase meets its own safety needs before it counts as done
-  (e.g. motion safety in Phase 5, asleep = mics and cameras off in D-010).
+  (e.g. motion safety in Phase 5, asleep = mics and cameras off in D-016).
 - **Brain computer upgrade** — undated. The model shoot-out (R-104) shows
   when it's needed.
 - **Solar charging** — Henry's Wall-E idea, late stage and for show.

@@ -8,13 +8,13 @@ kind: code
 depends_on: [R-902]
 decisions: []
 cost_gbp: null
-updated: 2026-10-08
+updated: 2026-10-22
 ---
 ## Goal
 While awake, Qbot works out whether speech is meant for it instead of answering everything.
 
 ## Why
-Currently it answers everything (D-010). Needs bigger hardware/models.
+Currently it answers everything (D-016). Needs bigger hardware/models.
 
 ## Tasks
 - [ ] Revisit after the brain computer upgrade (R-902)

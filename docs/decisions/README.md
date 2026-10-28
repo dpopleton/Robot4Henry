@@ -15,8 +15,12 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-007](D-007-indicator-leds-driven-by-hardware.md) | Recording/video indicator LEDs are driven by the hardware they report on | accepted | 2026-10-08 | `head` |
 | [D-008](D-008-brain-sends-mood-router-composes-face.md) | The brain only sends a mood; the router decides what each face part shows | accepted | 2026-10-08 | `nervous_system` |
 | [D-009](D-009-one-pico-per-organ.md) | One microcontroller per organ | accepted | 2026-10-08 | `organs` |
-| [D-010](D-010-asleep-means-deaf-and-blind.md) | Asleep means mics and cameras off; awake means it listens to everything | accepted | 2026-10-08 | `brain` |
+| [D-010](D-010-asleep-means-deaf-and-blind.md) | Asleep means mics and cameras off; awake means it listens to everything | superseded by D-016 | 2026-10-08 | `brain` |
 | [D-011](D-011-key-facts-grounded-by-word-match.md) | Key facts are checked against the user's own words, not by asking the model | accepted | 2026-10-12 | `brain/memory` |
 | [D-012](D-012-every-organ-ships-a-virtual-version.md) | Every organ ships a virtual version that runs in the virtual robot | accepted | 2026-10-12 | `virtual_robot` |
 | [D-013](D-013-head-has-its-own-hub-and-sound-card.md) | The head has its own USB hub and sound card; one cable bundle leaves it | accepted | 2026-10-14 | `head` |
-| [D-014](D-014-crown-pico-handles-everything-on-the-crown.md) | The crown Pico handles everything on the crown, including the wake button | accepted | 2026-10-14 | `crown` |
+| [D-014](D-014-crown-pico-handles-everything-on-the-crown.md) | The crown Pico handles everything on the crown, including the wake button | superseded by D-015 | 2026-10-14 | `crown` |
+| [D-015](D-015-big-button-on-top-wakes-qbot-via-lights-pico.md) | The big button on top of the head is the wake button, read by the lights Pico | accepted | 2026-10-22 | `head` |
+| [D-016](D-016-sleep-by-goodnight-or-timeout-power-switch-on-body.md) | The button only wakes Qbot; he sleeps on "goodnight" or a timeout, and the body has an on/off switch | accepted | 2026-10-22 | `brain` |
+| [D-017](D-017-salvaged-soundbar-board-is-the-head-sound-card.md) | The salvaged soundbar's board is the head's sound card; the mouth Pico sets its volume ceiling | accepted | 2026-10-28 | `head` |
+| [D-018](D-018-q-and-head-glow-share-one-led-chain.md) | The Q and the inside of the head are lit by the soundbar's two LED boards on one chain | accepted | 2026-10-28 | `organs/lights` |

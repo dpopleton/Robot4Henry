@@ -44,7 +44,38 @@ until the body exists. For now the head sits flat on the desk.
 - [ ] USB hub, sound card and power inside the head (R-213)
 - [ ] Crown — designed after the mic boards are in hand (see `../crown/`)
 
+## Electronics layout
+No master controller: the router on the brain computer is the master (D-003),
+and a powered hub inside the head joins everything to it (D-013). One Pico per
+organ (D-009):
+
+| On the hub | Drives | Notes |
+|---|---|---|
+| Eyes Pico | 2 round screens | working |
+| Mouth Pico | mouth screen; sets the sound board's volume by emulating its encoder | R-210, D-017 |
+| Lights Pico | Q and head glow (two salvaged 9-LED WS2812 U boards on one chain), antenna tip (1 RGB LED, wired down), big wake button on top | R-211, D-015, D-018 |
+| Crown Pico (C) | 4 mics, recording LED on the face | R-303 |
+| Jieli R30 PLUS (salvaged soundbar board: USB sound card + stereo amp + Bluetooth) | 2 × 5.5 cm 4 Ω 5 W salvaged speakers in sealed boxes behind the 5 cm face openings | R-306, D-017 |
+| Camera | video LED on the face, opposite the recording LED | R-601 |
+
+Power: the hub's own adapter (36 W+) is the head's one power lead. Picos run
+from USB data ports. The R30 PLUS sound board takes data and power from a hub port
+that can give ~1 A (measure at the volume ceiling), and the 18 LEDs run from the lights Pico's VBUS pin with a hard brightness cap (~300 mA). No
+cut-up cables. Rough worst case ~2.5 A (R-213). The large mechanical button on top is the
+wake button, and a press while awake can be a pat (R-308, R-313).
+
 ## Design notes
+- **Vibration isolation:** the speaker boxes and the crown both sit on rubber
+  grommets or washers, so the speakers don't shake the frame and Qbot's own
+  voice doesn't travel through it into the mics (R-306, R-302).
+- **Speakers:** each 5.5 cm speaker sits in its own sealed, stuffed box
+  behind a 5 cm opening in the 1.5 cm-thick face. The opening is bevelled at
+  the back to take the bigger frame, with a foam gasket, and nothing sticks
+  out. The aluminium skin stays flush, with parallel slots over each speaker
+  (a third to a half open) and cloth behind, fixed firmly so it doesn't buzz.
+- **Head glow:** one LED board lights the inside so it glows through the
+  clear back (D-018). The recording/video LEDs get sealed light boxes, and the
+  camera is shielded from the glow. Mock it up before designing mounts.
 - Panels bolt into the frame, so one face can be reprinted without touching
   the rest; components bolt into the front plate the same way.
 - Each **Pico sits on its own organ** (on the back of the eyes' enclosure, the
@@ -64,3 +95,6 @@ until the body exists. For now the head sits flat on the desk.
 | Acrylic sheets | several | £6 | bought 2026-W42; back door window |
 | M3 × 20 mm bolts | 100 | £7 | bought 2026-W43 |
 | Thin aluminium sheet | — | ~£20 | skin; bought earlier |
+| M3 rubber grommets/washers | 1 pack | ~£3 | crown and speaker-box mounts |
+| Broken USB/Bluetooth soundbar | 1 | £0 | salvaged 2026-10-28: 2 speakers, R30 PLUS amp board, 2 U-shaped LED boards; case discarded |
+| Foam tape, polyester stuffing, speaker cloth | — | ~£3 | speaker boxes and slots |

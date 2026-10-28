@@ -1,7 +1,8 @@
 ---
 id: D-014
 title: The crown Pico handles everything on the crown, including the wake button
-status: accepted
+status: superseded
+superseded_by: D-015
 date: 2026-10-14
 area: crown
 ---

@@ -1,7 +1,8 @@
 ---
 id: D-010
 title: Asleep means mics and cameras off; awake means it listens to everything
-status: accepted
+status: superseded
+superseded_by: D-016
 date: 2026-10-08
 area: brain
 ---

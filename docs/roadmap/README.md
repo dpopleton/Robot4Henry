@@ -21,8 +21,8 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | Phase | Done | Total | Est. remaining spend |
 |---|---|---|---|
 | 1 · Brain | 4 | 10 | — |
-| 2 · Face | 1 | 13 | £48 |
-| 3 · Hearing and voice | 0 | 13 | £52 |
+| 2 · Face | 1 | 13 | £39 |
+| 3 · Hearing and voice | 0 | 14 | £26 |
 | 4 · Head finish | 0 | 1 | £5 |
 | 5 · Body | 0 | 5 | £25 |
 | 6 · Vision | 0 | 2 | — |
@@ -58,7 +58,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 📋 | [R-208](items/programming/R-208-brain-sends-its-mood-to-the-router.md) Brain sends its mood to the router | code | `brain` | R-207 | — |
 | 📋 | [R-209](items/programming/R-209-virtual-robot.md) Virtual robot (framework + eyes) | code | `virtual_robot` | — | — |
 | 📋 | [R-210](items/physical/R-210-mouth-display.md) Mouth display | both | `organs/mouth` | — | £5 |
-| 📋 | [R-211](items/physical/R-211-lights-glowing-q-and-antenna.md) Lights: glowing Q and antenna | both | `organs/lights` | — | £12 |
+| 📋 | [R-211](items/physical/R-211-lights-glowing-q-and-antenna.md) Lights: glowing Q, head glow and antenna | both | `organs/lights` | — | £3 |
 | 🔨 | [R-212](items/in_progress/R-212-head-shell.md) Head shell | physical | `head` | — | £8 |
 | 📋 | [R-213](items/physical/R-213-head-power-and-usb-hub.md) Head power and USB hub | physical | `head` | R-212 | £20 |
 
@@ -66,19 +66,20 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
-| 📋 | [R-301](items/physical/R-301-crown-hardware-pico-2-four-i2s-mics.md) Crown hardware: Pico 2 + four I2S mics | physical | `crown` | — | £30 |
+| 📋 | [R-301](items/physical/R-301-crown-hardware-pico-2-four-i2s-mics.md) Crown hardware: Pico 2 + four I2S mics | physical | `crown` | — | £18 |
 | 📋 | [R-302](items/physical/R-302-crown-design-and-print.md) Crown design and print | physical | `crown` | R-301, R-212 | £3 |
 | 📋 | [R-303](items/programming/R-303-crown-firmware-4-channel-usb-microphone.md) Crown firmware: 4-channel USB microphone | code | `crown` | R-301 | — |
 | 📋 | [R-304](items/programming/R-304-speech-to-text.md) Speech-to-text | code | `organs/ears` | — | — |
 | 📋 | [R-305](items/programming/R-305-direction-finding-in-python.md) Direction-finding in Python | code | `nervous_system` | R-303, R-207 | — |
-| 📋 | [R-306](items/physical/R-306-speaker-amplifier-and-enclosure.md) Speakers, amplifier and enclosures | both | `head` | R-212, R-213 | £15 |
+| 📋 | [R-306](items/physical/R-306-speaker-amplifier-and-enclosure.md) Speakers, amplifier and enclosures | both | `head` | R-212, R-213, R-210 | £3 |
 | 📋 | [R-307](items/programming/R-307-text-to-speech-and-qbot-s-voice.md) Text-to-speech and Qbot's voice | code | `organs/voice` | — | — |
 | 📋 | [R-308](items/physical/R-308-wake-and-sleep.md) Wake and sleep | both | `brain` | — | £2 |
 | 💡 | [R-309](items/programming/R-309-interruptions.md) Interruptions | code | `organs/ears` | R-304, R-307 | — |
 | 💡 | [R-310](items/programming/R-310-decide-whether-to-reply.md) Decide whether to reply | code | `brain` | R-902 | — |
 | 💡 | [R-311](items/programming/R-311-know-who-it-s-talking-to.md) Know who it's talking to | code | `brain` | R-304 | — |
 | 💡 | [R-312](items/programming/R-312-teaching-mode.md) Teaching mode | code | `anatomy` | R-307, R-905 | — |
-| 💡 | [R-313](items/physical/R-313-touch-sensor-on-top-of-the-head.md) Pat button on top of the head | both | `head` | R-212 | £2 |
+| 💡 | [R-313](items/physical/R-313-touch-sensor-on-top-of-the-head.md) Qbot reacts to a pat | both | `head` | R-308 | £0 |
+| 💡 | [R-314](items/physical/R-314-bluetooth-on-the-sound-board.md) Bluetooth on the sound board | both | `head` | R-306 | £0 |
 
 ## Phase 4 · Head finish
 

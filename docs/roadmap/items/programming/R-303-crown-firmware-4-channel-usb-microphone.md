@@ -6,9 +6,9 @@ status: planned
 area: crown
 kind: code
 depends_on: [R-301]
-decisions: [D-004, D-005, D-007, D-010, D-012]
+decisions: [D-004, D-005, D-007, D-016, D-012]
 cost_gbp: null
-updated: 2026-10-14
+updated: 2026-10-22
 ---
 ## Goal
 C firmware (Pico SDK + TinyUSB) that makes the crown a 4-channel 16 kHz USB microphone, plus a serial port for status, and drives the recording LED whenever it's streaming.
@@ -22,8 +22,8 @@ The gate for all hearing (D-005). Starting from TinyUSB's mic examples.
 - [ ] USB audio class (adapt TinyUSB example)
 - [ ] Composite with CDC serial
 - [ ] Recording LED lit while streaming (D-007)
-- [ ] Read the wake button and report it over serial, even while asleep (D-014, R-308)
-- [ ] Stop streaming when asleep (D-010)
+- [ ] Start/stop streaming on the router's command (wake/sleep come from the lights Pico, D-015)
+- [ ] Stop streaming when asleep (D-016)
 - [ ] Works in the virtual robot (D-012); decide what it fakes as input and what it only displays
 
 ## Done when
@@ -38,3 +38,4 @@ The laptop sees a 4-channel microphone and records clean audio from all four mic
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
 - 2026-10-12: added the virtual-robot task (D-012).
 - 2026-10-14: Phase 3 grill: the crown Pico also reads the wake button (D-014).
+- 2026-10-22: the wake button moved to the lights Pico (D-015); the crown just starts/stops streaming on command.

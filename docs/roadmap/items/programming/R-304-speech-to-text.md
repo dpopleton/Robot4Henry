@@ -6,9 +6,9 @@ status: planned
 area: organs/ears
 kind: code
 depends_on: []
-decisions: [D-010]
+decisions: [D-016]
 cost_gbp: null
-updated: 2026-10-14
+updated: 2026-10-22
 ---
 ## Goal
 Speech recognition on the brain computer (Whisper-family, CPU) from the crown's audio, feeding chat().
@@ -20,7 +20,7 @@ So Henry can talk instead of type.
 - [ ] Pick a model/runtime that's fast enough on the robot laptop (R-104/R-105)
 - [ ] In the virtual robot, listen through the machine's own mic (D-012), so speech-to-text is built and tested before the crown exists; the same code then reads the crown
 - [ ] Voice activity detection — only transcribe speech
-- [ ] Transcripts logged, audio only with a debug setting (D-010)
+- [ ] Transcripts logged, audio only with a debug setting (D-016)
 
 ## Done when
 Henry speaks and the words reach chat() quickly enough.
