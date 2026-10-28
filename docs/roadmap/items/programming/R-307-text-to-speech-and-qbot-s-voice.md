@@ -6,9 +6,9 @@ status: planned
 area: organs/voice
 kind: code
 depends_on: []
-decisions: [D-012]
+decisions: [D-012, D-017]
 cost_gbp: null
-updated: 2026-10-22
+updated: 2026-10-28
 ---
 ## Goal
 Local text-to-speech (e.g. Piper) on the brain computer, with a voice Henry picks.
@@ -21,6 +21,7 @@ Qbot talks back.
 - [ ] Check the chosen voice is fast enough on the robot laptop
 - [x] Henry picks the voice: **`en_GB-northern_english_male-medium`**, Piper defaults, no effects (preset below)
 - [ ] Tell the router while speaking (mute direction, mouth waves)
+- [ ] Play through the head's sound board by name (`plughw:CARD=PLUS,DEV=0`, D-017), with a software volume scaled in Python (or ALSA softvol) and clamped at a maximum; the hardware ceiling is the mouth Pico's job (R-306)
 - [ ] Works in the virtual robot (D-012): speaks through the machine's own speakers, so it's built before the head's speakers exist (R-306)
 
 ## Voice preset
@@ -41,3 +42,4 @@ Qbot speaks its replies in Henry's chosen voice.
 - 2026-10-15: shortlist of 7 Piper voices plus 2 robot-effect variants in docs/henry/voices/ for Henry to pick on 21 Oct.
 - 2026-10-15: Piper installed in .venv (voice extra); models incl. two multi-speaker ones in storage/voices/. Voice is chosen live with Henry on 21 Oct. ~0.7s per short line on the dev machine — robot laptop untested.
 - 2026-10-22: Henry firmly chose voice 2, en_GB-northern_english_male-medium, as soon as he heard it. No tuning needed.
+- 2026-10-28: the head's sound card is the salvaged soundbar board (D-017): the host can't set its volume, so playback scales samples in software up to a clamped maximum.
