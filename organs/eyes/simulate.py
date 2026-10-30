@@ -13,6 +13,12 @@ The "Command" box takes the exact lines the host sends the Pico (e.g.
 `Ehappy:3 D-40,25` — see firmware/eye_protocol.py), parsed by the same
 code main.py uses, so you can try the wire format without hardware.
 
+Tick "Use physical hardware" with the eyes' Pico plugged in over USB and
+every button and command is also sent to the real eyes, through the real
+host driver (driver.py), so you can compare the two side by side. The
+Pico runs its own idle glances and blinks, so those won't match the
+window's, and "Idle movement" only affects the window.
+
 Usage:
     python organs/eyes/simulate.py
 """
@@ -20,13 +26,18 @@ Usage:
 import os
 import sys
 import tkinter as tk
+from tkinter import ttk
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "firmware"))
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "firmware"))
+sys.path.insert(1, os.path.join(HERE, "..", ".."))  # repo root, for the host driver
 
 from eye_geometry import WIDTH, HEIGHT  # noqa: E402
 from eyes import Eye, Face  # noqa: E402
 from expressions import EXPRESSIONS  # noqa: E402
 from eye_protocol import parse, MIN_INTENSITY, MAX_INTENSITY  # noqa: E402
+from nervous_system.serial_transport import SerialTransport, list_pico_ports  # noqa: E402
+from organs.eyes.driver import EyesOrgan  # noqa: E402
 
 SCALE = 1.5       # canvas is bigger than the real 240x240 panel, for visibility
 IDLE_TICK_MS = 150  # how often Face.tick() runs — see eyes.py for what it does per tick
@@ -103,7 +114,7 @@ class SimulatorApp:
         for i, name in enumerate(names):
             tk.Button(
                 controls, text=name, width=10,
-                command=lambda n=name: self.face.set_expression(n, self.intensity.get()),
+                command=lambda n=name: self._apply(expression=n, intensity=self.intensity.get()),
             ).grid(row=1 + i // 4, column=i % 4, padx=2, pady=2, sticky="ew")
 
         row_after_expr = 1 + (len(names) + 3) // 4
@@ -125,14 +136,14 @@ class SimulatorApp:
         look_frame = tk.Frame(controls)
         look_frame.grid(row=row_after_expr + 1, column=0, columnspan=2, sticky="w")
         for i, (label, dx, dy) in enumerate(LOOK_BUTTONS):
-            tk.Button(look_frame, text=label, width=3, command=lambda dx=dx, dy=dy: self.face.look_at(dx, dy)).grid(
+            tk.Button(look_frame, text=label, width=3, command=lambda dx=dx, dy=dy: self._apply(direction=(dx, dy))).grid(
                 row=i // 3, column=i % 3
             )
 
         actions = tk.Frame(controls)
         actions.grid(row=row_after_expr + 1, column=2, columnspan=2, sticky="n")
         tk.Button(actions, text="Blink", width=10, command=self._blink).pack(pady=2)
-        tk.Button(actions, text="Neutral", width=10, command=lambda: self.face.set_expression("neutral")).pack(pady=2)
+        tk.Button(actions, text="Neutral", width=10, command=lambda: self._apply(expression="neutral")).pack(pady=2)
         self.idle_enabled = tk.BooleanVar(value=True)
         tk.Checkbutton(actions, text="Idle movement", variable=self.idle_enabled).pack(pady=2)
 
@@ -145,11 +156,39 @@ class SimulatorApp:
         self.command.bind("<Return>", lambda _e: self._send_command())
         tk.Button(command_frame, text="Send", command=self._send_command).pack(side="left")
 
+        hardware_frame = tk.Frame(controls)
+        hardware_frame.grid(row=row_after_expr + 3, column=0, columnspan=4, sticky="ew", pady=(10, 0))
+        self.use_hardware = tk.BooleanVar(value=False)
+        tk.Checkbutton(
+            hardware_frame, text="Use physical hardware", variable=self.use_hardware,
+            command=self._toggle_hardware,
+        ).pack(side="left")
+        self.port = ttk.Combobox(hardware_frame, width=16)
+        self.port.pack(side="left", padx=4)
+        tk.Button(hardware_frame, text="↻", command=self._refresh_ports).pack(side="left")
+        self.hardware_status = tk.Label(controls, text="", anchor="w", justify="left", wraplength=WIDTH * SCALE * 2)
+        self.hardware_status.grid(row=row_after_expr + 4, column=0, columnspan=4, sticky="ew")
+        self.hardware = None  # an EyesOrgan while connected
+        self._refresh_ports()
+        root.protocol("WM_DELETE_WINDOW", self._quit)
+
         self._schedule_tick()
+
+    def _apply(self, expression=None, intensity=None, direction=None, blink=False):
+        """Every control ends up here: draw it in the window and, if
+        connected, send the same update to the real eyes as one line."""
+        self.face.update(expression, intensity, direction)
+        if blink:
+            self._blink()
+        if self.hardware:
+            try:
+                self.hardware.update(expression=expression, intensity=intensity, direction=direction, blink=blink)
+            except OSError as e:  # unplugged mid-session
+                self._disconnect(f"Lost the eyes: {e}")
 
     def _apply_intensity(self):
         if self.face.left.expression is not None:
-            self.face.set_expression(self.face.left.expression, self.intensity.get())
+            self._apply(expression=self.face.left.expression, intensity=self.intensity.get())
 
     def _blink(self):
         self.face.blink()
@@ -157,11 +196,65 @@ class SimulatorApp:
 
     def _send_command(self):
         update = parse(self.command.get())
-        self.face.update(update.expression, update.intensity, update.direction)
+        if update.is_empty():
+            return
         if update.intensity is not None:
             self.intensity.set(update.intensity)
-        if update.blink:
-            self._blink()
+        self._apply(update.expression, update.intensity, update.direction, update.blink)
+
+    def _refresh_ports(self):
+        ports = list_pico_ports()
+        self.port["values"] = ports
+        if ports and self.port.get() not in ports:
+            self.port.set(ports[0])
+        if not self.hardware:
+            self.hardware_status.config(
+                text="" if ports else "No USB serial ports found — plug in the eyes and press ↻.", fg="black",
+            )
+
+    def _toggle_hardware(self):
+        if self.use_hardware.get():
+            self._connect()
+        else:
+            self._disconnect("")
+
+    def _connect(self):
+        port = self.port.get().strip()
+        if not port:
+            self._disconnect("Pick a port first (plug in the eyes and press ↻).")
+            return
+        eyes = EyesOrgan(SerialTransport(port))
+        try:
+            eyes.connect()
+            # Bring the real eyes in line with what the window shows.
+            eyes.update(
+                expression=self.face.left.expression or "neutral",
+                intensity=self.face.left.intensity,
+                direction=self.face.attention,
+            )
+        except ImportError:
+            self._disconnect('pyserial isn\'t installed: pip install -e ".[hardware]"')
+            return
+        except OSError as e:
+            hint = " (add yourself to the dialout group, then log out and in)" if "ermission" in str(e) else ""
+            self._disconnect(f"Couldn't open {port}: {e}{hint}")
+            return
+        self.hardware = eyes
+        self.hardware_status.config(text=f"Sending to the eyes on {port}.", fg="dark green")
+
+    def _disconnect(self, message):
+        if self.hardware:
+            try:
+                self.hardware.close()
+            except OSError:
+                pass
+            self.hardware = None
+        self.use_hardware.set(False)
+        self.hardware_status.config(text=message, fg="dark red")
+
+    def _quit(self):
+        self._disconnect("")
+        self.root.destroy()
 
     def _schedule_tick(self):
         if self.idle_enabled.get():

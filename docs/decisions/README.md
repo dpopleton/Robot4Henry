@@ -24,3 +24,4 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-016](D-016-sleep-by-goodnight-or-timeout-power-switch-on-body.md) | The button only wakes Qbot; he sleeps on "goodnight" or a timeout, and the body has an on/off switch | accepted | 2026-10-22 | `brain` |
 | [D-017](D-017-salvaged-soundbar-board-is-the-head-sound-card.md) | The salvaged soundbar's board is the head's sound card; the mouth Pico sets its volume ceiling | accepted | 2026-10-28 | `head` |
 | [D-018](D-018-q-and-head-glow-share-one-led-chain.md) | The Q and the inside of the head are lit by the soundbar's two LED boards on one chain | accepted | 2026-10-28 | `organs/lights` |
+| [D-019](D-019-wire-colours-by-job.md) | Wire colours mean a job (power, ground, clock, data, control, select), the same on every organ | accepted | 2026-10-28 | `anatomy` |

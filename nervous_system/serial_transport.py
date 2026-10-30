@@ -5,6 +5,25 @@ USB serial transport — one Pico per port. Requires pyserial
 
 from nervous_system.protocol import Message
 
+PICO_USB_VENDOR_ID = 0x2E8A  # Raspberry Pi — every Pico reports this over USB
+
+
+def list_pico_ports() -> list[str]:
+    """Serial ports that look like a Pico, best guess first: anything
+    with the Raspberry Pi vendor ID, then other USB serial ports
+    (ttyACM/ttyUSB on Linux, COM on Windows). Empty if pyserial is missing."""
+    try:
+        from serial.tools import list_ports
+    except ImportError:
+        return []
+    picos, others = [], []
+    for port in sorted(list_ports.comports(), key=lambda p: p.device):
+        if port.vid == PICO_USB_VENDOR_ID:
+            picos.append(port.device)
+        elif port.vid is not None:
+            others.append(port.device)
+    return picos + others
+
 
 class SerialTransport:
     def __init__(self, port: str, baudrate: int = 115200, timeout: float = 1.0):

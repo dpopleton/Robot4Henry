@@ -8,7 +8,7 @@ kind: both
 depends_on: []
 decisions: [D-001, D-002]
 cost_gbp: 0
-updated: 2026-10-08
+updated: 2026-10-28
 ---
 ## Goal
 Run the new eyes firmware (framebuffer drawing, wire format, command listener) on the real Pico and screens.
@@ -20,6 +20,7 @@ The old bring-up test ran on hardware, but none of the new code has. MicroPython
 - [ ] Flash all firmware files (see organs/eyes/README.md)
 - [ ] Check bringup.py still works
 - [ ] Check main.py: send lines by hand from a serial terminal (picocom)
+- [x] Simulator can drive the real eyes ("Use physical hardware" tick box)
 - [ ] Check every mood at intensities 1-3 against the simulator
 - [ ] Note how fast it actually redraws
 
@@ -28,3 +29,5 @@ Every mood × intensity shows correctly on the real screens, driven from the hos
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-10-28: `organs/eyes/simulate.py` gained a "Use physical hardware" tick box that
+  sends every button/command to the Pico through the real host driver, for the side-by-side check.

@@ -121,6 +121,15 @@ A window with both eyes, a button per expression, intensity 1–3, look
 arrows, Blink, and a **Command** box that takes wire-format lines (parsed
 by the same code as the Pico). Untick "Idle movement" to freeze a frame.
 
+**With the eyes plugged in:** in the same window, tick **Use physical
+hardware** (the port box finds the Pico by its USB vendor ID; ↻ rescans).
+Every button and command is then sent to the real eyes as well, through
+`EyesOrgan` and `SerialTransport`, so the window and the screens can be
+compared side by side. On connect it sends the window's current state, so
+the two start out matching. It needs pyserial (`pip install -e ".[hardware]"`)
+and, on Linux, your user in the `dialout` group. Close Thonny, `mpremote`
+or `picocom` first, as only one program can hold the port.
+
 **Tests:** `tests/organs/test_eye_protocol.py` (wire format),
 `test_eyes_firmware.py` (every mood has art, each intensity differs, `Face`
 redraws once per update, blinks don't block), `test_eyes_driver.py`.
@@ -171,7 +180,10 @@ regenerate `EXPRESSIONS.md`.
   ([R-205](../../docs/roadmap/items/programming/R-205-rework-the-disabled-expressions.md)).
 - No "thinking" look or per-expression backlight dimming yet
   ([R-206](../../docs/roadmap/items/programming/R-206-thinking-look-and-backlight-dimming.md)).
-- Nothing calls the driver yet — waiting on the router
+- The simulator's "Use physical hardware" only sends; the Pico runs its own
+  idle glances and blinks, so those won't match the window's, and "Idle
+  movement" can't pause the real eyes (the wire format has no command for it).
+- Apart from the simulator, nothing calls the driver yet — waiting on the router
   ([R-207](../../docs/roadmap/items/blocked/R-207-router-process.md)) and the brain hookup
   ([R-208](../../docs/roadmap/items/programming/R-208-brain-sends-its-mood-to-the-router.md)).
 - The `.jpg` here is Henry's original expressions drawing, which the art is based on.

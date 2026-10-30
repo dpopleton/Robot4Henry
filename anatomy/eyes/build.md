@@ -16,34 +16,31 @@ The code that runs on it is in `organs/eyes/` (see its README).
 Both displays share the SPI bus, DC, and RST lines — only chip-select
 is per-display. GC9A01 is write-only, so no MISO connection is needed.
 
-| Signal            | Pico pin | Left display | Right display |
-|-------------------|----------|--------------|----------------|
-| SCK (SCL)         | GP18     | SCK          | SCK            |
-| MOSI (SDA)        | GP19     | SDA          | SDA            |
-| DC                | GP20     | DC           | DC             |
-| RST               | GP21     | RST          | RST            |
-| CS                | GP17     | CS           | —              |
-| CS                | GP16     | —            | CS             |
-| VCC               | 3V3(OUT) | VCC          | VCC            |
-| GND               | GND      | GND          | GND            |
-| BLK (backlight)   | GP22     | BLK          | BLK            |
+| Signal     | Pico pin | Left display | Right display | Wire colour (D-019) |
+|------------|----------|--------------|---------------|---------------------|
+| SCK (SCL)  | GP18     | SCK          | SCK           | Yellow              |
+| MOSI (SDA) | GP19     | SDA          | SDA           | Blue                |
+| DC         | GP20     | DC           | DC            | Green               |
+| RST        | GP21     | RST          | RST           | Green, marked       |
+| CS         | GP17     | CS           | —             | White               |
+| CS         | GP16     | —            | CS            | White, marked       |
+| VCC        | 3V3(OUT) | VCC          | VCC           | Red                 |
+| GND        | GND      | GND          | GND           | Black               |
 
 Notes:
 - Pico's `3V3(OUT)` pin (physical pin 36) can supply ~300mA — two
   GC9A01 boards typically draw well under that at bring-up brightness,
   but if you see resets/brownouts, move VCC to a separate 3.3V supply
   rather than the Pico's onboard regulator.
-- BLK is now driven by GP22 with PWM (`firmware/backlight.py`) instead
-  of being hard-wired to 3V3, so brightness is software-adjustable —
-  handy for dimming for sleepy/night expressions later. Both panels'
-  BLK pins still tie together to this one GPIO, so it's one shared
-  brightness, not per-eye. Before wiring this up, check your specific
-  breakout's BLK circuitry: most round GC9A01 modules already have an
-  onboard transistor driving the backlight LED, so the pin is a normal
-  logic input safe to drive from a GPIO — but if yours wires BLK
-  straight to the LED with no onboard driver, don't connect it directly
-  to a GPIO (check the LED's current draw against the GPIO's ~12mA
-  recommended limit first, or drive it through a transistor instead).
+- Colours follow the project scheme in
+  [D-019](../../docs/decisions/D-019-wire-colours-by-job.md). The two
+  greens and two whites are marked (tape or marker) at both ends on RST
+  and on the right-eye CS. Swapping the whites just swaps the eyes;
+  swapping the greens gives a blank screen. Neither does any damage.
+- **No backlight wire.** BLK is left unconnected, which on these boards
+  normally means the backlight stays on at full brightness. The firmware
+  still drives GP22 with PWM (`firmware/backlight.py`), but nothing is
+  connected to it, so there's no dimming for now (see R-206).
 - Both panels run at 40MHz SPI. If the picture is garbled or noisy
   (common on breadboard jumpers), the first thing to try is dropping
   `baudrate` in `panels.py` to `20_000_000` or `10_000_000`.
