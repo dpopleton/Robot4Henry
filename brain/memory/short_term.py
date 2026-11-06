@@ -1,4 +1,3 @@
-from collections import deque
 from config.settings import SHORT_TERM_MAX_EXCHANGES
 
 

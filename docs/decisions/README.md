@@ -24,4 +24,9 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-016](D-016-sleep-by-goodnight-or-timeout-power-switch-on-body.md) | The button only wakes Qbot; he sleeps on "goodnight" or a timeout, and the body has an on/off switch | accepted | 2026-10-22 | `brain` |
 | [D-017](D-017-salvaged-soundbar-board-is-the-head-sound-card.md) | The salvaged soundbar's board is the head's sound card; the mouth Pico sets its volume ceiling | accepted | 2026-10-28 | `head` |
 | [D-018](D-018-q-and-head-glow-share-one-led-chain.md) | The Q and the inside of the head are lit by the soundbar's two LED boards on one chain | accepted | 2026-10-28 | `organs/lights` |
-| [D-019](D-019-wire-colours-by-job.md) | Wire colours mean a job (power, ground, clock, data, control, select), the same on every organ | accepted | 2026-10-28 | `anatomy` |
+| [D-019](D-019-wire-colours-by-job.md) | Wire colours mean a job (power, ground, clock, data, control, select), the same on every organ | superseded by D-021 | 2026-10-28 | `anatomy` |
+| [D-020](D-020-qbot-drives-itself.md) | Qbot drives itself (voice commands or wandering); a gamepad is only for testing | accepted | 2026-11-03 | `body` |
+| [D-021](D-021-ten-wire-colours-5v-gets-orange.md) | Wire colours still mean a job, but with ten colours 5V gets orange and each pair gets a look-alike second colour | accepted | 2026-11-04 | `anatomy` |
+| [D-022](D-022-solder-wires-directly-no-dupont.md) | Inside an organ, wires are soldered straight to the boards; organs join the hub by USB; no Dupont anywhere | accepted | 2026-11-04 | `anatomy` |
+| [D-023](D-023-one-virtual-robot-app-with-per-organ-bench-mode.md) | One virtual robot app built from per-organ panels; a single-organ bench mode replaces the per-organ simulators | accepted | 2026-11-05 | `virtual_robot` |
+| [D-024](D-024-mouth-levels-come-from-the-laptop.md) | The talking mouth follows voice levels sent from the laptop, not a signal the mouth Pico listens to | accepted | 2026-11-05 | `organs/mouth` |

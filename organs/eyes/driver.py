@@ -40,7 +40,8 @@ def _direction(direction):
 class EyesOrgan(Organ):
     def __init__(self, transport):
         """transport: anything with connect()/write(bytes)/close(), e.g.
-        nervous_system.serial_transport.SerialTransport."""
+        nervous_system.serial_transport.SerialTransport. To spot the Pico
+        crashing, see nervous_system.pico_console."""
         self.transport = transport
 
     def connect(self):

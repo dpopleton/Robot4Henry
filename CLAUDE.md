@@ -17,6 +17,7 @@ runs locally on the robot's own computer; no cloud.
 | Weekly journal | `docs/journal/YYYY-Www.md` |
 | Suggestions for next week (a menu, rewritten weekly) | `docs/next-week.md` |
 | Physical robot: build notes, wiring, photos, CAD | `anatomy/<part>/` (`part.yaml`, `build.md`, `manifest.yaml`) |
+| Disk space by system and dependency | `docs/disk-space.md` |
 | How a code area works | `README.md` beside the code (`organs/eyes/`, `brain/limbic/`, `nervous_system/`, …) |
 
 Code is organised like a body: `brain/` (cognition, memory, mood),
@@ -69,6 +70,8 @@ python -m pytest            # fast tests (excludes the real-LLM `llm` scenarios)
 python -m pytest -m llm     # scenario tests against Ollama
 python main.py              # chat in the terminal
 python organs/eyes/simulate.py
+python -m virtual_robot --only mouth   # an organ's bench: panel, controls, real-Pico switch
+python organs/deploy.py eyes           # copy an organ's firmware (+ pico_common) to its Pico
 python docs/build_index.py  # regenerate docs indexes (--check to verify)
 ```
 

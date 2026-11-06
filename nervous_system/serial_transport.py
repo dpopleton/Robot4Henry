@@ -50,14 +50,27 @@ class SerialTransport:
             raise RuntimeError(f"Not connected to {self.port} — call connect() first.")
         self._serial.write(data)
 
+    def read_available(self) -> bytes:
+        """Whatever the Pico has sent that's waiting, without blocking —
+        b"" if nothing. For watching a Pico's console (e.g. a crash
+        traceback) rather than reading JSON Messages."""
+        if not self._serial:
+            raise RuntimeError(f"Not connected to {self.port} — call connect() first.")
+        waiting = self._serial.in_waiting
+        return self._serial.read(waiting) if waiting else b""
+
     def receive(self) -> Message | None:
-        """Read one line and decode it. Returns None on timeout/empty read."""
+        """Read one line and decode it. Returns None on timeout/empty read or malformed line."""
         if not self._serial:
             raise RuntimeError(f"Not connected to {self.port} — call connect() first.")
         line = self._serial.readline()
         if not line:
             return None
-        return Message.decode(line)
+        try:
+            return Message.decode(line)
+        except Exception:
+            # Serial noise, partial frame, or invalid JSON at startup
+            return None
 
     def close(self):
         if self._serial:

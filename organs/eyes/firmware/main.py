@@ -9,52 +9,20 @@
 #     Update — if the host sends direction faster than the panels can
 #     redraw, stale positions are skipped rather than queued up;
 #   - drawing into a RAM framebuffer and pushing each eye in one SPI write
-#     (framebuffer.py), instead of hundreds of small per-scanline writes.
+#     (pico_common/framebuffer.py), instead of hundreds of small per-scanline writes.
 #
 # For the old standalone wiring test, see bringup.py.
 
-import select
 import sys
 import time
 
 from eye_protocol import Update, MAX_LINE
 from eyes import Eye, Face
-from framebuffer import BufferedPanel
+from framebuffer import BufferedPanel      # organs/pico_common/
+from line_reader import LineReader         # organs/pico_common/
 from panels import init_panels
 
 TICK_MS = 150           # idle animation step — see eyes.Face
-MAX_DRAIN_BYTES = 512   # read at most this much per loop before drawing, so a flood can't starve redraws
-
-
-class LineReader:
-    def __init__(self, stream):
-        self.stream = stream
-        self.poller = select.poll()
-        self.poller.register(stream, select.POLLIN)
-        self.chars = []
-        self.overflow = False
-
-    def wait(self, timeout_ms):
-        """Sleep until input arrives or timeout_ms passes."""
-        self.poller.poll(timeout_ms)
-
-    def drain_into(self, update):
-        """Merge every complete line already waiting into update."""
-        for _ in range(MAX_DRAIN_BYTES):
-            if not self.poller.poll(0):
-                return
-            ch = self.stream.read(1)
-            if ch == "\n":
-                if not self.overflow:
-                    update.merge_line("".join(self.chars))
-                self.chars = []
-                self.overflow = False
-            elif ch == "\r":
-                pass
-            elif len(self.chars) < MAX_LINE:
-                self.chars.append(ch)
-            else:
-                self.overflow = True  # garbage — drop until the next newline
 
 
 left_panel, right_panel, backlight = init_panels()
@@ -67,7 +35,7 @@ face = Face(
     Eye(BufferedPanel(left_panel, frame), mirror=False),
     Eye(BufferedPanel(right_panel, frame), mirror=True),
 )
-reader = LineReader(sys.stdin)
+reader = LineReader(sys.stdin, MAX_LINE)
 
 next_tick = time.ticks_add(time.ticks_ms(), TICK_MS)
 while True:
@@ -76,7 +44,7 @@ while True:
         reader.wait(remaining)
 
     update = Update()
-    reader.drain_into(update)
+    reader.drain(update.merge_line)
     if not update.is_empty():
         face.update(update.expression, update.intensity, update.direction)
         if update.blink:

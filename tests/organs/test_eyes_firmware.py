@@ -108,3 +108,4 @@ def test_blink_is_non_blocking_and_tick_reopens():
     assert left.calls == [("fill", 0x0000)]
     face.tick()
     assert len(left.calls) > 1
+

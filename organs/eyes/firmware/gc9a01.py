@@ -145,7 +145,7 @@ class GC9A01:
 
     def blit(self, buf):
         """Send a whole frame (WIDTH*HEIGHT big-endian RGB565 pixels) in
-        one SPI write — see framebuffer.py."""
+        one SPI write — see organs/pico_common/framebuffer.py."""
         self.set_window(0, 0, self.WIDTH - 1, self.HEIGHT - 1)
         self.cs.value(0)
         self.dc.value(1)

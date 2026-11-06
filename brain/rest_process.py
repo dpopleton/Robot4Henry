@@ -4,7 +4,7 @@ from brain.raw_logger import RawLogger
 from brain.memory.long_term import LongTermMemory
 from brain.memory.key_facts import KeyFactsStore
 from brain.cognition.llm_client import LLMClient
-
+1.
 
 class RestProcess:
     def __init__(self, llm: LLMClient, raw_logger: RawLogger,
@@ -174,7 +174,7 @@ class RestProcess:
 
         response = self.llm.complete(prompt).strip()
 
-        if not response or "NONE" in response.upper():
+        if not response or response.upper().strip() in ("NONE", "NONE.", "NO FACTS", "N/A"):
             return
 
         # Parse plain text lines into memories

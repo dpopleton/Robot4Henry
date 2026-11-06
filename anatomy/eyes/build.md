@@ -16,14 +16,14 @@ The code that runs on it is in `organs/eyes/` (see its README).
 Both displays share the SPI bus, DC, and RST lines — only chip-select
 is per-display. GC9A01 is write-only, so no MISO connection is needed.
 
-| Signal     | Pico pin | Left display | Right display | Wire colour (D-019) |
+| Signal     | Pico pin | Left display | Right display | Wire colour (D-021) |
 |------------|----------|--------------|---------------|---------------------|
 | SCK (SCL)  | GP18     | SCK          | SCK           | Yellow              |
 | MOSI (SDA) | GP19     | SDA          | SDA           | Blue                |
 | DC         | GP20     | DC           | DC            | Green               |
-| RST        | GP21     | RST          | RST           | Green, marked       |
+| RST        | GP21     | RST          | RST           | Purple              |
 | CS         | GP17     | CS           | —             | White               |
-| CS         | GP16     | —            | CS            | White, marked       |
+| CS         | GP16     | —            | CS            | Grey                |
 | VCC        | 3V3(OUT) | VCC          | VCC           | Red                 |
 | GND        | GND      | GND          | GND           | Black               |
 
@@ -33,10 +33,17 @@ Notes:
   but if you see resets/brownouts, move VCC to a separate 3.3V supply
   rather than the Pico's onboard regulator.
 - Colours follow the project scheme in
-  [D-019](../../docs/decisions/D-019-wire-colours-by-job.md). The two
-  greens and two whites are marked (tape or marker) at both ends on RST
-  and on the right-eye CS. Swapping the whites just swaps the eyes;
-  swapping the greens gives a blank screen. Neither does any damage.
+  [D-021](../../docs/decisions/D-021-ten-wire-colours-5v-gets-orange.md).
+  Every wire has its own colour, so nothing needs marking. Swapping white
+  and grey just swaps the eyes; swapping green and purple gives a blank
+  screen. Neither does any damage. No 5V (orange) goes to the eyes.
+- **Wire:** the wire bought for this was too thick for the displays'
+  connectors, so the eyes use thinner wire that was already lying around
+  (2026-11-04). It's fine for these short runs and the small current.
+- **Soldered, not plugged** (D-022): the wires go straight into the
+  Pico's holes (no header pins), and onto the displays' existing pins.
+  Heatshrink on every joint, and the bundle is held near each board so
+  flexing doesn't land on the joints. No Dupont connectors.
 - **No backlight wire.** BLK is left unconnected, which on these boards
   normally means the backlight stays on at full brightness. The firmware
   still drives GP22 with PWM (`firmware/backlight.py`), but nothing is

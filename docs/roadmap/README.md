@@ -8,6 +8,9 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 ## Now and next
 
+- 🔨 [R-110](items/in_progress/R-110-tidy-up-storage-threading.md) Tidy up storage threading
+- 🔨 [R-209](items/in_progress/R-209-virtual-robot.md) Virtual robot (framework + eyes)
+- 🔨 [R-210](items/in_progress/R-210-mouth-display.md) Mouth display
 - 🔨 [R-212](items/in_progress/R-212-head-shell.md) Head shell
 - ⏭️ [R-201](items/physical/R-201-eyes-firmware-on-the-real-pico.md) Eyes firmware on the real Pico
 - ⏭️ [R-202](items/physical/R-202-eyes-enclosure-and-soldering.md) Eyes enclosure and soldering
@@ -20,11 +23,11 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | Phase | Done | Total | Est. remaining spend |
 |---|---|---|---|
-| 1 · Brain | 4 | 10 | — |
+| 1 · Brain | 5 | 11 | — |
 | 2 · Face | 1 | 13 | £39 |
 | 3 · Hearing and voice | 0 | 14 | £26 |
 | 4 · Head finish | 0 | 1 | £5 |
-| 5 · Body | 0 | 5 | £25 |
+| 5 · Body | 0 | 5 | £150 |
 | 6 · Vision | 0 | 2 | — |
 | 7 · Hands | 0 | 1 | — |
 | Ongoing | 0 | 5 | — |
@@ -42,7 +45,8 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 💡 | [R-107](items/planning/R-107-doing-things-unprompted.md) Doing things unprompted | planning | `brain` | — | — |
 | ✅ | [R-108](items/done/R-108-session-lifecycle-fixes.md) Session lifecycle fixes: quitting and slow replies | code | `brain` | R-101 | — |
 | 💡 | [R-109](items/programming/R-109-check-what-goes-back-into-memory.md) Check what goes back into memory | code | `brain` | — | — |
-| 💡 | [R-110](items/programming/R-110-tidy-up-storage-threading.md) Tidy up storage threading | code | `brain` | — | — |
+| 🔨 | [R-110](items/in_progress/R-110-tidy-up-storage-threading.md) Tidy up storage threading | code | `brain` | — | — |
+| ✅ | [R-111](items/done/R-111-memory-and-serial-robustness-fixes.md) Memory and serial robustness fixes | code | `brain` | — | £0 |
 
 ## Phase 2 · Face
 
@@ -56,8 +60,8 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 📋 | [R-206](items/programming/R-206-thinking-look-and-backlight-dimming.md) Thinking look and backlight dimming | code | `organs/eyes` | R-207 | — |
 | ⛔ | [R-207](items/blocked/R-207-router-process.md) Router process | code | `nervous_system` | R-209 | — |
 | 📋 | [R-208](items/programming/R-208-brain-sends-its-mood-to-the-router.md) Brain sends its mood to the router | code | `brain` | R-207 | — |
-| 📋 | [R-209](items/programming/R-209-virtual-robot.md) Virtual robot (framework + eyes) | code | `virtual_robot` | — | — |
-| 📋 | [R-210](items/physical/R-210-mouth-display.md) Mouth display | both | `organs/mouth` | — | £5 |
+| 🔨 | [R-209](items/in_progress/R-209-virtual-robot.md) Virtual robot (framework + eyes) | code | `virtual_robot` | — | — |
+| 🔨 | [R-210](items/in_progress/R-210-mouth-display.md) Mouth display | both | `organs/mouth` | — | £5 |
 | 📋 | [R-211](items/physical/R-211-lights-glowing-q-and-antenna.md) Lights: glowing Q, head glow and antenna | both | `organs/lights` | — | £3 |
 | 🔨 | [R-212](items/in_progress/R-212-head-shell.md) Head shell | physical | `head` | — | £8 |
 | 📋 | [R-213](items/physical/R-213-head-power-and-usb-hub.md) Head power and USB hub | physical | `head` | R-212 | £20 |
@@ -92,9 +96,9 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
 | 💡 | [R-401](items/physical/R-401-neck-looking-around.md) Neck: looking around | both | `organs/neck` | R-501, R-305 | £25 |
-| 💡 | [R-501](items/physical/R-501-tracked-chassis.md) Tracked chassis | both | `body` | R-402 | — |
-| 💡 | [R-502](items/physical/R-502-motor-power-and-battery.md) Motor power and battery | physical | `body` | R-501 | — |
-| 💡 | [R-503](items/physical/R-503-motion-safety.md) Motion safety | both | `body` | R-501 | — |
+| 💡 | [R-501](items/physical/R-501-tracked-chassis.md) Tracked chassis | both | `body` | R-402 | £60 |
+| 💡 | [R-502](items/physical/R-502-motor-power-and-battery.md) Motor power and battery | physical | `body` | R-501 | £50 |
+| 💡 | [R-503](items/physical/R-503-motion-safety.md) Motion safety | both | `body` | R-501 | £15 |
 | 💡 | [R-504](items/physical/R-504-brain-computer-moves-into-the-body.md) Brain computer moves into the body | physical | `body` | R-501 | — |
 
 ## Phase 6 · Vision

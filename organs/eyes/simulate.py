@@ -17,7 +17,9 @@ Tick "Use physical hardware" with the eyes' Pico plugged in over USB and
 every button and command is also sent to the real eyes, through the real
 host driver (driver.py), so you can compare the two side by side. The
 Pico runs its own idle glances and blinks, so those won't match the
-window's, and "Idle movement" only affects the window.
+window's, and "Idle movement" only affects the window. If the Pico's
+program crashes, the error shows under the tick box (and the full
+traceback in the terminal), and the window stops sending to it.
 
 Usage:
     python organs/eyes/simulate.py
@@ -36,12 +38,14 @@ from eye_geometry import WIDTH, HEIGHT  # noqa: E402
 from eyes import Eye, Face  # noqa: E402
 from expressions import EXPRESSIONS  # noqa: E402
 from eye_protocol import parse, MIN_INTENSITY, MAX_INTENSITY  # noqa: E402
+from nervous_system.pico_console import PicoConsole  # noqa: E402
 from nervous_system.serial_transport import SerialTransport, list_pico_ports  # noqa: E402
 from organs.eyes.driver import EyesOrgan  # noqa: E402
 
 SCALE = 1.5       # canvas is bigger than the real 240x240 panel, for visibility
 IDLE_TICK_MS = 150  # how often Face.tick() runs — see eyes.py for what it does per tick
 BLINK_MS = 150     # how long a Blink-button blink stays shut (main.py holds it one tick)
+WATCH_MS = 200     # how often to check the real eyes for a crash
 
 
 def _rgb565_to_hex(color: int) -> str:
@@ -169,10 +173,12 @@ class SimulatorApp:
         self.hardware_status = tk.Label(controls, text="", anchor="w", justify="left", wraplength=WIDTH * SCALE * 2)
         self.hardware_status.grid(row=row_after_expr + 4, column=0, columnspan=4, sticky="ew")
         self.hardware = None  # an EyesOrgan while connected
+        self.hardware_console = None  # its PicoConsole, for spotting crashes
         self._refresh_ports()
         root.protocol("WM_DELETE_WINDOW", self._quit)
 
         self._schedule_tick()
+        self._watch_hardware()
 
     def _apply(self, expression=None, intensity=None, direction=None, blink=False):
         """Every control ends up here: draw it in the window and, if
@@ -240,6 +246,7 @@ class SimulatorApp:
             self._disconnect(f"Couldn't open {port}: {e}{hint}")
             return
         self.hardware = eyes
+        self.hardware_console = PicoConsole(eyes.transport)
         self.hardware_status.config(text=f"Sending to the eyes on {port}.", fg="dark green")
 
     def _disconnect(self, message):
@@ -249,12 +256,31 @@ class SimulatorApp:
             except OSError:
                 pass
             self.hardware = None
+            self.hardware_console = None
         self.use_hardware.set(False)
         self.hardware_status.config(text=message, fg="dark red")
 
     def _quit(self):
         self._disconnect("")
         self.root.destroy()
+
+    def _watch_hardware(self):
+        """The Pico only prints when main.py has stopped, so any output
+        is a crash — show it, rather than the real eyes silently freezing."""
+        if self.hardware:
+            try:
+                crash = self.hardware_console.poll_crash()
+            except OSError as e:  # unplugged mid-session
+                self._disconnect(f"Lost the eyes: {e}")
+            else:
+                if crash:
+                    summary, text = crash
+                    print(f"--- the eyes' Pico printed ---\n{text.strip()}\n---", file=sys.stderr)
+                    self._disconnect(
+                        f"The eyes crashed: {summary}\n"
+                        "Unplug and replug them to restart, then tick the box again."
+                    )
+        self.root.after(WATCH_MS, self._watch_hardware)
 
     def _schedule_tick(self):
         if self.idle_enabled.get():

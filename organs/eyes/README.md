@@ -20,7 +20,8 @@ Pico: main.py → LineReader → eye_protocol.Update → Face.update()
                                                      └─ Eye (right) → BufferedPanel → GC9A01
 ```
 
-- **`firmware/main.py`** loops forever. It sleeps until input arrives or the
+- **`firmware/main.py`** loops forever, reading commands with the shared
+  `LineReader` (`../pico_common/line_reader.py`). It sleeps until input arrives or the
   next idle tick is due (every 150ms). It drains *every* line waiting on
   stdin, merges them into one `Update` (newest wins), applies it with
   `Face.update()`, then calls `Face.tick()` when a tick is due.
@@ -41,7 +42,7 @@ Pico: main.py → LineReader → eye_protocol.Update → Face.update()
   the intensities that animate), and status/source/notes for
   `EXPRESSIONS.md`. Anything not in the registry falls back to the plain
   neutral eye.
-- **`firmware/framebuffer.py`** — `BufferedPanel` draws shapes into a RAM
+- **`../pico_common/framebuffer.py`** (shared with other organs) — `BufferedPanel` draws shapes into a RAM
   frame with MicroPython's built-in `framebuf`, then `show()` pushes the
   whole frame to the panel in one SPI write. Both eyes share one buffer.
 - **`firmware/gc9a01.py`** (panel driver), **`panels.py`** (pin setup),
@@ -128,11 +129,15 @@ Every button and command is then sent to the real eyes as well, through
 compared side by side. On connect it sends the window's current state, so
 the two start out matching. It needs pyserial (`pip install -e ".[hardware]"`)
 and, on Linux, your user in the `dialout` group. Close Thonny, `mpremote`
-or `picocom` first, as only one program can hold the port.
+or `picocom` first, as only one program can hold the port. If the Pico's
+program crashes, the error shows under the tick box (full traceback in the
+terminal) and the window stops sending to it (`nervous_system/pico_console.py`).
 
 **Tests:** `tests/organs/test_eye_protocol.py` (wire format),
 `test_eyes_firmware.py` (every mood has art, each intensity differs, `Face`
-redraws once per update, blinks don't block), `test_eyes_driver.py`.
+redraws once per update, blinks don't block), `test_eyes_driver.py`,
+`test_line_reader.py` (shared reader) and `test_micropython_compat.py` (no
+CPython-only `math` in any firmware).
 
 **After editing `REGISTRY`:** `python organs/eyes/expression_status.py` to
 regenerate `EXPRESSIONS.md`.
@@ -142,22 +147,18 @@ regenerate `EXPRESSIONS.md`.
 1. Install MicroPython: hold BOOTSEL, plug in over USB, and drag the
    Pico 2 `.uf2` (from [micropython.org/download/RPI_PICO2](https://micropython.org/download/RPI_PICO2/),
    or the one in this folder) onto the drive that appears.
-2. Copy every `.py` in `firmware/` except `__init__.py`, keeping the
-   filenames (they import each other) — via [Thonny](https://thonny.org)
-   (File → Save As → Raspberry Pi Pico), or:
+2. Copy the firmware and the shared `organs/pico_common/` files, all flat in
+   the Pico's root (they import each other by name), and restart it:
 
    ```bash
-   pip install mpremote
-   cd organs/eyes/firmware
-   for f in gc9a01 eye_geometry eye_protocol expressions eyes framebuffer backlight panels bringup main; do
-     mpremote connect auto fs cp $f.py :$f.py
-   done
-   cd -
-   mpremote connect auto reset
+   python organs/deploy.py eyes                  # or --port /dev/ttyACM0; --dry-run lists the files
    ```
+
+   (Uses `mpremote`. With Thonny, copy the same files by hand.) The full
+   reset can renumber the port, so press ↻ in the simulator afterwards.
 3. On power-up `main.py` runs: the eyes open and idle until commands arrive.
 
-- **Quick iteration:** `mpremote mount organs/eyes/firmware` runs code
+- **Quick iteration:** `mpremote mount organs/eyes/firmware` (with the `pico_common` files already copied) runs code
   straight from your laptop without copying. Do a real `fs cp` once you're
   happy, so it survives a power cycle.
 - **Typing commands by hand:** use a plain serial terminal
@@ -180,9 +181,12 @@ regenerate `EXPRESSIONS.md`.
   ([R-205](../../docs/roadmap/items/programming/R-205-rework-the-disabled-expressions.md)).
 - No "thinking" look or per-expression backlight dimming yet
   ([R-206](../../docs/roadmap/items/programming/R-206-thinking-look-and-backlight-dimming.md)).
-- The simulator's "Use physical hardware" only sends; the Pico runs its own
-  idle glances and blinks, so those won't match the window's, and "Idle
-  movement" can't pause the real eyes (the wire format has no command for it).
+- The simulator's "Use physical hardware" sends commands and watches for a crash:
+  `main.py` prints nothing while it runs, so any output from the Pico means it
+  stopped, and the error shows under the tick box (`nervous_system/pico_console.py`).
+  The Pico runs its own idle glances and blinks, so those won't match the
+  window's, and "Idle movement" can't pause the real eyes (the wire format has
+  no command for it). After a crash, unplug and replug the eyes to restart them.
 - Apart from the simulator, nothing calls the driver yet — waiting on the router
   ([R-207](../../docs/roadmap/items/blocked/R-207-router-process.md)) and the brain hookup
   ([R-208](../../docs/roadmap/items/programming/R-208-brain-sends-its-mood-to-the-router.md)).

@@ -34,7 +34,12 @@ EXISTING SUMMARY:
 NEW EXCHANGES:
 {formatted}"""
 
-        self.summary = self.llm.complete(prompt)
+        try:
+            summary = self.llm.complete(prompt)
+            if summary and summary.strip():
+                self.summary = summary.strip()
+        except Exception as error:
+            print(f"[MediumTerm] Summary compression failed: {error}")
 
     def get(self) -> str:
         return self.summary

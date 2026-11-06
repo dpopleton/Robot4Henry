@@ -27,6 +27,7 @@ def main():
 
     finally:
         brain.shutdown()
+        brain.close()
 
 
 if __name__ == "__main__":

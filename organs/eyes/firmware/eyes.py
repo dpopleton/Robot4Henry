@@ -25,7 +25,7 @@ class Eye:
         same way when told to.
 
         driver may optionally have show(): drivers that draw into an
-        off-screen buffer (firmware/framebuffer.py) push the finished
+        off-screen buffer (organs/pico_common/framebuffer.py) push the finished
         frame to the panel there, once per redraw."""
         self.driver = driver
         self.mirror = mirror

@@ -1,3 +1,4 @@
+import uuid
 import chromadb
 from config.settings import CHROMA_PATH, LONG_TERM_RETRIEVE_COUNT
 
@@ -9,8 +10,9 @@ class LongTermMemory:
             name="memories"
         )
 
-    def store(self, text: str, metadata: dict = {}):
-        import uuid
+    def store(self, text: str, metadata: dict | None = None):
+        if metadata is None:
+            metadata = {}
         # Ensure all metadata values are ChromaDB-safe types
         safe_metadata = {
             k: str(v) if v is not None else ""
@@ -30,7 +32,8 @@ class LongTermMemory:
             query_texts=[query],
             n_results=min(n_results, self.collection.count())
         )
-        return results["documents"][0]
+        docs = results.get("documents", [])
+        return docs[0] if docs else []
 
     def count(self) -> int:
         return self.collection.count()

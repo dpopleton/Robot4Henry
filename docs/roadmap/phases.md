@@ -71,8 +71,9 @@ head, including the laptop. Indoors on all sorts of floors, maybe pavement
 outside — no stairs. The **neck** is the body's second step, built with its
 frame: the head (~2–2.5 kg) sits on it and can turn and tilt (R-401).
 
-**Done when:** it drives safely indoors, and the head turns towards voices
-beyond the eyes' range. **Motion safety is part of done:** speed limits,
+**Done when:** Qbot drives itself safely indoors at walking pace or slower
+(on voice commands or wandering, D-020; a gamepad is only for testing), and
+the head turns towards voices beyond the eyes' range. **Motion safety is part of done:** speed limits,
 bump sensors, drop sensors (so it can't drive off a step), an easy-to-reach
 stop button (R-503), and firm stops and motion limits on the neck.
 

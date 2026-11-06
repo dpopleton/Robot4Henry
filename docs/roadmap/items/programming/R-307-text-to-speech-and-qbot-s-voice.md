@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: [D-012, D-017]
 cost_gbp: null
-updated: 2026-10-28
+updated: 2026-11-05
 ---
 ## Goal
 Local text-to-speech (e.g. Piper) on the brain computer, with a voice Henry picks.
@@ -43,3 +43,8 @@ Qbot speaks its replies in Henry's chosen voice.
 - 2026-10-15: Piper installed in .venv (voice extra); models incl. two multi-speaker ones in storage/voices/. Voice is chosen live with Henry on 21 Oct. ~0.7s per short line on the dev machine — robot laptop untested.
 - 2026-10-22: Henry firmly chose voice 2, en_GB-northern_english_male-medium, as soon as he heard it. No tuning needed.
 - 2026-10-28: the head's sound card is the salvaged soundbar board (D-017): the host can't set its volume, so playback scales samples in software up to a clamped maximum.
+- 2026-11-05: early pieces built for the mouth bench (R-210): `virtual_robot/voice.py` speaks with
+  Piper through the dev machine's speakers, and `organs/mouth/levels.py` turns the audio into mouth
+  levels (D-024). Found: Piper sometimes puts ~1.6 s of silence before a sentence ("Shall we build
+  something amazing today?"); the virtual voice trims each sentence and adds a 0.2 s pause. The
+  real text-to-speech will need the same.

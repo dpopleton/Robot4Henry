@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import threading
 import uuid
 from datetime import datetime
 from config.settings import DB_PATH
@@ -7,10 +8,12 @@ from config.settings import DB_PATH
 
 class RawLogger:
     def __init__(self, db_path: str = DB_PATH):
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
-        self.conn = sqlite3.connect(db_path, check_same_thread=False)
-        self._init_db()
-        self.current_session_id = None
+        self._lock = threading.RLock()
+        with self._lock:
+            os.makedirs(os.path.dirname(db_path), exist_ok=True)
+            self.conn = sqlite3.connect(db_path, check_same_thread=False)
+            self._init_db()
+            self.current_session_id = None
 
     def _init_db(self):
         self.conn.execute("""
@@ -40,37 +43,40 @@ class RawLogger:
         self.conn.commit()
 
     def start_session(self) -> str:
-        self.current_session_id = str(uuid.uuid4())
-        self.conn.execute("""
-            INSERT INTO sessions (session_id, started_at)
-            VALUES (?, ?)
-        """, (self.current_session_id, datetime.now().isoformat()))
-        self.conn.commit()
-        return self.current_session_id
+        with self._lock:
+            self.current_session_id = str(uuid.uuid4())
+            self.conn.execute("""
+                INSERT INTO sessions (session_id, started_at)
+                VALUES (?, ?)
+            """, (self.current_session_id, datetime.now().isoformat()))
+            self.conn.commit()
+            return self.current_session_id
 
     def log(self, role: str, content: str):
         """Log every message verbatim during conversation."""
-        if not self.current_session_id:
-            self.start_session()
+        with self._lock:
+            if not self.current_session_id:
+                self.start_session()
 
-        self.conn.execute("""
-            INSERT INTO raw_conversations
-                (session_id, role, content, timestamp)
-            VALUES (?, ?, ?, ?)
-        """, (self.current_session_id, role, content,
-              datetime.now().isoformat()))
-        self.conn.commit()
+            self.conn.execute("""
+                INSERT INTO raw_conversations
+                    (session_id, role, content, timestamp)
+                VALUES (?, ?, ?, ?)
+            """, (self.current_session_id, role, content,
+                  datetime.now().isoformat()))
+            self.conn.commit()
 
     def end_session(self):
         """Mark session as ended, ready for rest process."""
-        if not self.current_session_id:
-            return
-        self.conn.execute("""
-            UPDATE sessions SET ended_at = ?
-            WHERE session_id = ?
-        """, (datetime.now().isoformat(), self.current_session_id))
-        self.conn.commit()
-        self.current_session_id = None
+        with self._lock:
+            if not self.current_session_id:
+                return
+            self.conn.execute("""
+                UPDATE sessions SET ended_at = ?
+                WHERE session_id = ?
+            """, (datetime.now().isoformat(), self.current_session_id))
+            self.conn.commit()
+            self.current_session_id = None
 
     def recover_interrupted_sessions(self) -> int:
         """Make sessions left behind by a crash or power cut restable.
@@ -81,27 +87,29 @@ class RawLogger:
         would skip it forever.  Assumes one Qbot process per database.
         Returns how many sessions were recovered.
         """
-        now = datetime.now().isoformat()
-        unended = self.conn.execute("""
-            UPDATE sessions SET ended_at = ?
-            WHERE ended_at IS NULL
-        """, (now,)).rowcount
-        unclaimed = self.conn.execute("""
-            UPDATE sessions SET processing = 0
-            WHERE processing = 1 AND processed = 0
-        """).rowcount
-        self.conn.commit()
-        return unended + unclaimed
+        with self._lock:
+            now = datetime.now().isoformat()
+            unended = self.conn.execute("""
+                UPDATE sessions SET ended_at = ?
+                WHERE ended_at IS NULL
+            """, (now,)).rowcount
+            unclaimed = self.conn.execute("""
+                UPDATE sessions SET processing = 0
+                WHERE processing = 1 AND processed = 0
+            """).rowcount
+            self.conn.commit()
+            return unended + unclaimed
 
     def get_unprocessed_sessions(self) -> list:
         """Called by rest process to find sessions needing processing."""
-        rows = self.conn.execute("""
-            SELECT session_id FROM sessions
-            WHERE processed = 0
-            AND processing = 0
-            AND ended_at IS NOT NULL
-        """).fetchall()
-        return [row[0] for row in rows]
+        with self._lock:
+            rows = self.conn.execute("""
+                SELECT session_id FROM sessions
+                WHERE processed = 0
+                AND processing = 0
+                AND ended_at IS NOT NULL
+            """).fetchall()
+            return [row[0] for row in rows]
 
     def claim_session_for_processing(self, session_id: str) -> bool:
         """Atomically claim a finished session for one rest worker.
@@ -109,36 +117,39 @@ class RawLogger:
         The claim is stored in SQLite rather than just guarded by a Python
         lock, so a second Qbot process cannot build duplicate memories.
         """
-        cursor = self.conn.execute("""
-            UPDATE sessions
-            SET processing = 1
-            WHERE session_id = ?
-              AND processed = 0
-              AND processing = 0
-              AND ended_at IS NOT NULL
-        """, (session_id,))
-        self.conn.commit()
-        return cursor.rowcount == 1
+        with self._lock:
+            cursor = self.conn.execute("""
+                UPDATE sessions
+                SET processing = 1
+                WHERE session_id = ?
+                  AND processed = 0
+                  AND processing = 0
+                  AND ended_at IS NOT NULL
+            """, (session_id,))
+            self.conn.commit()
+            return cursor.rowcount == 1
 
     def release_processing_claim(self, session_id: str):
         """Make a failed rest attempt available for a later retry."""
-        self.conn.execute("""
-            UPDATE sessions SET processing = 0
-            WHERE session_id = ? AND processed = 0
-        """, (session_id,))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("""
+                UPDATE sessions SET processing = 0
+                WHERE session_id = ? AND processed = 0
+            """, (session_id,))
+            self.conn.commit()
 
     def get_session_messages(self, session_id: str) -> list:
-        rows = self.conn.execute("""
-            SELECT role, content, timestamp
-            FROM raw_conversations
-            WHERE session_id = ?
-            ORDER BY timestamp ASC
-        """, (session_id,)).fetchall()
-        return [
-            {"role": r[0], "content": r[1], "timestamp": r[2]}
-            for r in rows
-        ]
+        with self._lock:
+            rows = self.conn.execute("""
+                SELECT role, content, timestamp
+                FROM raw_conversations
+                WHERE session_id = ?
+                ORDER BY timestamp ASC
+            """, (session_id,)).fetchall()
+            return [
+                {"role": r[0], "content": r[1], "timestamp": r[2]}
+                for r in rows
+            ]
 
     def mark_processed(self, session_id: str, compressed_log: str):
         """
@@ -146,9 +157,22 @@ class RawLogger:
         Stores a compressed version for quick review while retaining the raw
         messages for the project's weekly supervised-log review.
         """
-        self.conn.execute("""
-            UPDATE sessions
-            SET processed = 1, processing = 0, compressed_log = ?
-            WHERE session_id = ?
-        """, (compressed_log, session_id))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("""
+                UPDATE sessions
+                SET processed = 1, processing = 0, compressed_log = ?
+                WHERE session_id = ?
+            """, (compressed_log, session_id))
+            self.conn.commit()
+
+    def close(self):
+        with self._lock:
+            if self.conn:
+                self.conn.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+

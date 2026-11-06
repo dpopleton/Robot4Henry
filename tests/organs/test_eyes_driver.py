@@ -69,3 +69,4 @@ def test_bus_commands_map_onto_the_compact_format(eyes):
 def test_unknown_bus_command_raises(eyes):
     with pytest.raises(ValueError):
         eyes.send_command("wiggle", {})
+

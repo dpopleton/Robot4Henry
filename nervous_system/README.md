@@ -15,7 +15,13 @@ the real driver or a mock — handles it.
 - **`serial_transport.py`** — `SerialTransport(port)`: opens a USB serial
   port (pyserial, `pip install -e ".[hardware]"`). `send(Message)` writes
   a JSON line, `write(bytes)` writes pre-encoded bytes (used by organs with
-  their own compact format, like the eyes), and `receive()` reads a line.
+  their own compact format, like the eyes), `receive()` reads a line, and
+  `read_available()` returns whatever is waiting without blocking.
+- **`pico_console.py`** — `PicoConsole(transport).poll_crash()`: an organ's
+  `main.py` prints nothing while it runs, so any output from its Pico means
+  it stopped. Returns a one-line summary (the error and where) once the
+  `>>>` prompt appears. Used by the simulator to show a crash instead of a
+  silent freeze.
 - **`protocol.py`** — `Message(organ, cmd, payload)`: a generic
   newline-delimited JSON format, for organs with no reason to need
   something tighter.
@@ -92,7 +98,7 @@ path.
 
 ## Running and testing
 
-- `tests/nervous_system/test_bus.py`.
+- `tests/nervous_system/test_bus.py`, `test_protocol.py` (incl. `SerialTransport` against a fake port), `test_pico_console.py` (built around a real crash the eyes printed).
 - Serial ports: Linux needs your user in the `dialout` group. Prefer
   `/dev/serial/by-id/…` paths over `/dev/ttyACM0`, which renumbers as
   Picos are added. Only one program can hold a port at a time — close
@@ -105,4 +111,7 @@ path.
 - `router.py` provides the independent router loop (R-207).  It currently
   maps moods to the eyes; mouth and lights gain mappings with their drivers.
   Nothing starts it yet (R-208), and the simulator demo is still to do.
-- `SerialTransport` has no reconnect logic.
+- `SerialTransport` has no reconnect logic. A malformed incoming line
+  (noise at Pico start-up) is dropped: `receive()` returns `None`.
+- A port setting that isn't a `/dev/serial/by-id/...` path gives a warning
+  and that organ falls back to its fake port (R-111).

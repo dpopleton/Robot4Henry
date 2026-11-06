@@ -1,7 +1,8 @@
 ---
 id: D-019
 title: Wire colours mean a job (power, ground, clock, data, control, select), the same on every organ
-status: accepted
+status: superseded
+superseded_by: D-021
 date: 2026-10-28
 area: anatomy
 ---

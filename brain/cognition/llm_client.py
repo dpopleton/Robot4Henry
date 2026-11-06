@@ -35,33 +35,3 @@ class LLMClient:
             options=options,
         )
         return response["message"]["content"]
-
-    def complete_json(self, prompt: str) -> dict:
-        import json
-        import re
-
-        json_prompt = prompt + "\n\nJSON only. No markdown. No extra text."
-
-        response = self.client.chat(
-            model=self.model,
-            messages=[{"role": "user", "content": json_prompt}],
-            options={"num_predict": 500}  # enough for JSON, not runaway
-        )
-        cleaned = response["message"]["content"].strip()
-
-        # Strip markdown fences
-        if "```" in cleaned:
-            match = re.search(r'```(?:json)?\s*(.*?)```', cleaned, re.DOTALL)
-            if match:
-                cleaned = match.group(1).strip()
-
-        # Find first complete JSON object
-        match = re.search(r'\{.*\}', cleaned, re.DOTALL)
-        if match:
-            cleaned = match.group(0)
-
-        try:
-            return json.loads(cleaned)
-        except json.JSONDecodeError:
-            print(f"[LLM] JSON parse failed. Raw: {cleaned[:200]}")
-            return {}

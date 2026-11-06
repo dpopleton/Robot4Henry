@@ -110,3 +110,38 @@ def test_recover_interrupted_sessions(logger):
     assert logger.get_unprocessed_sessions() == []
     assert logger.recover_interrupted_sessions() == 2
     assert set(logger.get_unprocessed_sessions()) == {unended, claimed}
+
+
+def test_close_and_context_manager(tmp_path):
+    db_path = str(tmp_path / "cm_test.db")
+    with RawLogger(db_path=db_path) as l:
+        l.log("user", "Hello context manager")
+        assert l.current_session_id is not None
+    # close was called by context manager exit
+    # Calling close again should be safe and idempotent
+    l.close()
+
+
+def test_concurrent_logging(tmp_path):
+    import threading
+    db_path = str(tmp_path / "concurrent.db")
+    logger = RawLogger(db_path=db_path)
+    logger.start_session()
+    errors = []
+
+    def worker(worker_id):
+        try:
+            for i in range(20):
+                logger.log("user", f"Worker {worker_id} msg {i}")
+        except Exception as e:
+            errors.append(e)
+
+    threads = [threading.Thread(target=worker, args=(t,)) for t in range(5)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    logger.close()
+    assert not errors, f"Concurrent logging raised: {errors}"
+

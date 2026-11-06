@@ -54,3 +54,36 @@ def test_delete(store):
 
 def test_empty_format_returns_empty_string(store):
     assert store.format_for_prompt() == ""
+
+
+def test_close_and_context_manager(tmp_path):
+    db_path = str(tmp_path / "cm_facts.db")
+    with KeyFactsStore(db_path=db_path) as s:
+        s.set("fav_color", "blue")
+        assert s.get("fav_color") == "blue"
+    # close was called, calling again is idempotent
+    s.close()
+
+
+def test_concurrent_writes(tmp_path):
+    import threading
+    db_path = str(tmp_path / "concurrent_facts.db")
+    store = KeyFactsStore(db_path=db_path)
+    errors = []
+
+    def worker(worker_id):
+        try:
+            for i in range(20):
+                store.set(f"key_{worker_id}_{i}", f"val_{worker_id}_{i}")
+                assert store.get(f"key_{worker_id}_{i}") == f"val_{worker_id}_{i}"
+        except Exception as e:
+            errors.append(e)
+
+    threads = [threading.Thread(target=worker, args=(t,)) for t in range(5)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    store.close()
+    assert not errors, f"Concurrent key facts access raised: {errors}"

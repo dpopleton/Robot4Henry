@@ -1,9 +1,9 @@
 ---
 # Qbot's character, from Henry's brainstorm on 20 Oct 2026 (R-106).
 # Agent-drafted from his answers in docs/henry/personality-questions.md;
-# set henry_text_approved to true once Dan has checked it. The prompt
+# approved by Dan on 3 Nov 2026. The prompt
 # (`RobotBrain._personality()`) will be built from this file.
-henry_text_approved: false
+henry_text_approved: true
 ---
 # Qbot
 

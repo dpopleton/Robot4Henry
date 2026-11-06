@@ -75,3 +75,35 @@ def test_clear_wipes_summary(mem, llm):
     mem.clear()
     assert not mem.has_content()
     assert mem.get() == ""
+
+
+def test_update_failure_does_not_raise_and_preserves_summary(mem, llm):
+    mem.update([
+        {"role": "user", "content": "Hello"},
+        {"role": "assistant", "content": "Hi"}
+    ])
+    assert mem.get() == "Summary of conversation so far."
+
+    # Now make LLM fail
+    llm.complete.side_effect = ConnectionError("Ollama disconnected")
+    mem.update([
+        {"role": "user", "content": "Are you still there?"},
+        {"role": "assistant", "content": "Yes"}
+    ])
+    # Should not raise, and should retain previous summary
+    assert mem.get() == "Summary of conversation so far."
+
+
+def test_update_empty_response_does_not_overwrite_summary(mem, llm):
+    mem.update([
+        {"role": "user", "content": "Hello"},
+        {"role": "assistant", "content": "Hi"}
+    ])
+    assert mem.get() == "Summary of conversation so far."
+
+    llm.complete.return_value = "   "
+    mem.update([
+        {"role": "user", "content": "Another message"},
+        {"role": "assistant", "content": "Another reply"}
+    ])
+    assert mem.get() == "Summary of conversation so far."

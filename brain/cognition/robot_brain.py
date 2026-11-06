@@ -89,7 +89,9 @@ class RobotBrain:
             response = "I'm having trouble thinking right now. Please try me again in a moment."
             self.raw_logger.log("assistant", response)
             self.short_term.add("user", user_input)
-            self.short_term.add("assistant", response)
+            evicted = self.short_term.add("assistant", response)
+            if evicted:
+                self.medium_term.update(evicted)
             return response
 
         # A missing/malformed mood object just means no mood update this
@@ -192,3 +194,16 @@ Let this mood colour your tone naturally — don't announce it outright."""
         print("[Resting before shutdown...]")
         self.end_session(blocking=True)
         self.rest_process.wait()
+
+    def close(self):
+        """Release underlying storage and database connections."""
+        self.raw_logger.close()
+        self.key_facts.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.shutdown()
+        self.close()
+

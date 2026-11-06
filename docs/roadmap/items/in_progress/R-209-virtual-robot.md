@@ -2,13 +2,13 @@
 id: R-209
 title: "Virtual robot (framework + eyes)"
 phase: 2
-status: planned
+status: in-progress
 area: virtual_robot
 kind: code
 depends_on: []
-decisions: [D-003, D-009, D-012]
+decisions: [D-003, D-009, D-012, D-023]
 cost_gbp: null
-updated: 2026-10-12
+updated: 2026-11-05
 ---
 ## Goal
 A virtual Qbot in a window on the dev machine. The brain and router run
@@ -23,6 +23,8 @@ come up again and again: R-207's demo, R-208's "mood follows the
 conversation", and every organ after the eyes.
 
 ## Tasks
+- [x] Per-organ virtual panels + controls, and the off/virtual/real/both switch per organ (D-023; first built with the mouth, R-210)
+- [ ] Move the eyes onto a panel; `simulate.py` becomes `--only eyes` bench mode, then goes
 - [ ] Virtual robot window as its own process, hosting one panel per virtual organ
 - [ ] `VirtualTransport` with the same `connect()`/`write()`/`close()` as `SerialTransport`, talking to the window over a local socket
 - [ ] Each organ's port setting accepts `virtual` as well as `/dev/serial/by-id/...` (e.g. `QBOT_EYES_PORT=virtual`)
@@ -38,9 +40,7 @@ conversation", and every organ after the eyes.
 - `python main.py` with `QBOT_EYES_PORT=virtual` shows the mood changing on screen.
 
 ## Open questions
-- Where does the code live: `virtual_robot/` at the top level, or `organs/virtual/`?
 - Socket message format: the real organ wire lines tagged with the organ name, or one socket per organ?
-- Does `organs/eyes/simulate.py` stay as a standalone eyes preview, or become the virtual eyes panel?
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41)
@@ -48,3 +48,8 @@ conversation", and every organ after the eyes.
 - 2026-10-12: grown into the virtual robot framework after the R-207 review:
   separate window process over a socket; every organ ships a virtual
   version (D-012); which inputs get faked is decided organ by organ.
+- 2026-11-05: panels + bench mode decided (D-023): one app, a switch per organ
+  (off/virtual/real/both), `--only <organ>` replaces `simulate.py`. The panels come
+  first with the mouth; the process/socket part still waits for R-207.
+- 2026-11-05: the app lives in `virtual_robot/` at the top level (it isn't an organ).
+- 2026-11-05: `virtual_robot/` started with the mouth bench: panels, controls, the switch and crash watch. Next: the eyes move over.

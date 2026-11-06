@@ -11,21 +11,6 @@ import shutil
 import argparse
 
 
-def wipe_sqlite(db_path: str):
-    if not os.path.exists(db_path):
-        print(f"  [skip] {db_path} not found")
-        return
-    conn = sqlite3.connect(db_path)
-    tables = conn.execute(
-        "SELECT name FROM sqlite_master WHERE type='table'"
-    ).fetchall()
-    for (table,) in tables:
-        conn.execute(f"DELETE FROM {table}")
-    conn.commit()
-    conn.close()
-    print(f"  [ok] Cleared all tables in {db_path}")
-
-
 def wipe_chroma(chroma_path: str):
     if not os.path.exists(chroma_path):
         print(f"  [skip] {chroma_path} not found")

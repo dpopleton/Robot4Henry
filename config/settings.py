@@ -1,4 +1,10 @@
 import os
+import warnings
+from pathlib import Path
+
+
+# Project root directory
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Hardware ports.  Keep these as stable USB identities: ttyACM numbers change
@@ -6,7 +12,11 @@ import os
 def _serial_by_id_setting(name: str):
     port = os.environ.get(name)
     if port is not None and not port.startswith("/dev/serial/by-id/"):
-        raise ValueError(f"{name} must be a /dev/serial/by-id/... path")
+        warnings.warn(
+            f"{name} should be a /dev/serial/by-id/... path; falling back to mock (got {port!r})",
+            stacklevel=2,
+        )
+        return None
     return port
 
 
@@ -31,8 +41,12 @@ LONG_TERM_RETRIEVE_COUNT = 3
 SESSION_TIMEOUT_SECONDS = 300  # 5 minutes
 
 # Storage paths
-DB_PATH = "storage/robot.db"
-CHROMA_PATH = "storage/chroma_db"
+DB_PATH = os.environ.get("QBOT_DB_PATH", str(BASE_DIR / "storage" / "robot.db"))
+CHROMA_PATH = os.environ.get("QBOT_CHROMA_PATH", str(BASE_DIR / "storage" / "chroma_db"))
+# Qbot's voice: the Piper model Henry chose (R-307).
+VOICE_MODEL = os.environ.get(
+    "QBOT_VOICE_MODEL", str(BASE_DIR / "storage" / "voices" / "en_GB-northern_english_male-medium.onnx")
+)
 
 # Ollama
 OLLAMA_HOST = "http://localhost:11434"

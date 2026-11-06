@@ -71,7 +71,7 @@ def _offset(dx, dy, max_offset):
 
 def _thick_line(driver, x0, y0, x1, y1, thickness, color):
     dx, dy = x1 - x0, y1 - y0
-    length = math.hypot(dx, dy) or 1
+    length = math.sqrt(dx * dx + dy * dy) or 1  # MicroPython's math has no hypot()
     px, py = -dy / length * thickness / 2, dx / length * thickness / 2
     driver.fill_polygon([
         (x0 - px, y0 - py), (x0 + px, y0 + py),
