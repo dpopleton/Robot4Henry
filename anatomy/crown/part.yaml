@@ -7,6 +7,6 @@ status: idea            # idea | designing | building | built
 organ: crown            # firmware not written yet — will live in its own folder
 summary_for_henry: >
   Qbot's crown isn't just for looking royal — hidden inside are four tiny microphones. Sound reaches each one at a very slightly different time, and that's how Qbot works out where your voice is coming from so it can look at you.
-henry_text_approved: false
+henry_text_approved: true
 related: [head, eyes]
 roadmap: [R-301, R-302, R-303, R-305]

@@ -19,4 +19,32 @@
 #     Example description.
 #   kind: photo
 
-images: []
+images:
+- file: images/20cmBeam_Diagram.pdf
+  title: "The long beams"
+  description: >
+    These are the long sides of Qbot's head frame. Each one is 20 centimetres
+    long and shaped like a star when you look at the end. There are eight of them.
+  kind: cad
+  henry_text_approved: true
+- file: images/10cmBeam_Diagram.pdf
+  title: "The short beams"
+  description: >
+    The short beams are 10 centimetres long. There are four of them, and they
+    make the head 15 centimetres deep, from Qbot's face to the back door.
+  kind: cad
+  henry_text_approved: true
+- file: images/OutsideCorner_Diagram.pdf
+  title: "The corners"
+  description: >
+    Eight corners hold the beams together, one on each corner of the box.
+    Little metal bolts screw into them, so the frame can come apart again.
+  kind: cad
+  henry_text_approved: true
+- file: images/SidePanel_Diagram.pdf
+  title: "A side panel"
+  description: >
+    The side panels fill in the gaps between the beams. They have a pattern of
+    triangles, called a truss, which makes them strong without using much plastic.
+  kind: cad
+  henry_text_approved: true

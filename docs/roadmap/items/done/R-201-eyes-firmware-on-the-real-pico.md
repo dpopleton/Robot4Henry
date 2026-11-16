@@ -2,13 +2,13 @@
 id: R-201
 title: "Eyes firmware on the real Pico"
 phase: 2
-status: next
+status: done
 area: organs/eyes
 kind: both
 depends_on: []
 decisions: [D-001, D-002]
 cost_gbp: 0
-updated: 2026-11-05
+updated: 2026-11-06
 ---
 ## Goal
 Run the new eyes firmware (framebuffer drawing, wire format, command listener) on the real Pico and screens.
@@ -17,12 +17,12 @@ Run the new eyes firmware (framebuffer drawing, wire format, command listener) o
 The old bring-up test ran on hardware, but none of the new code has. MicroPython-only parts (framebuf.ellipse/poly, polling stdin) are unverified.
 
 ## Tasks
-- [ ] Flash all firmware files (see organs/eyes/README.md)
-- [ ] Check bringup.py still works
-- [ ] Check main.py: send lines by hand from a serial terminal (picocom)
+- [x] Flash all firmware files (`organs/deploy.py eyes`)
+- [x] ~~Check bringup.py still works~~ (not needed: the full firmware runs)
+- [x] ~~Check main.py by hand from picocom~~ (the simulator drives it through the real host driver instead)
 - [x] Simulator can drive the real eyes ("Use physical hardware" tick box)
-- [ ] Check every mood at intensities 1-3 against the simulator
-- [ ] Note how fast it actually redraws
+- [x] Check every mood at intensities 1-3 against the simulator
+- [ ] ~~Note how fast it actually redraws~~ (moved to R-202: time it once soldered)
 
 ## Done when
 Every mood × intensity shows correctly on the real screens, driven from the host driver.
@@ -41,3 +41,4 @@ Every mood × intensity shows correctly on the real screens, driven from the hos
   is ticked. If `main.py` stops, the error shows under the tick box and the full
   traceback goes to the terminal, so a crash no longer looks like a silent freeze.
   Tested with Ctrl-C on the real eyes.
+- 2026-11-06: weekly review: Dan checked every mood × intensity on the real screens against the simulator, and all look right. Done. Henry gives them a final look this weekend (any changes go to R-204/R-205). Redraw timing moves to R-202, after soldering.

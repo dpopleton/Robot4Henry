@@ -19,4 +19,14 @@
 #     Example description.
 #   kind: photo
 
-images: []
+images:
+- file: images/Eye Plate.pdf
+  title: "The eye plate"
+  description: >
+    This is the plate that holds Qbot's eyes. It's about as long as a school
+    ruler. Each round screen sits in one of the two big holes, and on the back
+    there are four little bolt holes where the tiny computer for the eyes is
+    screwed on. The whole plate bolts onto the front of Qbot's head.
+  kind: cad
+  model: models/Eye Insert - Eye Bracket.3mf
+  henry_text_approved: true

@@ -166,15 +166,20 @@ regenerate `EXPRESSIONS.md`.
   stops `main.py`.
 - **Wiring test:** `mpremote run organs/eyes/firmware/bringup.py` (with the
   other files copied over). Both eyes look around together, and every 5th
-  cycle one or both blink on their own — if the *wrong* eye blinks, the CS
-  wires are crossed. It replaces `main.py` until the next reset.
+  cycle one or both blink on their own — if the *wrong* eye blinks, the two
+  eyes' bundles are swapped. It replaces `main.py` until the next reset.
 - **Garbled picture:** drop `baudrate` in `panels.py` to `20_000_000` or
   `10_000_000`.
 
 ## Status and known gaps
 
-- **The new firmware hasn't run on the Pico yet** — only the old
-  bring-up test has ([R-201](../../docs/roadmap/items/physical/R-201-eyes-firmware-on-the-real-pico.md)).
+- The eyes are soldered and mounted in the head, and both work (R-202,
+  2026-11-16). Each eye has its own pins, with the right eye on SPI1
+  (D-026). The left CS is GP22 and the unconnected backlight PWM is GP16.
+- The panels are mounted a quarter-turn round, so `panels.py` turns each
+  picture upright (left `rotation=270`, right `rotation=90`). The simulator
+  doesn't need to know.
+- A full redraw hasn't been timed on the soldered eyes yet.
 - Calm, curious, excited and scared are **placeholder art** until Henry
   draws them ([R-204](../../docs/roadmap/items/planning/R-204-henry-draws-the-placeholder-moods.md)).
 - Serious, singing and zombie are **disabled** with TODOs in `REGISTRY`

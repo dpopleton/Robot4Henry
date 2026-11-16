@@ -13,6 +13,7 @@ seismograph while Qbot talks (R-210).
 ## Status
 - [x] Find the display and identify it (2026-11-05)
 - [ ] Wiring
+- [x] Mouth panel printed (2026-11-15). The first print's bolt holes were in the wrong place, so it was reprinted
 - [ ] Mount in the front frame
 
 ## Open questions

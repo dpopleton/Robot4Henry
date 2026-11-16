@@ -6,6 +6,8 @@ One file per ISO week (`YYYY-Www.md`): what got built — code *and* physical �
 
 | Week | Summary |
 |---|---|
+| [2026-W46](2026-W46.md) | The eyes are soldered and bolted into the head, the first face part in for good; the mouth's panel is printed, and Henry wants the mouth just as it is. |
+| [2026-W45](2026-W45.md) | The eyes ran every mood on the real Pico after a MicroPython crash fix; the mouth got its firmware, driver and a virtual bench that talks in Qbot's voice. |
 | [2026-W44](2026-W44.md) | A broken soundbar gave Qbot free speakers, a USB amp board and two LED boards; the speaker and lights plans switch over to them. |
 | [2026-W43](2026-W43.md) | Henry days — head assembled, Qbot got his voice (Northern English) and a personality (a boy who crash-landed from the sun); crown chosen first; eyes stuck on a bad soldering iron. |
 | [2026-W42](2026-W42.md) | Head frame printed and test-fitted (corners, beams, a side, back and door); head plan grilled into power/hub, touch and speaker items; session lifecycle fixes and the router built. |

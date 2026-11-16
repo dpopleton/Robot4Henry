@@ -61,8 +61,9 @@ it's built alongside the body's frame and sits directly on it.
 
 **Done when:** every head panel is designed and printed (bar the bottom panel,
 which is designed with the neck), the aluminium skin is on, the wiring
-behind the clear panel is tidy, the back door has its hinge pin, and only one
-USB lead and one power lead leave the head (R-402).
+behind the clear panel is tidy, the back door has its hinge pin, the camera
+and its video LED are fitted (R-601), and only one USB lead and one power
+lead leave the head (R-402).
 
 ## Phase 5 · Body
 
@@ -79,17 +80,34 @@ stop button (R-503), and firm stops and motion limits on the neck.
 
 ## Phase 6 · Vision
 
-A camera at the top of the front face, above the Q (space is reserved in the
-front frame now), with a video LED wired to the camera hardware (D-007).
-What vision does first is still open.
+What Qbot does with his camera. The camera itself goes into the head in
+Phase 4 (R-601): a 2.5 × 10 cm insert above the Q, a video LED on the
+camera's own 5V, and no power to the camera while it's not in use or asleep
+(D-007, D-025). The first task is recognising who he's talking to (R-311)
+or recognising objects, chosen when we get there. Following faces is
+dropped. It's tried on the current robot laptop before any upgrade (R-902).
+Photos may be stored, since the robot is air-gapped, but only what a feature
+needs. Vision will feed the body's movement (D-020), so Phases 5 and 6 may
+run in parallel; their order is decided at the time.
 
-**Done when:** to be defined (R-602).
+**Done when:** Qbot uses what the camera sees in a conversation (the first
+task, R-602), on the robot laptop, with the video LED lit exactly while the
+camera is powered. The exact task is still to be defined.
 
 ## Phase 7 · Hands
 
-A couple of arms with C-shaped grabbers. Just an idea for now.
+Arms with C-shaped grabbers, designed by Henry, so Qbot can pick things
+up **for himself**: toys, Lego, a cup or a ball, from the floor or a table
+(R-701), with two arms. It needs
+vision (Phase 6) to find things, and maybe a low body camera (R-603). The
+body is planned with arms in mind (mounting, power, balance) but they're
+fitted later. Motors are sized from Henry's design, probably sturdier than
+hobby servos. **Safety needs for this phase:** the body's stop button
+stops the arms (R-503), and grip force is limited (how is decided at the
+time).
 
-**Done when:** to be defined.
+**Done when:** Qbot picks up a named toy from the floor in front of him on
+a voice command, by himself, with his two arms, and holds it up.
 
 ## Ongoing
 

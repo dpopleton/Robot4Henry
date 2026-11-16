@@ -12,8 +12,19 @@ _RAMWR = 0x2C
 _MADCTL = 0x36
 _COLMOD = 0x3A
 
+_MADCTL_MY = 0x80   # mirror row order
 _MADCTL_MX = 0x40   # mirror column order
+_MADCTL_MV = 0x20   # swap rows and columns
 _MADCTL_BGR = 0x08  # panel is wired BGR, not RGB
+
+# Turning the picture clockwise by this many degrees, done by the panel
+# itself (MADCTL), so the drawing code doesn't change or slow down.
+_ROTATION_BITS = {
+    0: 0,
+    90: _MADCTL_MV | _MADCTL_MX,
+    180: _MADCTL_MX | _MADCTL_MY,
+    270: _MADCTL_MV | _MADCTL_MY,
+}
 
 # Reference init sequence for this panel: (command, data bytes or None, delay_ms after).
 _INIT_SEQUENCE = (
@@ -73,8 +84,12 @@ class GC9A01:
     WIDTH = 240
     HEIGHT = 240
 
-    def __init__(self, spi, cs: Pin, dc: Pin, rst: Pin, mirror_x: bool = False, reset: bool = True):
-        """reset=False skips the hardware reset pulse — use this when rst is
+    def __init__(self, spi, cs: Pin, dc: Pin, rst: Pin, mirror_x: bool = False, reset: bool = True,
+                 rotation: int = 0):
+        """rotation turns the picture clockwise by 0, 90, 180 or 270 degrees,
+        to match how the panel is mounted.
+
+        reset=False skips the hardware reset pulse — use this when rst is
         shared across multiple displays and something else has already reset
         the line, since resetting one panel's controller also resets any
         other panel wired to the same RST pin."""
@@ -83,6 +98,9 @@ class GC9A01:
         self.dc = dc
         self.rst = rst
         self.mirror_x = mirror_x
+        if rotation not in _ROTATION_BITS:
+            raise ValueError("rotation must be 0, 90, 180 or 270")
+        self.rotation = rotation
 
         self.cs.value(1)
         if reset:
@@ -112,9 +130,9 @@ class GC9A01:
             if delay:
                 time.sleep_ms(delay)
 
-        madctl = _MADCTL_BGR
+        madctl = _MADCTL_BGR | _ROTATION_BITS[self.rotation]
         if self.mirror_x:
-            madctl |= _MADCTL_MX
+            madctl ^= _MADCTL_MX
         self._cmd(_MADCTL, bytes([madctl]))
 
     def set_window(self, x0: int, y0: int, x1: int, y1: int):

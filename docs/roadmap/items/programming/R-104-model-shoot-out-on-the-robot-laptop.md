@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-10-08
+updated: 2026-11-16
 ---
 ## Goal
 Pick the best model for Qbot by testing several small models on the actual robot laptop (8 years old, 8GB RAM, no GPU) — for both reply quality and speed.
@@ -25,8 +25,15 @@ Dan: "the current models are too stupid", and few have been tried. The dev machi
 ## Done when
 A results table exists here and `PRIMARY_MODEL` is set from it.
 
+## When
+At the end of Phase 1, not before. It needs the robot laptop set up on the desk,
+so it's one session near the end, not a weekly nudge. Everything is built and
+tested on the dev machine until then: if it works there, we make it work on the
+robot laptop.
+
 ## Open questions
 - What CPU is in the robot laptop? (`lscpu` on it)
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-11-16: weekly review: Dan will run this at the end of Phase 1. Setting the laptop up takes desk space, and work on the dev machine gives Henry something to see.

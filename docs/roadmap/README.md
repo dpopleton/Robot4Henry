@@ -12,8 +12,6 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 - 🔨 [R-209](items/in_progress/R-209-virtual-robot.md) Virtual robot (framework + eyes)
 - 🔨 [R-210](items/in_progress/R-210-mouth-display.md) Mouth display
 - 🔨 [R-212](items/in_progress/R-212-head-shell.md) Head shell
-- ⏭️ [R-201](items/physical/R-201-eyes-firmware-on-the-real-pico.md) Eyes firmware on the real Pico
-- ⏭️ [R-202](items/physical/R-202-eyes-enclosure-and-soldering.md) Eyes enclosure and soldering
 
 **Blocked:**
 
@@ -24,9 +22,9 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | Phase | Done | Total | Est. remaining spend |
 |---|---|---|---|
 | 1 · Brain | 5 | 11 | — |
-| 2 · Face | 1 | 13 | £39 |
+| 2 · Face | 3 | 14 | £36 |
 | 3 · Hearing and voice | 0 | 14 | £26 |
-| 4 · Head finish | 0 | 1 | £5 |
+| 4 · Head finish | 0 | 2 | £5 |
 | 5 · Body | 0 | 5 | £150 |
 | 6 · Vision | 0 | 2 | — |
 | 7 · Hands | 0 | 1 | — |
@@ -52,8 +50,8 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
-| ⏭️ | [R-201](items/physical/R-201-eyes-firmware-on-the-real-pico.md) Eyes firmware on the real Pico | both | `organs/eyes` | — | £0 |
-| ⏭️ | [R-202](items/physical/R-202-eyes-enclosure-and-soldering.md) Eyes enclosure and soldering | physical | `organs/eyes` | R-201, R-212 | £3 |
+| ✅ | [R-201](items/done/R-201-eyes-firmware-on-the-real-pico.md) Eyes firmware on the real Pico | both | `organs/eyes` | — | £0 |
+| ✅ | [R-202](items/done/R-202-eyes-enclosure-and-soldering.md) Eyes enclosure and soldering | physical | `organs/eyes` | R-201, R-212 | £3 |
 | ✅ | [R-203](items/done/R-203-eye-expression-for-every-mood-at-three-intensiti.md) Eye expression for every mood at three intensities | code | `organs/eyes` | — | — |
 | 💡 | [R-204](items/planning/R-204-henry-draws-the-placeholder-moods.md) Henry draws the placeholder moods | planning | `organs/eyes` | — | — |
 | 💡 | [R-205](items/programming/R-205-rework-the-disabled-expressions.md) Rework the disabled expressions | code | `organs/eyes` | — | — |
@@ -65,6 +63,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 📋 | [R-211](items/physical/R-211-lights-glowing-q-and-antenna.md) Lights: glowing Q, head glow and antenna | both | `organs/lights` | — | £3 |
 | 🔨 | [R-212](items/in_progress/R-212-head-shell.md) Head shell | physical | `head` | — | £8 |
 | 📋 | [R-213](items/physical/R-213-head-power-and-usb-hub.md) Head power and USB hub | physical | `head` | R-212 | £20 |
+| 💡 | [R-214](items/programming/R-214-situational-eye-moods.md) Situational eye moods | code | `organs/eyes` | — | £0 |
 
 ## Phase 3 · Hearing and voice
 
@@ -90,6 +89,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
 | 💡 | [R-402](items/physical/R-402-head-finishing-pass.md) Head finishing pass | physical | `head` | — | £5 |
+| 💡 | [R-601](items/physical/R-601-camera-and-video-led.md) Camera and video LED | both | `organs/vision` | R-213 | — |
 
 ## Phase 5 · Body
 
@@ -105,14 +105,14 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
-| 💡 | [R-601](items/physical/R-601-camera-and-video-led.md) Camera and video LED | both | `organs/vision` | — | — |
 | 💡 | [R-602](items/programming/R-602-first-vision-task.md) First vision task | code | `organs/vision` | R-601 | — |
+| 💡 | [R-603](items/physical/R-603-low-body-camera.md) Low body camera | both | `organs/vision` | R-501, R-601 | — |
 
 ## Phase 7 · Hands
 
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
-| 💡 | [R-701](items/physical/R-701-arms-with-c-shaped-grabbers.md) Arms with C-shaped grabbers | both | `body` | R-501 | — |
+| 💡 | [R-701](items/physical/R-701-arms-with-c-shaped-grabbers.md) Arms with C-shaped grabbers | both | `body` | R-501, R-602 | — |
 
 ## Ongoing
 

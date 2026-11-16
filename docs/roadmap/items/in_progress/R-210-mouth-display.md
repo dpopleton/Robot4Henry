@@ -8,7 +8,7 @@ kind: both
 depends_on: []
 decisions: [D-008, D-009, D-012, D-017, D-023, D-024]
 cost_gbp: 5
-updated: 2026-11-05
+updated: 2026-11-16
 ---
 ## Goal
 A 2" display (already bought) showing white lines on black: a flat line
@@ -26,17 +26,18 @@ Part of the face; shows that Qbot is speaking.
 - [x] Host driver `organs/mouth/driver.py`
 - [x] `virtual_robot/` app, `--only mouth` bench (D-023): talk toggle, fake "say a sentence" levels, real Pico switchable alongside
 - [ ] ST7789 driver + `main.py`; confirm the controller and resolution on a breadboard; own Pico (D-009), framebuffer approach as the eyes
-- [ ] Whether mood shows on the mouth (quiet shape, or how the wave moves) — Henry's choosing
+- [x] Whether mood shows on the mouth: no. Henry likes it as it is (2026-11-15)
+- [x] Mouth panel printed (reprinted once: the bolt holes were off)
 - [ ] Mount centre-bottom of the front plate, between the speaker compartments (R-306); Pico on the back of the mount
 - [ ] Works in the virtual robot (D-012): a mouth panel + controls, and `--only mouth` bench mode with the real Pico switchable alongside (D-023); decide what it fakes as input and what it only displays
 - [ ] **Volume knob emulation (D-017):** two GPIO + GND to the R30 PLUS board's encoder A/B lines, open-drain (only ever pull low; transistor per line if the lines are above 3.3 V). A `VOLUME` command sends a fixed number of quadrature clicks; that count is the hardware volume ceiling and lives in the firmware (R-306)
 - [ ] Mouth sync: a fixed offset between playback start and the mouth's PLAY trigger, tuned by eye
 
 ## Done when
-The mouth shows mood when quiet and moves while Qbot talks, mounted in the head.
+The mouth shows a flat line when Qbot is quiet and moves while he talks, mounted in the head.
 
 ## Open questions
-- Does mood show on the mouth at all? Dan's asking Henry. The protocol leaves room for an `E` field like the eyes'.
+- Settled 2026-11-15: no mood on the mouth. Henry played with the bench and wants no changes. The protocol still has room for an `E` field if that ever changes.
 - Pin order on the module, and whether it's ST7789V or ST7789VW (same commands either way)
 
 ## Log
@@ -61,3 +62,4 @@ The mouth shows mood when quiet and moves while Qbot talks, mounted in the head.
 - 2026-11-05: the bench's "Say it" now speaks in Qbot's real Piper voice through the computer's
   speakers, drives the mouth from levels worked out from that audio (`organs/mouth/levels.py`), shows
   subtitles, and has a Sync slider for tuning lip-sync by eye (the robot needs its own value).
+- 2026-11-16: weekly review: Henry played with the bench (typing things for Qbot to say) and wants it as it is, so no mood on the mouth. The mouth panel was printed; the bolt measurements were off, so it was reprinted.

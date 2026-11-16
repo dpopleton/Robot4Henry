@@ -30,3 +30,5 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-022](D-022-solder-wires-directly-no-dupont.md) | Inside an organ, wires are soldered straight to the boards; organs join the hub by USB; no Dupont anywhere | accepted | 2026-11-04 | `anatomy` |
 | [D-023](D-023-one-virtual-robot-app-with-per-organ-bench-mode.md) | One virtual robot app built from per-organ panels; a single-organ bench mode replaces the per-organ simulators | accepted | 2026-11-05 | `virtual_robot` |
 | [D-024](D-024-mouth-levels-come-from-the-laptop.md) | The talking mouth follows voice levels sent from the laptop, not a signal the mouth Pico listens to | accepted | 2026-11-05 | `organs/mouth` |
+| [D-025](D-025-camera-off-means-unpowered.md) | The camera's video LED runs off the camera's own 5V, so "camera off" means the camera has no power | accepted | 2026-11-06 | `organs/vision` |
+| [D-026](D-026-eyes-get-separate-wires-not-splices.md) | Each eye gets its own Pico pins, including a second SPI bus, so only VCC is shared | accepted | 2026-11-11 | `organs/eyes` |
