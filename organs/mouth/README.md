@@ -17,7 +17,7 @@ Hardware (display, wiring, mounting) lives in
 ## How it works
 
 ```
-host: MouthOrgan (driver.py) ──"S1\n", "L57\n" …──▶ USB serial ──▶ Pico (later: main.py) → LineReader → Mouth → BufferedPanel → ST7789
+host: MouthOrgan (driver.py) ──"S1\n", "L57\n" …──▶ USB serial ──▶ Pico main.py → LineReader → Mouth → BufferedPanel → ST7789
                              └──────────────────▶ MouthPanel (virtual.py) → LineReader → Mouth → Tk canvas
                                        every 80ms: Mouth.tick()
 ```
@@ -44,6 +44,12 @@ host: MouthOrgan (driver.py) ──"S1\n", "L57\n" …──▶ USB serial ─�
     once, then stops redrawing until it talks again.
   - `draw_line` draws a thick polyline as a quad per segment plus a dot at
     every point (round joins and ends).
+- **`firmware/st7789.py`** — minimal panel driver: init (inversion on, as
+  IPS panels usually need), landscape rotation, and `blit` of a whole frame.
+- **`firmware/mouth_panel.py`** — the pins (the table in
+  `anatomy/mouth/build.md`) and the backlight PWM.
+- **`firmware/main.py`** — the Pico's loop, as the eyes': poll serial,
+  merge waiting lines (newest wins), `Mouth.tick()` every 80ms.
 
 - **`driver.py`** — `MouthOrgan(transport)`: `start_talking()`,
   `stop_talking()`, `level(0.0–1.0)`, `update(talking, level)` in one line,
@@ -119,9 +125,11 @@ too (see `virtual_robot/README.md`).
 ## Status and known gaps
 
 - Drawing, protocol, host driver and virtual bench done and tested; frame
-  time measured on a Pico 2 without a screen. **Not built yet:** ST7789
-  driver, `main.py`, backlight (step 4).
-- Display assumed 240×320 ST7789V(W) from listings; confirm on a breadboard.
+  time measured on a Pico 2 without a screen. ST7789 driver, `main.py` and
+  backlight written 2026-11-17 and running on the wired Pico (takes
+  commands, no crash); Dan checked the picture by eye: right first time.
+  Installed in the head on its own Pico 2026-11-18.
 - Polygons are most of the drawing time (~20ms). If frames need to be faster,
   try a faster SPI clock first, then cheaper line drawing.
-- Mood on the mouth: waiting for Henry.
+- Mood on the mouth: no, Henry likes it as it is (2026-11-15).
+- Not built yet: the volume knob emulation (D-017, R-306); lip-sync offset still to tune on the robot.

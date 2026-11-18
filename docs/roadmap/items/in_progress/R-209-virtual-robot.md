@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: [D-003, D-009, D-012, D-023]
 cost_gbp: null
-updated: 2026-11-05
+updated: 2026-11-18
 ---
 ## Goal
 A virtual Qbot in a window on the dev machine. The brain and router run
@@ -53,3 +53,4 @@ conversation", and every organ after the eyes.
   first with the mouth; the process/socket part still waits for R-207.
 - 2026-11-05: the app lives in `virtual_robot/` at the top level (it isn't an organ).
 - 2026-11-05: `virtual_robot/` started with the mouth bench: panels, controls, the switch and crash watch. Next: the eyes move over.
+- 2026-11-18: the mouth (R-210) is done in the virtual robot and is the only organ in it so far; the eyes are next (task above).

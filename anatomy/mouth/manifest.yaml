@@ -19,4 +19,14 @@
 #     Example description.
 #   kind: photo
 
-images: []
+images:
+- file: images/Mouth Bracket Drawing 1.pdf
+  title: "The mouth bracket"
+  description: >
+    This is the holder for Qbot's mouth screen. It's about as wide as your
+    hand. The screen sits in the front, and the tiny computer that draws the
+    mouth is on the back. Four bolts in the corners hold it onto the front of
+    Qbot's head, just under his eyes.
+  kind: cad
+  model: models/MouthInsert - Mouth Bracket.3mf
+  henry_text_approved: true
