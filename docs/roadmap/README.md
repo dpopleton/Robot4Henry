@@ -22,13 +22,13 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | Phase | Done | Total | Est. remaining spend |
 |---|---|---|---|
 | 1 · Brain | 5 | 11 | — |
-| 2 · Face | 3 | 14 | £36 |
+| 2 · Face | 3 | 15 | £36 |
 | 3 · Hearing and voice | 0 | 14 | £26 |
 | 4 · Head finish | 0 | 2 | £5 |
 | 5 · Body | 0 | 5 | £150 |
 | 6 · Vision | 0 | 2 | — |
 | 7 · Hands | 0 | 1 | — |
-| Ongoing | 0 | 5 | — |
+| Ongoing | 1 | 6 | — |
 
 ## Phase 1 · Brain
 
@@ -64,6 +64,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 🔨 | [R-212](items/in_progress/R-212-head-shell.md) Head shell | physical | `head` | — | £8 |
 | 📋 | [R-213](items/physical/R-213-head-power-and-usb-hub.md) Head power and USB hub | physical | `head` | R-212 | £20 |
 | 💡 | [R-214](items/programming/R-214-situational-eye-moods.md) Situational eye moods | code | `organs/eyes` | — | £0 |
+| 📋 | [R-215](items/physical/R-215-tell-the-picos-apart.md) Tell the Picos apart | both | `nervous_system` | R-213 | £0 |
 
 ## Phase 3 · Hearing and voice
 
@@ -121,5 +122,6 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 📋 | [R-901](items/programming/R-901-readable-transcripts-and-log-review.md) Readable transcripts and log review | code | `brain` | — | — |
 | 💡 | [R-902](items/physical/R-902-brain-computer-upgrade.md) Brain computer upgrade | physical | `brain` | R-105 | — |
 | 💡 | [R-903](items/physical/R-903-solar-charging.md) Solar charging | physical | `body` | R-502 | — |
-| 📋 | [R-904](items/programming/R-904-readmes-for-the-remaining-code-areas.md) READMEs for the remaining code areas | code | `docs` | — | — |
+| ✅ | [R-904](items/done/R-904-readmes-for-the-remaining-code-areas.md) READMEs for the remaining code areas | code | `docs` | — | — |
 | 💡 | [R-905](items/programming/R-905-the-brain-can-look-up-anatomy.md) The brain can look up anatomy | code | `anatomy` | — | — |
+| 💡 | [R-906](items/programming/R-906-back-up-qbot-s-memories.md) Back up Qbot's memories | code | `storage` | — | £0 |

@@ -4,7 +4,6 @@ from brain.raw_logger import RawLogger
 from brain.memory.long_term import LongTermMemory
 from brain.memory.key_facts import KeyFactsStore
 from brain.cognition.llm_client import LLMClient
-1.
 
 class RestProcess:
     def __init__(self, llm: LLMClient, raw_logger: RawLogger,

@@ -2,7 +2,7 @@
 Watches a Pico's console for a crash. Every organ's main.py prints
 nothing while it runs, so any output means it stopped: MicroPython
 prints a traceback and then its >>> prompt. Used by anything holding a
-real organ's transport (the virtual robot app, simulate.py) so a crash
+real organ's transport (the virtual robot app) so a crash
 shows up instead of the organ silently freezing.
 """
 

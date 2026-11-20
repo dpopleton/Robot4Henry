@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-10-08
+updated: 2026-11-20
 ---
 ## Goal
 The brain can answer "how was this part built?" from anatomy/<part>/part.yaml, build.md and manifest.yaml.
@@ -25,3 +25,4 @@ Asking Qbot about one of its parts gets an answer from anatomy/.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
+- 2026-11-20: Ongoing grill: it can wait a while.

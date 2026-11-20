@@ -20,6 +20,20 @@ MODES = ("off", "virtual", "real", "both")
 USES_PICO = ("real", "both")
 
 
+def pick_port(ports, taken, current=""):
+    """Which port a bench's picker should show. Keeps the current choice
+    if it's still plugged in and no other bench holds it; otherwise the
+    first port no other bench holds; otherwise the first port (or "")."""
+    free = [p for p in ports if p not in taken]
+    if current in free:
+        return current
+    if free:
+        return free[0]
+    if current in ports:
+        return current
+    return ports[0] if ports else ""
+
+
 class OrganLink:
     def __init__(self, panel, open_serial):
         """panel: has write(bytes). open_serial(port) returns a connected

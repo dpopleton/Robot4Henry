@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-11-03
+updated: 2026-11-20
 ---
 ## Goal
 SQLite and ChromaDB use stays safe when rest runs alongside a conversation,
@@ -33,3 +33,4 @@ re-resting a session leaves the same memories.
 ## Log
 - 2026-10-13: created from an outside code review (rated lower than the review did).
 - 2026-11-03: weekly review: half done, uncommitted. An agent code review (Dan testing agents) added an `RLock` around every use of the shared SQLite connection in `RawLogger` and `KeyFactsStore`, plus `close()` and context managers. Stable long-term memory ids and the concurrency test are still to do.
+- 2026-11-20: weekly review: still wanted; no time this week.

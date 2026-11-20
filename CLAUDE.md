@@ -69,8 +69,8 @@ source .venv/bin/activate
 python -m pytest            # fast tests (excludes the real-LLM `llm` scenarios)
 python -m pytest -m llm     # scenario tests against Ollama
 python main.py              # chat in the terminal
-python organs/eyes/simulate.py
-python -m virtual_robot --only mouth   # an organ's bench: panel, controls, real-Pico switch
+python -m virtual_robot               # every organ: panels, controls, a real-Pico switch each
+python -m virtual_robot --only eyes    # one organ's bench (or several: --only eyes mouth)
 python organs/deploy.py eyes           # copy an organ's firmware (+ pico_common) to its Pico
 python docs/build_index.py  # regenerate docs indexes (--check to verify)
 ```

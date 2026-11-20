@@ -30,7 +30,7 @@
 # A driver only needs fill(color), fill_circle(cx, cy, r, color), and
 # fill_polygon(points, color) to render every expression here — that's
 # the whole contract, satisfied by both the real GC9A01 driver and the
-# desktop SimDriver (organs/eyes/simulate.py). Kept in black-on-white
+# virtual robot's CanvasDriver (virtual_robot/canvas_driver.py). Kept in black-on-white
 # throughout, same as the pencil-on-paper drawings they're based on.
 
 import math

@@ -48,13 +48,16 @@ Pico: main.py → LineReader → eye_protocol.Update → Face.update()
 - **`firmware/gc9a01.py`** (panel driver), **`panels.py`** (pin setup),
   **`backlight.py`** (PWM brightness) — Pico-only.
 - **`firmware/bringup.py`** — the original standalone wiring test.
-- **`simulate.py`** — desktop preview of the same drawing code on a Tk canvas.
+- **`virtual.py`** — the eyes in the virtual robot (D-023): `EyesPanel`
+  runs the same `Face` on two canvas screens, fed the same bytes as the Pico
+  (a commanded blink held one tick, as `main.py`), and `EyesControls` is the
+  bench's buttons.
 - **`expression_status.py`** → **`EXPRESSIONS.md`** — generated status of
   every expression.
 
 The drawing code (`eye_geometry`, `expressions`, `eyes`, `eye_protocol`)
 is plain Python with no MicroPython-only calls, so it runs unchanged on the
-Pico, in the simulator and in the tests. A drawing driver only needs
+Pico, in the virtual robot and in the tests. A drawing driver only needs
 `fill`, `fill_circle` and `fill_polygon` (and optionally `show`).
 
 ## Why it's built this way
@@ -115,27 +118,28 @@ eyes.update(expression="sad", direction=(0, 0.5), blink=True)
 **Without hardware:**
 
 ```bash
-python organs/eyes/simulate.py
+python -m virtual_robot --only eyes          # just the eyes
+python -m virtual_robot                      # eyes and mouth together
 ```
 
-A window with both eyes, a button per expression, intensity 1–3, look
-arrows, Blink, and a **Command** box that takes wire-format lines (parsed
-by the same code as the Pico). Untick "Idle movement" to freeze a frame.
+The eyes' bench: both eyes, a button per expression, intensity 1–3, look
+arrows, Blink, Neutral, and a **Command** box that takes wire-format lines
+(parsed by the same code as the Pico). Untick "Idle movement" to freeze a
+frame (window only: the real eyes keep idling).
 
-**With the eyes plugged in:** in the same window, tick **Use physical
-hardware** (the port box finds the Pico by its USB vendor ID; ↻ rescans).
-Every button and command is then sent to the real eyes as well, through
-`EyesOrgan` and `SerialTransport`, so the window and the screens can be
-compared side by side. On connect it sends the window's current state, so
-the two start out matching. It needs pyserial (`pip install -e ".[hardware]"`)
-and, on Linux, your user in the `dialout` group. Close Thonny, `mpremote`
-or `picocom` first, as only one program can hold the port. If the Pico's
-program crashes, the error shows under the tick box (full traceback in the
-terminal) and the window stops sending to it (`nervous_system/pico_console.py`).
+**With the eyes plugged in:** set the bench's switch to **Real Pico** or
+**Both** and pick the port (↻ rescans). Everything goes through `EyesOrgan`
+to the real eyes, and on switching the bench sends its current expression,
+intensity and direction so the two start out matching. It needs pyserial
+(`pip install -e ".[hardware]"`) and your user in `dialout`; close Thonny,
+`mpremote` or `picocom` first. If the Pico crashes, the error shows on the
+bench (full traceback in the terminal) and it drops back to Virtual. See
+`virtual_robot/README.md`.
 
 **Tests:** `tests/organs/test_eye_protocol.py` (wire format),
 `test_eyes_firmware.py` (every mood has art, each intensity differs, `Face`
 redraws once per update, blinks don't block), `test_eyes_driver.py`,
+`test_eyes_virtual.py` (the panel through the driver: two screens, blink held a tick, idle off),
 `test_line_reader.py` (shared reader) and `test_micropython_compat.py` (no
 CPython-only `math` in any firmware).
 
@@ -155,7 +159,7 @@ regenerate `EXPRESSIONS.md`.
    ```
 
    (Uses `mpremote`. With Thonny, copy the same files by hand.) The full
-   reset can renumber the port, so press ↻ in the simulator afterwards.
+   reset can renumber the port, so press ↻ on the bench afterwards.
 3. On power-up `main.py` runs: the eyes open and idle until commands arrive.
 
 - **Quick iteration:** `mpremote mount organs/eyes/firmware` (with the `pico_common` files already copied) runs code
@@ -177,8 +181,8 @@ regenerate `EXPRESSIONS.md`.
   2026-11-16). Each eye has its own pins, with the right eye on SPI1
   (D-026). The left CS is GP22 and the unconnected backlight PWM is GP16.
 - The panels are mounted a quarter-turn round, so `panels.py` turns each
-  picture upright (left `rotation=270`, right `rotation=90`). The simulator
-  doesn't need to know.
+  picture upright (left `rotation=270`, right `rotation=90`). The virtual
+  robot doesn't need to know.
 - A full redraw hasn't been timed on the soldered eyes yet.
 - Calm, curious, excited and scared are **placeholder art** until Henry
   draws them ([R-204](../../docs/roadmap/items/planning/R-204-henry-draws-the-placeholder-moods.md)).
@@ -186,13 +190,12 @@ regenerate `EXPRESSIONS.md`.
   ([R-205](../../docs/roadmap/items/programming/R-205-rework-the-disabled-expressions.md)).
 - No "thinking" look or per-expression backlight dimming yet
   ([R-206](../../docs/roadmap/items/programming/R-206-thinking-look-and-backlight-dimming.md)).
-- The simulator's "Use physical hardware" sends commands and watches for a crash:
-  `main.py` prints nothing while it runs, so any output from the Pico means it
-  stopped, and the error shows under the tick box (`nervous_system/pico_console.py`).
-  The Pico runs its own idle glances and blinks, so those won't match the
-  window's, and "Idle movement" can't pause the real eyes (the wire format has
-  no command for it). After a crash, unplug and replug the eyes to restart them.
-- Apart from the simulator, nothing calls the driver yet — waiting on the router
+- The eyes moved into the virtual robot on 2026-11-20 (R-209), and
+  `simulate.py` is gone. On Real/Both the Pico runs its own idle glances
+  and blinks, so those won't match the window's, and "Idle movement" can't
+  pause the real eyes (the wire format has no command for it). After a
+  crash, unplug and replug the eyes to restart them.
+- Apart from the virtual robot, nothing calls the driver yet — waiting on the router
   ([R-207](../../docs/roadmap/items/blocked/R-207-router-process.md)) and the brain hookup
   ([R-208](../../docs/roadmap/items/programming/R-208-brain-sends-its-mood-to-the-router.md)).
 - The `.jpg` here is Henry's original expressions drawing, which the art is based on.

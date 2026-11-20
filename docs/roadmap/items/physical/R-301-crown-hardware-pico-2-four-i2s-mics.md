@@ -8,7 +8,7 @@ kind: physical
 depends_on: []
 decisions: [D-004]
 cost_gbp: 18
-updated: 2026-11-06
+updated: 2026-11-20
 ---
 ## Goal
 Buy and breadboard the crown: Pico 2, four INMP441-type I2S MEMS mics (two front stacked vertically, left, right), plus a debug probe.
@@ -31,3 +31,4 @@ Four mics capture in sync on a breadboard.
 - 2026-10-22: Debug Probe dropped from the shopping list: BOOTSEL + UF2 to start; a spare Pico running debugprobe if needed.
 - 2026-11-03: weekly review: the crown parts are still next to buy, but wait until the speakers and lights are in the head, since those parts are already in hand.
 - 2026-11-06: weekly review: the mics and Pico 2 are the next purchase.
+- 2026-11-20: weekly review: Dan is buying the Pico 2 and mics next week, with the hub (R-213).

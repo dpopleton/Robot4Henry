@@ -115,3 +115,20 @@ def test_crash_watch_only_while_on_the_pico(link):
     link.opened[0].output = b"Traceback (most recent call last):\r\nValueError: boom\r\n>>> "
     summary, _ = link.poll_crash()
     assert summary == "ValueError: boom"
+
+
+def test_pick_port_keeps_a_free_current_choice():
+    from virtual_robot.link import pick_port
+    assert pick_port(["/a", "/b"], {}, "/b") == "/b"
+
+
+def test_pick_port_avoids_a_port_another_bench_holds():
+    from virtual_robot.link import pick_port
+    assert pick_port(["/a", "/b"], {"/a": "eyes"}, "") == "/b"
+    assert pick_port(["/a", "/b"], {"/a": "eyes"}, "/a") == "/b"
+
+
+def test_pick_port_with_nothing_free_or_plugged_in():
+    from virtual_robot.link import pick_port
+    assert pick_port(["/a"], {"/a": "eyes"}, "") == "/a"
+    assert pick_port([], {}, "/gone") == ""

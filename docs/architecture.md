@@ -29,7 +29,7 @@ flowchart LR
     brain --> llm[Ollama LLM]
     brain --> mem[(memory: short / medium / long-term)]
     brain --> limbic[LimbicSystem mood]
-    sim[organs/eyes/simulate.py] -. same drawing code .- pico
+    sim[virtual_robot: eyes + mouth panels] -. same drawing code .- pico
     driver[EyesOrgan driver] -- "USB serial: Ehappy:3 D-40,25" --> pico[eyes Pico]
 ```
 

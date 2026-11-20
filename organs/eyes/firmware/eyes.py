@@ -90,8 +90,8 @@ class Face:
     mostly holding attention on one spot with brief glances away, plus
     occasional blinks, rather than a continuous random drift. Call
     tick() regularly (e.g. every ~150ms) from whatever loop is running:
-    a plain while-loop on the Pico, or a Tkinter .after() callback in
-    the simulator.
+    a plain while-loop on the Pico, or the virtual robot's Tk clock
+    (organs/eyes/virtual.py).
 
     update() is the one entry point for outside commands (direction,
     expression, or both) — it redraws at most once however many fields

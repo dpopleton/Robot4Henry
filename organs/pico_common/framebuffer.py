@@ -8,7 +8,7 @@
 # 240x240 frame at once: no flicker, and the cost per redraw is
 # basically fixed at one 115KB SPI transfer (~23ms at 40MHz).
 #
-# Same driver contract as gc9a01.GC9A01 and simulate.py's SimDriver
+# Same driver contract as gc9a01.GC9A01 and the virtual robot's CanvasDriver
 # (fill/fill_circle/fill_polygon), plus show(), which eyes.Eye calls
 # after every render.
 

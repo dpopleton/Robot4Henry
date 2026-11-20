@@ -52,7 +52,7 @@ reader.drain(update.merge_line)
 - `tests/organs/test_micropython_compat.py` — no CPython-only `math` here or
   in any organ's firmware.
 - `framebuffer.py` only runs on a Pico; check it there with the organ's
-  side-by-side simulator.
+  bench in the virtual robot set to **Both**.
 
 ## Status and known gaps
 

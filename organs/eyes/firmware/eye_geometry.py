@@ -1,6 +1,6 @@
 # Shared geometry/color constants — used by the drawing logic (eyes.py,
 # expressions.py) and by whatever's driving a display, real (gc9a01.py)
-# or simulated (organs/eyes/simulate.py). Kept separate from eyes.py so
+# or virtual (organs/eyes/virtual.py). Kept separate from eyes.py so
 # expressions.py can import these without eyes.py and expressions.py
 # importing each other.
 

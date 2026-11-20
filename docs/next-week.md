@@ -1,53 +1,58 @@
 ---
-week: 2026-W47
-written: 2026-11-16
+week: 2026-W48
+written: 2026-11-20
 ---
-# Suggestions for next week (2026-W47)
+# Suggestions for next week (2026-W48)
 
 A menu to pick from rather than a plan: do whatever you fancy. There are
-about 5 computer hours and maybe more at the bench. What actually happened
-goes in the journal.
+about 10–20 hours, mostly for design. What actually happened goes in the
+journal.
 
 ## If you only do one thing
-**The mouth on its real screen**
-([R-210](roadmap/items/in_progress/R-210-mouth-display.md)). It's the eyes'
-path again, and it uses both kinds of time:
-- **Computer:** the ST7789 driver and `main.py`. Everything above the driver
-  is already built and tested, and Henry has signed off the look.
-- **Bench:** a breadboard check of the pin order and controller, then solder
-  it onto the panel you've just printed.
+**Speaker boxes and their panels**
+([R-306](roadmap/items/physical/R-306-speaker-amplifier-and-enclosure.md)).
+The mouth is mounted, so the space either side of it is now fixed, and the
+speakers and their board are already in hand. In order:
+- Measure the cone and surround, so the front opening clears the surround.
+- Design the speaker panel: a 5 cm opening, flared at the back to take the
+  5.5 cm frame, inside the 1.5 cm face.
+- Design a sealed box per speaker: solid 2–3 mm walls, a wire hole, and
+  room for the foam gasket and rubber washers.
 
-It would make the mouth the second face part in the head.
-
-## Code
-- **Move the eyes onto a virtual-robot panel**
-  ([R-209](roadmap/items/in_progress/R-209-virtual-robot.md)), so
-  `simulate.py` can go (D-023). R-207 (router) has been blocked on this since
-  October, and the router is what lets the brain's mood reach the face.
-- **Build `_personality()` from the approved sheet**
-  ([R-106](roadmap/items/planning/R-106-qbot-s-personality-sheet.md)), plus a
-  scenario test. Qbot still isn't the boy from the sun in conversation.
-- **Finish R-110**
-  ([R-110](roadmap/items/in_progress/R-110-tidy-up-storage-threading.md)):
-  stable long-term memory ids and a concurrency test.
+Printing a test box and playing `speaker-test` through it would show
+whether it buzzes before any more design goes in.
 
 ## Physical
-- **Solder and mount the mouth** onto its printed panel (R-210). Breadboard
-  it first, as with the eyes.
-- **Photos of the eyes in the head** for `anatomy/eyes/images/` (R-202). They
-  make good slideshow frames for Henry.
-- **Speaker box CAD**
-  ([R-306](roadmap/items/physical/R-306-speaker-amplifier-and-enclosure.md)):
-  the mouth panel's position now fixes the space the speakers sit in on
-  either side.
+- **Top plate** ([R-212](roadmap/items/in_progress/R-212-head-shell.md)):
+  the last big shell panel. It needs bolt holes for the crown on rubber
+  washers ([R-302](roadmap/items/physical/R-302-crown-design-and-print.md)),
+  the big wake button's hole ([R-308](roadmap/items/physical/R-308-wake-and-sleep.md)),
+  and a cable path for the crown Pico's USB lead and the recording LED.
+- **Crown shape** (R-302): Henry has decided the shape, so it can be
+  sketched now. The mic holes and spacing wait for the mic boards to arrive
+  and be measured (R-301).
+- **Head diagrams** into `anatomy/head/images/` (R-212): front, back, top
+  and bottom, while the CAD is open anyway.
+
+## Code
+Only if there's time spare from design:
+- **Finish R-110**
+  ([R-110](roadmap/items/in_progress/R-110-tidy-up-storage-threading.md)):
+  stable long-term memory ids and a concurrency test. It's small.
 
 ## With Henry
-- **Show him the eyes in the head**, ideally with a photo session, and check
-  the Henry text for the eye plate in `anatomy/eyes/manifest.yaml`.
-- **Start him on the arms** (R-701), if he's keen: drawings of what he
-  imagines. They're a long way off, but his design is what Phase 7 works from.
+- **The crown sketch:** get his shape onto paper (or a photo of it) for
+  `anatomy/crown/images/`, so the CAD follows his design.
+- **Photos of the face so far** (eyes and mouth in the head) for the
+  anatomy slideshows.
 
 ## To buy
 - **Crown: Pico 2 and four I2S mics** (~£18,
   [R-301](roadmap/items/physical/R-301-crown-hardware-pico-2-four-i2s-mics.md)).
-  November's budget is untouched, and the parts take a while to arrive.
+- **Head USB hub and adapter** (~£20,
+  [R-213](roadmap/items/physical/R-213-head-power-and-usb-hub.md)): 7 ports,
+  36 W+ adapter, one port giving ~1 A with data for the sound board, and
+  ideally per-port power switching (`uhubctl`) for the camera (D-025).
+  Once it's here, R-215 (telling the Picos apart) can be done.
+
+Together about £38, inside the month's £40–50.

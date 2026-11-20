@@ -119,9 +119,12 @@ Things that run alongside every phase.
   (e.g. motion safety in Phase 5, asleep = mics and cameras off in D-016).
 - **Brain computer upgrade** — undated. The model shoot-out (R-104) shows
   when it's needed.
-- **Solar charging** — Henry's Wall-E idea, late stage and for show.
+- **Solar charging** — Henry's Wall-E idea, late stage and for show. The
+  body is designed with room for it (R-501, R-502).
 - **Docs and anatomy** — keeping area READMEs current, and eventually
   letting the brain look up how it was built.
+- **Backups** — a copy of Qbot's memories off the robot laptop (R-906),
+  late; fine without one while there's little in them.
 
 ## Henry
 

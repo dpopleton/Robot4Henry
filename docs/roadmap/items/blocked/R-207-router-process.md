@@ -8,7 +8,7 @@ kind: code
 depends_on: [R-209]
 decisions: [D-003, D-008, D-009, D-012]
 cost_gbp: null
-updated: 2026-10-12
+updated: 2026-11-20
 ---
 ## Goal
 One always-running process on the brain computer that routes inputs (crown) to outputs (eyes, mouth, lights) and turns the brain's mood into face commands.
@@ -41,3 +41,4 @@ A fake direction source moves the virtual robot's eyes (R-209) smoothly while th
   "mood follows the conversation" moved to R-208's Done when.
 - 2026-10-12: blocked on R-209: the demo runs in the virtual robot rather than
   a one-off script.
+- 2026-11-20: Ongoing grill: stays blocked until R-209's link between the two programs (`VirtualTransport` over a local socket) is built, rather than a quicker in-window demo that would be redone. The eyes are now in the virtual robot, so that link is all it waits for.

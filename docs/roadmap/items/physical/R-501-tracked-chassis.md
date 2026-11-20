@@ -8,7 +8,7 @@ kind: both
 depends_on: [R-402]
 decisions: [D-012, D-020]
 cost_gbp: 60
-updated: 2026-11-16
+updated: 2026-11-20
 ---
 ## Goal
 A self-designed, 3D-printed tracked body, larger than the head, holding everything not in the head (including the laptop).
@@ -24,6 +24,7 @@ Movement is a real, long-term goal.
 - [ ] Gamepad control for testing
 - [ ] Indoor terrain of all sorts, maybe pavement
 - [ ] A general plan for arms (R-701), which are added later: where they mount, some room in the power budget, and weight kept low so reaching forward doesn't tip him over
+- [ ] Leave room for solar panels later (R-903): somewhere flat and sunny to mount them, and a cable path to the battery
 - [ ] Works in the virtual robot (D-012); decide what it fakes as input and what it only displays
 
 ## Done when
@@ -39,3 +40,4 @@ Qbot drives itself around indoors, at walking pace or slower, and a gamepad can 
 - 2026-10-12: added the virtual-robot task (D-012).
 - 2026-11-03: Phase 5 grill: Qbot drives itself, on voice commands or wandering, with a gamepad only for testing (D-020). Walking pace or slower. The body is sized a bit bigger than the laptop, with a bracket system so the brain computer can be swapped. Starts after the head is finished. Rough cost for motors and driver added.
 - 2026-11-16: Phase 7 grill: plan in general for arms (mounting, power, balance); they're fitted later.
+- 2026-11-20: Ongoing grill: the body design leaves room for solar panels (R-903), which come later.

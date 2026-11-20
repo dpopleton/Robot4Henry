@@ -26,6 +26,7 @@ class MouthPanel:
     WIDTH = WIDTH
     HEIGHT = HEIGHT
     TICK_MS = TICK_MS
+    SCREENS = ((0, 0, WIDTH, HEIGHT),)   # one screen; the virtual robot makes a driver per screen
 
     def __init__(self, driver, rand=None):
         self.mouth = Mouth(driver) if rand is None else Mouth(driver, rand)
@@ -80,7 +81,7 @@ class MouthControls:
         "Time for bed. Goodnight, see you tomorrow!",
     )
 
-    def __init__(self, parent, send, root, voice=None):
+    def __init__(self, parent, send, root, panel=None, voice=None):
         import tkinter as tk
         from tkinter import ttk
 

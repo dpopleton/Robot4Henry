@@ -8,7 +8,7 @@ kind: physical
 depends_on: []
 decisions: [D-013]
 cost_gbp: 8
-updated: 2026-11-16
+updated: 2026-11-20
 ---
 ## Goal
 A 25×25×15 cm head built as a frame: 25 mm star-profile beams (8 × 20 cm,
@@ -28,12 +28,12 @@ one face can be reprinted without touching the rest.
 - [x] Front plate modelled: one plate with mounting holes for each component
       (eyes, mouth centre-bottom, speaker compartments in the bottom corners, Q)
 - [x] Front main panel printed and fitted
-- [ ] Front component panels: eye panel printed and the eyes mounted (R-202); mouth panel printed (R-210); speakers, Q and camera (2.5 × 10 cm) panels to design
+- [ ] Front component panels: eye panel printed and the eyes mounted (R-202); mouth panel printed and the mouth mounted (R-210); speakers, Q and camera (2.5 × 10 cm) panels to design
 - [x] First side panel printed
 - [x] Second side panel printed
 - [x] Corners, beams, side panel, back and door test-fitted — all good
 - [x] Acrylic window cut and fitted in the back door (tight fit)
-- [ ] Back door hinge: the bolt has no room for a nut — print a pin instead
+- [x] Back door hinge: the bolt has no room for a nut — print a pin instead
 - [ ] Top panel designed and printed: the crown bolts on top of it (R-302)
 - [x] Final assembly with Henry: frame and main panels (front, back, sides); check every face comes off on its own
 - [ ] Export the front, back, top and bottom diagrams into `anatomy/head/images/`
@@ -56,3 +56,4 @@ The head is printed and assembled with mounting holes for every planned part.
 - 2026-10-22: bottom panel moved to the neck (R-401): it's designed with the neck mount.
 - 2026-11-06: the camera hole above the Q is 2.5 × 10 cm, for an insert.
 - 2026-11-16: the eyes are mounted on their panel in the head; the mouth panel is printed (second print, after the bolt holes were off).
+- 2026-11-20: weekly review: the hinge pin is printed and in place; the mouth is mounted. Next: the top plate design, ready for the crown.

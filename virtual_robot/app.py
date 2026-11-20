@@ -5,9 +5,13 @@ off / virtual / real Pico / both, and a command box for raw wire lines.
 If the real Pico crashes, the error shows on its bench and the switch
 drops back to virtual.
 
-    python -m virtual_robot --only mouth    # one organ: the bench
-    python -m virtual_robot                 # every organ (the router and
-                                            # brain hook up later, R-209)
+    python -m virtual_robot --only mouth        # one organ: the bench
+    python -m virtual_robot --only eyes mouth   # just these organs
+    python -m virtual_robot                     # every organ (the router and
+                                                # brain hook up later, R-209)
+
+Each organ has its own switch, so any mix can be virtual or on real
+Picos at once; two benches can't hold the same port.
 """
 
 import argparse
@@ -16,8 +20,8 @@ import tkinter as tk
 from tkinter import ttk
 
 from nervous_system.serial_transport import SerialTransport, list_pico_ports
-from virtual_robot.canvas_driver import CanvasDriver
-from virtual_robot.link import USES_PICO, OrganLink
+from virtual_robot.canvas_driver import CanvasScreens
+from virtual_robot.link import USES_PICO, OrganLink, pick_port
 from virtual_robot.organs import ORGANS
 
 WATCH_MS = 200   # how often to check a real Pico for a crash
@@ -31,21 +35,23 @@ def open_serial(port):
 
 
 class OrganBench:
-    def __init__(self, parent, root, kit, scale):
+    def __init__(self, parent, root, kit, scale, ports_taken=lambda bench: {}):
+        """ports_taken(bench): {port: organ name} held by the other benches."""
         self.root = root
         self.name = kit.name
+        self.ports_taken = ports_taken
         self.frame = tk.LabelFrame(parent, text=kit.name.capitalize(), padx=8, pady=6)
 
-        width, height = kit.panel_class.WIDTH, kit.panel_class.HEIGHT
-        canvas = tk.Canvas(self.frame, width=width * scale, height=height * scale,
-                           bg="black", highlightthickness=0)
+        canvas = tk.Canvas(self.frame, bg="black", highlightthickness=0)
+        self.screens = CanvasScreens(canvas, kit.panel_class.SCREENS, scale)
+        width = self.screens.width * scale
+        canvas.config(width=width, height=self.screens.height * scale)
         canvas.pack()
-        self.canvas_driver = CanvasDriver(canvas, width, height, scale)
-        self.panel = kit.panel_class(self.canvas_driver)
+        self.panel = kit.panel_class(*self.screens.drivers)
         self.link = OrganLink(self.panel, open_serial)
         self.driver = kit.driver_class(self.link)
 
-        self.controls = kit.controls_class(self.frame, self.send, root)
+        self.controls = kit.controls_class(self.frame, self.send, root, panel=self.panel)
         self.controls.frame.pack(fill="x", pady=(8, 0))
 
         command = tk.Frame(self.frame)
@@ -67,7 +73,7 @@ class OrganBench:
         self.port.pack(side="left", padx=4)
         tk.Button(switch, text="↻", command=self.refresh_ports).pack(side="left")
         self.status = tk.Label(self.frame, text="", anchor="w", justify="left",
-                               wraplength=width * scale)
+                               wraplength=width)
         self.status.pack(fill="x")
 
         self.refresh_ports()
@@ -93,8 +99,7 @@ class OrganBench:
     def refresh_ports(self):
         ports = list_pico_ports()
         self.port["values"] = ports
-        if ports and self.port.get() not in ports:
-            self.port.set(ports[0])
+        self.port.set(pick_port(ports, self.ports_taken(self), self.port.get().strip()))
         if self.link.mode not in USES_PICO:
             self._say("" if ports else "No Pico found — plug one in and press ↻.")
 
@@ -104,6 +109,12 @@ class OrganBench:
         if mode in USES_PICO and not port:
             self.mode.set(self.link.mode)
             self._say("Pick a port first (plug the Pico in and press ↻).", error=True)
+            return
+        owner = self.ports_taken(self).get(port)
+        if mode in USES_PICO and owner:
+            self.mode.set(self.link.mode)
+            self._say(f"The {owner} bench is using {port}. Pick the port of the "
+                      f"{self.name} Pico (press ↻ to list them).", error=True)
             return
         try:
             self.link.set_mode(mode, port)
@@ -126,11 +137,11 @@ class OrganBench:
     def _show_mode(self):
         mode = self.link.mode
         if mode == "off":
-            self.canvas_driver.cover("Off")
+            self.screens.cover("Off")
         elif mode == "real":
-            self.canvas_driver.cover(f"Showing on the real Pico only\n({self.link.port})")
-        elif self.canvas_driver.covered:
-            self.canvas_driver.uncover()
+            self.screens.cover(f"Showing on the real Pico only\n({self.link.port})")
+        elif self.screens.covered:
+            self.screens.uncover()
             self.panel.redraw()
 
     def _lose_pico(self, message):
@@ -167,16 +178,23 @@ class OrganBench:
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="python -m virtual_robot", description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--only", choices=sorted(ORGANS), help="show just this organ's bench")
-    parser.add_argument("--scale", type=float, default=1.5, help="screen size multiplier (default 1.5)")
+    parser.add_argument("--only", nargs="+", choices=list(ORGANS), metavar="ORGAN",
+                        help=f"show just these organs' benches ({', '.join(ORGANS)})")
+    parser.add_argument("--scale", type=float, default=None,
+                        help="screen size multiplier (default 1.5 for one organ, 1.0 for several)")
     args = parser.parse_args(argv)
 
+    names = [name for name in ORGANS if name in args.only] if args.only else list(ORGANS)
+    scale = args.scale or (1.5 if len(names) == 1 else 1.0)
     root = tk.Tk()
-    root.title("Virtual Qbot" + (f": {args.only}" if args.only else ""))
-    names = [args.only] if args.only else list(ORGANS)
+    root.title("Virtual Qbot" + (f": {', '.join(args.only)}" if args.only else ""))
     benches = []
+
+    def ports_taken(asking):
+        return {b.link.port: b.name for b in benches if b is not asking and b.link.port}
+
     for name in names:
-        bench = OrganBench(root, root, ORGANS[name](), args.scale)
+        bench = OrganBench(root, root, ORGANS[name](), scale, ports_taken)
         bench.frame.pack(side="left", padx=10, pady=10, anchor="n")
         benches.append(bench)
 

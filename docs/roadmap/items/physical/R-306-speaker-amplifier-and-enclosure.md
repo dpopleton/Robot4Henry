@@ -8,7 +8,7 @@ kind: both
 depends_on: [R-212, R-213, R-210]
 decisions: [D-013, D-017]
 cost_gbp: 3
-updated: 2026-10-28
+updated: 2026-11-20
 ---
 ## Goal
 Two speakers salvaged from a broken soundbar (**5.5 cm, 4 Ω, 5 W**), each in
@@ -74,3 +74,4 @@ after power-up, can't go above the firmware ceiling, and doesn't buzz the shell.
 - 2026-10-22: final choice: Picade Max USB Audio — one board, one USB-C lead, no extra mic, and it looks and works best behind the clear back. Replaces the separate sound card + PAM8403 plan.
 - 2026-10-22: speakers: bare 40 mm 4 Ω 2–3 W drivers in our own printed boxes (for fun), rather than pre-boxed ones.
 - 2026-10-28: salvaged a broken soundbar: two 5.5 cm 4 Ω 5 W speakers and its Jieli R30 PLUS USB/Bluetooth amp board, all tested working on Ubuntu. They replace the Picade Max and the 40 mm drivers, so nothing to buy except foam, stuffing and cloth (D-017). The power-on volume is too quiet and the host can't set it, so the mouth Pico will emulate the volume encoder. Bluetooth accepted for now (R-314).
+- 2026-11-20: weekly review: speaker boxes and panels are next week's main design work; the mouth is mounted, so the space either side of it is fixed.

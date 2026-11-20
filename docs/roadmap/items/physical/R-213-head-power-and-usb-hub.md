@@ -8,7 +8,7 @@ kind: physical
 depends_on: [R-212]
 decisions: [D-009, D-013, D-017, D-018]
 cost_gbp: 20
-updated: 2026-11-06
+updated: 2026-11-20
 ---
 ## Goal
 A powered USB hub inside the head that every Pico, the USB sound card and
@@ -39,7 +39,7 @@ cable bundle (D-013).
 - [ ] The R30 PLUS sound board (D-017) takes data and power from one port that can give ~1 A; measure its draw at the volume ceiling and only add a separate 5V feed if it browns out or hums. The 18 LEDs run from the lights Pico's VBUS pin with a hard firmware cap (~300 mA, D-018). No cut-up cables
 - [ ] Hard-wire the Picos' USB into the hub (no plug-in leads) once it all works
 - [ ] Mount the hub and power distribution inside, reachable through the back door
-- [ ] Configure every organ's port by `/dev/serial/by-id/…`
+- [ ] Configure every organ's port by its Pico's serial number (R-215)
 - [ ] Route both leads out through the bottom panel's cable exit
 
 ## Done when
@@ -60,3 +60,5 @@ one USB and one power lead leave the head.
 - 2026-10-22: audio is now one Picade Max USB Audio board, so the hub needs a port that gives ~1 A with data.
 - 2026-10-28: audio is now the salvaged soundbar's R30 PLUS board (D-017), still on one ~1 A port, measured before adding any 5V feed. Lights are now 18 LEDs on VBUS with a hard cap (D-018).
 - 2026-11-06: prefer a hub with per-port power switching for the camera (D-025).
+- 2026-11-20: telling the Picos apart split out as R-215, to do once the hub is in.
+- 2026-11-20: weekly review: Dan is buying the hub next week, with the crown parts (R-301).
