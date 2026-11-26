@@ -22,7 +22,7 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-014](D-014-crown-pico-handles-everything-on-the-crown.md) | The crown Pico handles everything on the crown, including the wake button | superseded by D-015 | 2026-10-14 | `crown` |
 | [D-015](D-015-big-button-on-top-wakes-qbot-via-lights-pico.md) | The big button on top of the head is the wake button, read by the lights Pico | accepted | 2026-10-22 | `head` |
 | [D-016](D-016-sleep-by-goodnight-or-timeout-power-switch-on-body.md) | The button only wakes Qbot; he sleeps on "goodnight" or a timeout, and the body has an on/off switch | accepted | 2026-10-22 | `brain` |
-| [D-017](D-017-salvaged-soundbar-board-is-the-head-sound-card.md) | The salvaged soundbar's board is the head's sound card; the mouth Pico sets its volume ceiling | accepted | 2026-10-28 | `head` |
+| [D-017](D-017-salvaged-soundbar-board-is-the-head-sound-card.md) | The salvaged soundbar's board is the head's sound card; the mouth Pico sets its volume ceiling | superseded by D-027 | 2026-10-28 | `head` |
 | [D-018](D-018-q-and-head-glow-share-one-led-chain.md) | The Q and the inside of the head are lit by the soundbar's two LED boards on one chain | accepted | 2026-10-28 | `organs/lights` |
 | [D-019](D-019-wire-colours-by-job.md) | Wire colours mean a job (power, ground, clock, data, control, select), the same on every organ | superseded by D-021 | 2026-10-28 | `anatomy` |
 | [D-020](D-020-qbot-drives-itself.md) | Qbot drives itself (voice commands or wandering); a gamepad is only for testing | accepted | 2026-11-03 | `body` |
@@ -32,3 +32,4 @@ One short record per non-obvious choice: context, decision, alternatives, conseq
 | [D-024](D-024-mouth-levels-come-from-the-laptop.md) | The talking mouth follows voice levels sent from the laptop, not a signal the mouth Pico listens to | accepted | 2026-11-05 | `organs/mouth` |
 | [D-025](D-025-camera-off-means-unpowered.md) | The camera's video LED runs off the camera's own 5V, so "camera off" means the camera has no power | accepted | 2026-11-06 | `organs/vision` |
 | [D-026](D-026-eyes-get-separate-wires-not-splices.md) | Each eye gets its own Pico pins, including a second SPI bus, so only VCC is shared | accepted | 2026-11-11 | `organs/eyes` |
+| [D-027](D-027-waveshare-usb-sound-card-replaces-the-soundbar-board.md) | A Waveshare USB sound card drives the speakers instead of the soundbar's board; the laptop sets the volume | accepted | 2026-11-26 | `head` |

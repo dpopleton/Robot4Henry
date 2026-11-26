@@ -1,7 +1,8 @@
 ---
 id: D-017
 title: The salvaged soundbar's board is the head's sound card; the mouth Pico sets its volume ceiling
-status: accepted
+status: superseded
+superseded_by: D-027
 date: 2026-10-28
 area: head
 ---

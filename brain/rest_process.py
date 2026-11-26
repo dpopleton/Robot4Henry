@@ -174,19 +174,17 @@ class RestProcess:
         response = self.llm.complete(prompt).strip()
 
         if not response or response.upper().strip() in ("NONE", "NONE.", "NO FACTS", "N/A"):
-            return
+            memories = []
+        else:
+            memories = self._parse_memory_lines(response)
 
-        # Parse plain text lines into memories
-        memories = self._parse_memory_lines(response)
-
+        # Replace, don't add: a session re-rested after a crash must end up
+        # with one set of memories, not two (R-110).
+        self.long_term.replace_session(
+            session_id, memories,
+            metadata={"created_at": datetime.now().isoformat()},
+        )
         for memory in memories:
-            self.long_term.store(
-                memory,
-                metadata={
-                    "session_id": session_id,
-                    "created_at": datetime.now().isoformat()
-                }
-            )
             print(f"[Rest process] Memory stored: {memory}")
 
     def _parse_memory_lines(self, response: str) -> list:

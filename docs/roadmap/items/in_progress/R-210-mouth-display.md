@@ -6,9 +6,9 @@ status: in-progress
 area: organs/mouth
 kind: both
 depends_on: []
-decisions: [D-008, D-009, D-012, D-017, D-023, D-024]
+decisions: [D-008, D-009, D-012, D-017, D-023, D-024, D-027]
 cost_gbp: 5
-updated: 2026-11-18
+updated: 2026-11-26
 ---
 ## Goal
 A 2" display (already bought) showing white lines on black: a flat line
@@ -31,7 +31,7 @@ Part of the face; shows that Qbot is speaking.
 - [x] Mouth panel printed (reprinted once: the bolt holes were off)
 - [x] Mount centre-bottom of the front plate, between the speaker compartments (R-306); Pico on the back of the mount
 - [x] Works in the virtual robot (D-012): a mouth panel + controls, and `--only mouth` bench mode with the real Pico switchable alongside (D-023); decide what it fakes as input and what it only displays
-- [ ] **Volume knob emulation (D-017):** two GPIO + GND to the R30 PLUS board's encoder A/B lines, open-drain (only ever pull low; transistor per line if the lines are above 3.3 V). A `VOLUME` command sends a fixed number of quadrature clicks; that count is the hardware volume ceiling and lives in the firmware (R-306)
+- [x] ~~**Volume knob emulation (D-017)**~~ dropped 2026-11-26: the Waveshare sound card sets its volume from the laptop (D-027): two GPIO + GND to the R30 PLUS board's encoder A/B lines, open-drain (only ever pull low; transistor per line if the lines are above 3.3 V). A `VOLUME` command sends a fixed number of quadrature clicks; that count is the hardware volume ceiling and lives in the firmware (R-306)
 - [ ] Mouth sync: a fixed offset between playback start and the mouth's PLAY trigger, tuned by eye
 
 ## Done when
@@ -69,3 +69,5 @@ The mouth shows a flat line when Qbot is quiet and moves while he talks, mounted
 - 2026-11-17: Dan checked the screen: works and looks right with the default settings. Left: rewire onto the Pico that goes in the head, and mount on the plate.
 - 2026-11-18: virtual-robot task ticked (the `--only mouth` bench covers it); bracket text for Henry approved.
 - 2026-11-18: Dan installed the mouth: rewired onto the head's Pico, flashed, mounted in the front frame and tested; all looks good. Bracket drawing and model added to `anatomy/mouth/`. Left: volume knob emulation (R-306) and lip-sync tuning on the robot.
+- 2026-11-23: volume knob emulation on hold; a Waveshare USB sound card is being tried instead of the R30 board (R-306).
+- 2026-11-26: weekly review: volume knob emulation dropped (D-027). Only the lip-sync offset is left, tuned once Qbot speaks through the head (R-307).

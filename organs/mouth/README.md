@@ -96,7 +96,7 @@ the tests.
 | `S1 L40`| both at once |
 
 Reserved: `E<mood>:<intensity>` (if mood shows on the mouth) and `V`
-(volume, R-306). Malformed fields are skipped; lines over 64 characters
+(volume: only if the R30 board comes back, D-017; dropped by D-027). Malformed fields are skipped; lines over 64 characters
 are dropped. Nothing comes back from the Pico.
 
 ## Running and testing
@@ -132,4 +132,5 @@ too (see `virtual_robot/README.md`).
 - Polygons are most of the drawing time (~20ms). If frames need to be faster,
   try a faster SPI clock first, then cheaper line drawing.
 - Mood on the mouth: no, Henry likes it as it is (2026-11-15).
-- Not built yet: the volume knob emulation (D-017, R-306); lip-sync offset still to tune on the robot.
+- Volume knob emulation dropped (D-027): the head's Waveshare sound card takes its volume from the laptop.
+- Lip-sync offset still to tune on the robot.

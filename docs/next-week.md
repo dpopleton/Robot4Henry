@@ -1,58 +1,49 @@
 ---
-week: 2026-W48
-written: 2026-11-20
+week: 2026-W49
+written: 2026-11-26
 ---
-# Suggestions for next week (2026-W48)
+# Suggestions for next week (2026-W49)
 
-A menu to pick from rather than a plan: do whatever you fancy. There are
-about 10–20 hours, mostly for design. What actually happened goes in the
-journal.
+This is a menu to pick from, not a plan. What actually happened goes in the
+journal. No hours were given this week, so it's sized like recent weeks
+(about 10–20). November's spending came to about £69, and the parts in
+hand should last through December.
 
 ## If you only do one thing
-**Speaker boxes and their panels**
-([R-306](roadmap/items/physical/R-306-speaker-amplifier-and-enclosure.md)).
-The mouth is mounted, so the space either side of it is now fixed, and the
-speakers and their board are already in hand. In order:
-- Measure the cone and surround, so the front opening clears the surround.
-- Design the speaker panel: a 5 cm opening, flared at the back to take the
-  5.5 cm frame, inside the 1.5 cm face.
-- Design a sealed box per speaker: solid 2–3 mm walls, a wire hole, and
-  room for the foam gasket and rubber washers.
-
-Printing a test box and playing `speaker-test` through it would show
-whether it buzzes before any more design goes in.
-
-## Physical
-- **Top plate** ([R-212](roadmap/items/in_progress/R-212-head-shell.md)):
-  the last big shell panel. It needs bolt holes for the crown on rubber
-  washers ([R-302](roadmap/items/physical/R-302-crown-design-and-print.md)),
-  the big wake button's hole ([R-308](roadmap/items/physical/R-308-wake-and-sleep.md)),
-  and a cable path for the crown Pico's USB lead and the recording LED.
-- **Crown shape** (R-302): Henry has decided the shape, so it can be
-  sketched now. The mic holes and spacing wait for the mic boards to arrive
-  and be measured (R-301).
-- **Head diagrams** into `anatomy/head/images/` (R-212): front, back, top
-  and bottom, while the CAD is open anyway.
+**Fit the speakers**
+([R-306](roadmap/items/in_progress/R-306-speaker-amplifier-and-enclosure.md)).
+The boxes are printed and the panels are printing, so this is what's next
+for the head:
+- Fit each speaker in its box with the foam gasket, stuff it loosely with
+  yarn, and seal the seams and wire hole with hot glue.
+- Mount the boxes on the rubber washers, with rubber on both sides of each
+  tab.
+- Play speech through the Waveshare and listen for the shell buzzing.
 
 ## Code
-Only if there's time spare from design:
-- **Finish R-110**
-  ([R-110](roadmap/items/in_progress/R-110-tidy-up-storage-threading.md)):
-  stable long-term memory ids and a concurrency test. It's small.
+- **Build the prompt from the personality sheet**
+  ([R-106](roadmap/items/planning/R-106-qbot-s-personality-sheet.md)).
+  It was agreed as the next code job: `_personality()` from
+  `brain/personality.md`, plus a scenario test that Qbot calls Henry
+  "Popplas" and remembers he crash-landed from the sun.
+- **Define the conversation tests**
+  ([R-116](roadmap/items/planning/R-116-define-the-conversation-and-memory-tests.md)),
+  if R-106 is quick. Write down what "good" and "reliable" mean while the
+  personality test is fresh.
+
+## Physical
+- **Antenna's interior adaptor**
+  ([R-211](roadmap/items/physical/R-211-lights-glowing-q-and-antenna.md)):
+  the antenna is printed and approved, and a small adaptor finishes it.
+- **Top plate** ([R-212](roadmap/items/in_progress/R-212-head-shell.md)):
+  it holds the crown on rubber washers, the antenna, the big wake button and
+  a cable path. Henry's crown shape now fixes how wide the front tab is.
+- **Hub mount** ([R-213](roadmap/items/physical/R-213-head-power-and-usb-hub.md)):
+  once the speaker boxes are in, the space left for the hub is known.
 
 ## With Henry
-- **The crown sketch:** get his shape onto paper (or a photo of it) for
-  `anatomy/crown/images/`, so the CAD follows his design.
-- **Photos of the face so far** (eyes and mouth in the head) for the
-  anatomy slideshows.
-
-## To buy
-- **Crown: Pico 2 and four I2S mics** (~£18,
-  [R-301](roadmap/items/physical/R-301-crown-hardware-pico-2-four-i2s-mics.md)).
-- **Head USB hub and adapter** (~£20,
-  [R-213](roadmap/items/physical/R-213-head-power-and-usb-hub.md)): 7 ports,
-  36 W+ adapter, one port giving ~1 A with data for the sound board, and
-  ideally per-port power switching (`uhubctl`) for the camera (D-025).
-  Once it's here, R-215 (telling the Picos apart) can be done.
-
-Together about £38, inside the month's £40–50.
+- **Photo of his crown sketch** into `anatomy/crown/images/`
+  ([R-302](roadmap/items/physical/R-302-crown-design-and-print.md)), so the
+  CAD follows it.
+- **The first sound from the boxed speakers:** let him hear Qbot's chosen
+  voice coming out of the head.

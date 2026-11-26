@@ -2,13 +2,13 @@
 id: R-109
 title: "Check what goes back into memory"
 phase: 1
-status: idea
+status: planned
 area: brain
 kind: code
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-10-13
+updated: 2026-11-26
 ---
 ## Goal
 Long-term memories and key facts are checked before they are stored, so one
@@ -30,3 +30,4 @@ An unsuitable line in a conversation never comes back as a stored memory.
 
 ## Log
 - 2026-10-13: created from an outside code review.
+- 2026-11-26: Phase 1 grill: now a Phase 1 safety need: memories are checked before they're stored.

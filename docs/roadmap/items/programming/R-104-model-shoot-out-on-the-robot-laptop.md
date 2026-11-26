@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-11-16
+updated: 2026-11-26
 ---
 ## Goal
 Pick the best model for Qbot by testing several small models on the actual robot laptop (8 years old, 8GB RAM, no GPU) — for both reply quality and speed.
@@ -20,6 +20,9 @@ Dan: "the current models are too stupid", and few have been tried. The dev machi
 - [ ] Shortlist candidate models that fit in 8GB alongside Whisper + TTS
 - [ ] Reuse the scenario conversations as a fixed test set
 - [ ] Record per model: time to first token, tokens/s, RAM, JSON-schema reliability, quality notes
+- [ ] Time a 20-turn conversation per model: if turn times climb after the 10th exchange, make R-112 planned
+- [ ] Note RAM with ChromaDB loaded too; only look at R-114 if it turns out to matter
+- [ ] Run the R-116 tests on each finalist
 - [ ] Write up the results here and pick a default
 
 ## Done when
@@ -37,3 +40,4 @@ robot laptop.
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
 - 2026-11-16: weekly review: Dan will run this at the end of Phase 1. Setting the laptop up takes desk space, and work on the dev machine gives Henry something to see.
+- 2026-11-26: Phase 1 grill: added a 20-turn timing (decides R-112), a RAM check with ChromaDB (R-114) and the R-116 tests. If no model is good enough, carry on developing on this laptop and start planning the upgrade (R-902).

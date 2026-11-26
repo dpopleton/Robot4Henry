@@ -9,6 +9,14 @@ CONVERSATION_4_LINES = (
 )
 
 
+def _stored(long_term) -> list:
+    """The memories rest handed to replace_session, or [] if it never did."""
+    if not long_term.replace_session.called:
+        return []
+    args, _ = long_term.replace_session.call_args
+    return list(args[1])
+
+
 def _build_rest(llm_reply: str):
     llm = MagicMock()
     llm.complete.return_value = llm_reply
@@ -20,7 +28,10 @@ def _build_rest(llm_reply: str):
 def test_bare_none_stores_no_long_term_memories():
     rest, _, long_term = _build_rest("NONE")
     rest._build_long_term_memories(CONVERSATION_4_LINES, "session-123")
-    assert long_term.store.call_count == 0
+    # Still replaces: a re-run that finds nothing clears an earlier run's set
+    long_term.replace_session.assert_called_once()
+    assert long_term.replace_session.call_args[0][0] == "session-123"
+    assert _stored(long_term) == []
 
 
 def test_sentence_with_word_none_is_preserved():
@@ -29,10 +40,8 @@ def test_sentence_with_word_none_is_preserved():
     rest, _, long_term = _build_rest(sentence)
     rest._build_long_term_memories(CONVERSATION_4_LINES, "session-123")
 
-    assert long_term.store.call_count == 1
-    args, kwargs = long_term.store.call_args
-    assert args[0] == sentence
-    assert kwargs["metadata"]["session_id"] == "session-123"
+    assert _stored(long_term) == [sentence]
+    assert long_term.replace_session.call_args[0][0] == "session-123"
 
 
 def test_none_line_does_not_discard_subsequent_memories():
@@ -40,9 +49,7 @@ def test_none_line_does_not_discard_subsequent_memories():
     rest, _, long_term = _build_rest(reply)
     rest._build_long_term_memories(CONVERSATION_4_LINES, "session-123")
 
-    assert long_term.store.call_count == 1
-    args, _ = long_term.store.call_args
-    assert args[0] == "Henry built a tall Lego castle with towers."
+    assert _stored(long_term) == ["Henry built a tall Lego castle with towers."]
 
 
 def test_preamble_lines_and_headers_are_skipped():
@@ -55,8 +62,7 @@ def test_preamble_lines_and_headers_are_skipped():
     rest, _, long_term = _build_rest(reply)
     rest._build_long_term_memories(CONVERSATION_4_LINES, "session-123")
 
-    stored = [call[0][0] for call in long_term.store.call_args_list]
-    assert stored == [
+    assert _stored(long_term) == [
         "Henry built a Lego castle.",
         "The assistant asked what kind of castle it was.",
     ]
@@ -68,4 +74,4 @@ def test_short_conversation_under_4_lines_is_skipped():
     rest._build_long_term_memories(short_convo, "session-123")
 
     assert llm.complete.call_count == 0
-    assert long_term.store.call_count == 0
+    assert not long_term.replace_session.called

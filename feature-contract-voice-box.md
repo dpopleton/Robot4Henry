@@ -280,7 +280,7 @@ Dan is the proposed owner for voice selection, speaker configuration, and approv
 | Source | Relevant section / version / date | What it supports |
 | :---- | :---- | :---- |
 | `docs/roadmap/items/programming/R-307-text-to-speech-and-qbot-s-voice.md` | 2026-10-08 | Local TTS, a voice Henry picks, and router talking state. |
-| `docs/roadmap/items/physical/R-306-speaker-amplifier-and-enclosure.md` | Current roadmap | Speaker hardware dependency. |
+| `docs/roadmap/items/in_progress/R-306-speaker-amplifier-and-enclosure.md` | Current roadmap | Speaker hardware dependency. |
 | `docs/roadmap/items/programming/R-309-interruptions.md` | Current roadmap | Future interruption and echo-cancellation scope. |
 | `docs/decisions/D-003-brain-computer-is-the-hub.md` | Accepted 2026-10-08 | Router is separate from chat and mutes direction while Qbot speaks. |
 | `docs/decisions/D-008-brain-sends-mood-router-composes-face.md` | Accepted 2026-10-08 | Router owns face activity mapping. |

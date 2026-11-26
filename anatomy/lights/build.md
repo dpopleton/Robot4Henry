@@ -19,6 +19,8 @@ respectively, so they can't show the wrong thing (D-007).
 
 ## Status
 - [x] Pick LEDs: the soundbar's two U boards for the Q and glow (D-018); plain RGB LED for the antenna
+- [x] Antenna printed; Henry approved it (2026-11-26)
+- [ ] Antenna's interior adaptor (holds it in the head)
 - [ ] Glow mock-up (cardboard/printed) and Henry's approval
 - [ ] Colour meanings — Henry to decide
 - [ ] Diffusers in the shell

@@ -11,7 +11,8 @@ microphone plus a serial port (D-004, D-005). A **recording LED** on the front f
 streaming (D-007).
 
 ## Status
-- [ ] Buy the parts (R-301)
+- [x] Buy the parts (R-301): 2× Pico 2 (£4 each), 5× INMP441 mics (£7), gems (£5) and M3 rubber washers (£5), bought 2026-11
+- [x] Henry's shape sketched (2026-11-26)
 - [ ] Breadboard and measure the mic boards
 - [ ] Design the crown around them (R-302)
 
@@ -28,11 +29,15 @@ streaming (D-007).
   don't carry vibration from the head into the mics.
 - **Gems** (Henry): cheap plastic gems glued into printed sockets. Keep glue
   and gems clear of the mic holes.
-- Shape: Henry's design (to be drawn up).
+- **Shape (Henry, 2026-11-26):** a square wave along the top, tabs up and
+  down, with a gem under each tab. The **front tab is taller** than the rest,
+  so the two front mics can be stacked further apart (Dan's idea; Henry
+  happily agreed). A photo of the sketch goes in `images/`.
 
 ## Parts list
 | Part | Qty | Cost | Notes |
 |---|---|---|---|
-| Raspberry Pi Pico 2 | 1 | ~£5 | |
-| INMP441-type I2S MEMS mic board | 5-pack | ~£10–15 | 4 + a spare |
+| Raspberry Pi Pico 2 | 2 | £8 | bought 2026-11; one for the crown, one spare |
+| INMP441 I2S MEMS mic board | 5-pack | £7 | 4 + a spare; bought 2026-11 |
+| Plastic gems | 1 pack | £5 | bought 2026-11 |
 | Spare Pico as a debug probe | 1 | ~£5 | only if needed: flash `debugprobe` onto it instead of buying the £12 Debug Probe |

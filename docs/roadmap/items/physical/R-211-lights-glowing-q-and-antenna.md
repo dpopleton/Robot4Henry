@@ -8,7 +8,7 @@ kind: both
 depends_on: []
 decisions: [D-007, D-008, D-009, D-012, D-015, D-018]
 cost_gbp: 3
-updated: 2026-10-28
+updated: 2026-11-26
 ---
 ## Goal
 Multi-colour light for the Q on the forehead, the inside of the head
@@ -24,6 +24,7 @@ A second way to show mood/activity, and part of the look.
 - [ ] **Head glow:** cardboard/printed mock-up first (board near the top pointing down, or set back), and show Henry for approval before designing mounts
 - [ ] Glow: light-coloured inside surfaces for an even bounce; aim/diffuse the board so it doesn't hotspot through the back window; check the display edges for leaks
 - [ ] Glow: recording and video LEDs in their own sealed light boxes so their status stays unambiguous (D-007); shield the camera from the glow (R-601)
+- [ ] **Antenna:** printed and approved by Henry (2026-11-26); still needs the adaptor that holds it inside the head
 - [ ] **Antenna tip:** one ordinary common-cathode RGB LED on three PWM pins with resistors, wired down from the top; if blue/green are too dim at 3.3V, switch it with transistors from 5V, or swap in a WS2812B
 - [ ] Own Pico (D-009), MicroPython
 - [ ] If the WS2812s flicker on 3.3V data, add a 74AHCT125 level shifter (~£1)
@@ -49,3 +50,4 @@ the head, with the recording/video LEDs still clearly readable.
 - 2026-10-22: the lights Pico also reads the wake button (D-015) and stays running while Qbot is asleep.
 - 2026-10-22: LED choice: a mix for now — WS2812B for the Q, a plain RGB LED for the antenna (for the PWM/transistor learning). Extra LEDs bought in case Henry wants more lights; may go all-WS2812B once started.
 - 2026-10-28: the soundbar's two U-shaped LED boards replace the loose WS2812Bs: one behind the Q, one lighting the inside of the head through the clear back, chained on one connector (connectors already in hand). Still powered from VBUS, with a hard brightness cap for all 18 LEDs (D-018). The 2026-10-14 "head supply" note is superseded.
+- 2026-11-26: weekly review: the antenna is printed and Henry approved it. Left: the interior adaptor that fixes it in the head.

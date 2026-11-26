@@ -6,9 +6,9 @@ status: planned
 area: head
 kind: physical
 depends_on: [R-212]
-decisions: [D-009, D-013, D-017, D-018]
-cost_gbp: 20
-updated: 2026-11-20
+decisions: [D-009, D-013, D-017, D-018, D-027]
+cost_gbp: 0
+updated: 2026-11-26
 ---
 ## Goal
 A powered USB hub inside the head that every Pico, the USB sound card and
@@ -30,13 +30,13 @@ cable bundle (D-013).
       | Mouth screen + Pico | 0.1 A | 0.15 A |
       | Lights: Pico + 18 WS2812 + antenna | 0.05 A | 0.35 A (capped in firmware; ~1 A uncapped) |
       | Crown: Pico + 4 mics + rec LED | 0.05 A | 0.1 A |
-      | R30 PLUS sound board + 2 × 5 W speakers | 0.3 A | 1.5 A at the volume ceiling (more if uncapped) |
+      | Waveshare sound card + 2 speakers (D-027; was the R30 PLUS board) | 0.2 A | ~1.2 A at full volume (2.6 W amp) |
       | Camera | 0.15 A | 0.25 A |
       | **Total at 5V** | **~0.75 A** | **~2.5 A** |
 - [ ] Measure the real draw once the parts are in
 - [ ] Decide how the head is powered (see open questions)
-- [ ] Pick a **7-port** powered hub (eyes, mouth, lights and crown Picos, R30 PLUS sound board, camera, one spare) with a **36 W+ adapter**, ideally with per-port power switching (`uhubctl`) so the camera can be cut off (D-025), and either USB 3 ports (0.9 A) or a charging port that also carries data, for the sound board
-- [ ] The R30 PLUS sound board (D-017) takes data and power from one port that can give ~1 A; measure its draw at the volume ceiling and only add a separate 5V feed if it browns out or hums. The 18 LEDs run from the lights Pico's VBUS pin with a hard firmware cap (~300 mA, D-018). No cut-up cables
+- [x] Pick a **7-port** powered hub (eyes, mouth, lights and crown Picos, sound card, camera, one spare) with a **36 W+ adapter**, ideally with per-port power switching (`uhubctl`) so the camera can be cut off (D-025), and either USB 3 ports (0.9 A) or a charging port that also carries data, for the sound board
+- [ ] The Waveshare sound card (D-027) takes data and power from one port; measure its draw at full volume and only add a separate 5V feed if it browns out or hums. The 18 LEDs run from the lights Pico's VBUS pin with a hard firmware cap (~300 mA, D-018). No cut-up cables
 - [ ] Hard-wire the Picos' USB into the hub (no plug-in leads) once it all works
 - [ ] Mount the hub and power distribution inside, reachable through the back door
 - [ ] Configure every organ's port by its Pico's serial number (R-215)
@@ -62,3 +62,5 @@ one USB and one power lead leave the head.
 - 2026-11-06: prefer a hub with per-port power switching for the camera (D-025).
 - 2026-11-20: telling the Picos apart split out as R-215, to do once the hub is in.
 - 2026-11-20: weekly review: Dan is buying the hub next week, with the crown parts (R-301).
+- 2026-11-24: the hub is bought and works. Where it mounts waits on the speaker boxes (R-306).
+- 2026-11-26: weekly review: the hub cost £25. The sound card is now the Waveshare (D-027), which draws less than the R30 board.

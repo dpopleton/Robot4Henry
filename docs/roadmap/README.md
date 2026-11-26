@@ -8,10 +8,11 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 ## Now and next
 
-- 🔨 [R-110](items/in_progress/R-110-tidy-up-storage-threading.md) Tidy up storage threading
 - 🔨 [R-209](items/in_progress/R-209-virtual-robot.md) Virtual robot (framework + eyes)
 - 🔨 [R-210](items/in_progress/R-210-mouth-display.md) Mouth display
 - 🔨 [R-212](items/in_progress/R-212-head-shell.md) Head shell
+- 🔨 [R-306](items/in_progress/R-306-speaker-amplifier-and-enclosure.md) Speakers, amplifier and enclosures
+- ⏭️ [R-106](items/planning/R-106-qbot-s-personality-sheet.md) Qbot's personality sheet
 
 **Blocked:**
 
@@ -21,9 +22,9 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | Phase | Done | Total | Est. remaining spend |
 |---|---|---|---|
-| 1 · Brain | 5 | 11 | — |
-| 2 · Face | 3 | 15 | £36 |
-| 3 · Hearing and voice | 0 | 14 | £26 |
+| 1 · Brain | 6 | 15 | — |
+| 2 · Face | 3 | 15 | £16 |
+| 3 · Hearing and voice | 1 | 16 | £5 |
 | 4 · Head finish | 0 | 2 | £5 |
 | 5 · Body | 0 | 5 | £150 |
 | 6 · Vision | 0 | 2 | — |
@@ -38,13 +39,17 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | ✅ | [R-102](items/done/R-102-mood-system-limbic.md) Mood system (limbic) | code | `brain/limbic` | — | — |
 | ✅ | [R-103](items/done/R-103-get-key-facts-working.md) Get key facts working | code | `brain/memory` | — | — |
 | 📋 | [R-104](items/programming/R-104-model-shoot-out-on-the-robot-laptop.md) Model shoot-out on the robot laptop | code | `brain` | — | — |
-| 📋 | [R-105](items/planning/R-105-latency-budget-for-a-spoken-reply.md) Latency budget for a spoken reply | planning | `brain` | R-104 | — |
-| 📋 | [R-106](items/planning/R-106-qbot-s-personality-sheet.md) Qbot's personality sheet | planning | `brain` | — | — |
-| 💡 | [R-107](items/planning/R-107-doing-things-unprompted.md) Doing things unprompted | planning | `brain` | — | — |
+| 📋 | [R-105](items/planning/R-105-latency-budget-for-a-spoken-reply.md) Reply-time target for a typed reply | planning | `brain` | R-104 | — |
+| ⏭️ | [R-106](items/planning/R-106-qbot-s-personality-sheet.md) Qbot's personality sheet | planning | `brain` | — | — |
 | ✅ | [R-108](items/done/R-108-session-lifecycle-fixes.md) Session lifecycle fixes: quitting and slow replies | code | `brain` | R-101 | — |
-| 💡 | [R-109](items/programming/R-109-check-what-goes-back-into-memory.md) Check what goes back into memory | code | `brain` | — | — |
-| 🔨 | [R-110](items/in_progress/R-110-tidy-up-storage-threading.md) Tidy up storage threading | code | `brain` | — | — |
+| 📋 | [R-109](items/programming/R-109-check-what-goes-back-into-memory.md) Check what goes back into memory | code | `brain` | — | — |
+| ✅ | [R-110](items/done/R-110-tidy-up-storage-threading.md) Tidy up storage threading | code | `brain` | — | — |
 | ✅ | [R-111](items/done/R-111-memory-and-serial-robustness-fixes.md) Memory and serial robustness fixes | code | `brain` | — | £0 |
+| 💡 | [R-112](items/programming/R-112-medium-term-summary-off-the-reply-path.md) Medium-term summary off the reply path | code | `brain` | — | — |
+| 💡 | [R-113](items/programming/R-113-memories-that-don-t-repeat-and-know-what-s-recent.md) Memories that don't repeat and know what's recent | code | `brain` | — | — |
+| 💡 | [R-114](items/programming/R-114-long-term-memories-in-robot-db.md) Long-term memories in robot.db instead of ChromaDB | code | `brain` | — | — |
+| 💡 | [R-115](items/programming/R-115-rest-merges-related-memories.md) Rest merges related memories | code | `brain` | R-113 | — |
+| 📋 | [R-116](items/planning/R-116-define-the-conversation-and-memory-tests.md) Define the conversation and memory tests | planning | `brain` | — | — |
 
 ## Phase 2 · Face
 
@@ -62,7 +67,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 🔨 | [R-210](items/in_progress/R-210-mouth-display.md) Mouth display | both | `organs/mouth` | — | £5 |
 | 📋 | [R-211](items/physical/R-211-lights-glowing-q-and-antenna.md) Lights: glowing Q, head glow and antenna | both | `organs/lights` | — | £3 |
 | 🔨 | [R-212](items/in_progress/R-212-head-shell.md) Head shell | physical | `head` | — | £8 |
-| 📋 | [R-213](items/physical/R-213-head-power-and-usb-hub.md) Head power and USB hub | physical | `head` | R-212 | £20 |
+| 📋 | [R-213](items/physical/R-213-head-power-and-usb-hub.md) Head power and USB hub | physical | `head` | R-212 | £0 |
 | 💡 | [R-214](items/programming/R-214-situational-eye-moods.md) Situational eye moods | code | `organs/eyes` | — | £0 |
 | 📋 | [R-215](items/physical/R-215-tell-the-picos-apart.md) Tell the Picos apart | both | `nervous_system` | R-213 | £0 |
 
@@ -70,12 +75,13 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
-| 📋 | [R-301](items/physical/R-301-crown-hardware-pico-2-four-i2s-mics.md) Crown hardware: Pico 2 + four I2S mics | physical | `crown` | — | £18 |
-| 📋 | [R-302](items/physical/R-302-crown-design-and-print.md) Crown design and print | physical | `crown` | R-301, R-212 | £3 |
+| 💡 | [R-107](items/planning/R-107-doing-things-unprompted.md) Doing things unprompted | planning | `brain` | — | — |
+| 📋 | [R-301](items/physical/R-301-crown-hardware-pico-2-four-i2s-mics.md) Crown hardware: Pico 2 + four I2S mics | physical | `crown` | — | £0 |
+| 📋 | [R-302](items/physical/R-302-crown-design-and-print.md) Crown design and print | physical | `crown` | R-301, R-212 | £0 |
 | 📋 | [R-303](items/programming/R-303-crown-firmware-4-channel-usb-microphone.md) Crown firmware: 4-channel USB microphone | code | `crown` | R-301 | — |
 | 📋 | [R-304](items/programming/R-304-speech-to-text.md) Speech-to-text | code | `organs/ears` | — | — |
 | 📋 | [R-305](items/programming/R-305-direction-finding-in-python.md) Direction-finding in Python | code | `nervous_system` | R-303, R-207 | — |
-| 📋 | [R-306](items/physical/R-306-speaker-amplifier-and-enclosure.md) Speakers, amplifier and enclosures | both | `head` | R-212, R-213, R-210 | £3 |
+| 🔨 | [R-306](items/in_progress/R-306-speaker-amplifier-and-enclosure.md) Speakers, amplifier and enclosures | both | `head` | R-212, R-213 | £3 |
 | 📋 | [R-307](items/programming/R-307-text-to-speech-and-qbot-s-voice.md) Text-to-speech and Qbot's voice | code | `organs/voice` | — | — |
 | 📋 | [R-308](items/physical/R-308-wake-and-sleep.md) Wake and sleep | both | `brain` | — | £2 |
 | 💡 | [R-309](items/programming/R-309-interruptions.md) Interruptions | code | `organs/ears` | R-304, R-307 | — |
@@ -83,7 +89,8 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | 💡 | [R-311](items/programming/R-311-know-who-it-s-talking-to.md) Know who it's talking to | code | `brain` | R-304 | — |
 | 💡 | [R-312](items/programming/R-312-teaching-mode.md) Teaching mode | code | `anatomy` | R-307, R-905 | — |
 | 💡 | [R-313](items/physical/R-313-touch-sensor-on-top-of-the-head.md) Qbot reacts to a pat | both | `head` | R-308 | £0 |
-| 💡 | [R-314](items/physical/R-314-bluetooth-on-the-sound-board.md) Bluetooth on the sound board | both | `head` | R-306 | £0 |
+| ✅ | [R-314](items/done/R-314-bluetooth-on-the-sound-board.md) Bluetooth on the sound board | both | `head` | R-306 | £0 |
+| 📋 | [R-315](items/planning/R-315-latency-budget-for-a-spoken-reply.md) Latency budget for a spoken reply | planning | `brain` | R-105, R-304, R-307 | — |
 
 ## Phase 4 · Head finish
 
@@ -120,7 +127,7 @@ Status: 🔨 in-progress · ⏭️ next · ⛔ blocked · 📋 planned · 💡 i
 | | Item | Kind | Area | Depends on | Cost |
 |---|---|---|---|---|---|
 | 📋 | [R-901](items/programming/R-901-readable-transcripts-and-log-review.md) Readable transcripts and log review | code | `brain` | — | — |
-| 💡 | [R-902](items/physical/R-902-brain-computer-upgrade.md) Brain computer upgrade | physical | `brain` | R-105 | — |
+| 💡 | [R-902](items/physical/R-902-brain-computer-upgrade.md) Brain computer upgrade | physical | `brain` | R-105, R-315 | — |
 | 💡 | [R-903](items/physical/R-903-solar-charging.md) Solar charging | physical | `body` | R-502 | — |
 | ✅ | [R-904](items/done/R-904-readmes-for-the-remaining-code-areas.md) READMEs for the remaining code areas | code | `docs` | — | — |
 | 💡 | [R-905](items/programming/R-905-the-brain-can-look-up-anatomy.md) The brain can look up anatomy | code | `anatomy` | — | — |

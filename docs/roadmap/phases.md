@@ -23,9 +23,18 @@ Conversation, memory and mood on the brain computer (an old laptop for now:
 ~8 years old, 8GB RAM, no GPU — it sits beside the head until the body
 exists).
 
-**Done when:** Qbot holds a good conversation on the robot laptop, remembers
-key facts reliably, has a written personality, and replies fast enough
-(target set in R-105).
+**Done when:** on the robot laptop, with the model picked in the shoot-out
+(R-104), Qbot passes the conversation and memory tests defined in R-116 as
+reliably as R-116 says; its prompt is built from the written personality
+(R-106); and a typed reply meets the text-reply time target (R-105). The
+best model this laptop can run counts: if it's not good enough, development
+carries on here while an upgrade is planned and saved for (R-902).
+**Safety needs for this phase:** what goes back into memory is checked
+before it's stored (R-109), and the conversation logs are readable for the
+weekly review (R-901) before Henry's first chat with the robot itself.
+Henry doesn't type to Qbot (it's too much like school), so his first real
+conversations come with voice in Phase 3, and judging them by ear is part of
+Phase 3's done.
 
 ## Phase 2 · Face
 
@@ -43,15 +52,19 @@ direction-finding so the eyes look at whoever's talking, the speakers and
 Qbot's voice, and waking/sleeping (D-016). Teaching mode sits here too,
 since it needs voice and screens. Speech-to-text and Qbot's voice are built
 first in the virtual robot, using the machine's own mic and speakers, so
-they don't wait for the crown or the speakers. The speakers and their amp board
-come from a salvaged soundbar (D-017). **Safety needs for this phase:** a
-hardware volume ceiling fixed in the mouth Pico's firmware (D-017), and a
-decision on the board's Bluetooth before unsupervised use (R-314).
+they don't wait for the crown or the speakers. The speakers come from a
+salvaged soundbar and are driven by a Waveshare USB sound card whose volume
+the laptop sets (D-027). Doing things unprompted (R-107) comes last in the
+phase. **Safety needs for this phase:** a software volume clamp in the
+brain. There's no hardware ceiling; a resistor per speaker is the fix if
+over-loud audio ever actually comes up (D-027, R-306). There's no Bluetooth
+in the head (R-314).
 
 **Done when:** you press the wake button, talk to Qbot through the crown,
-its eyes look at you, and it answers through its own speakers. How fast is
-fast enough, and whether you can talk over it, get decided by trying it
-(R-105, R-309).
+its eyes look at you, and it answers through its own speakers, and Henry's
+first spoken chats feel like a good conversation to Dan. How fast is fast
+enough for a spoken reply (R-315), and whether you can talk over it (R-309),
+get decided by trying it.
 
 ## Phase 4 · Head finish
 

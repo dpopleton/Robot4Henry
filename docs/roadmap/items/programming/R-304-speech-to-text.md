@@ -17,7 +17,7 @@ Speech recognition on the brain computer (Whisper-family, CPU) from the crown's 
 So Henry can talk instead of type.
 
 ## Tasks
-- [ ] Pick a model/runtime that's fast enough on the robot laptop (R-104/R-105)
+- [ ] Pick a model/runtime that's fast enough on the robot laptop (R-104/R-315)
 - [ ] In the virtual robot, listen through the machine's own mic (D-012), so speech-to-text is built and tested before the crown exists; the same code then reads the crown
 - [ ] Voice activity detection — only transcribe speech
 - [ ] Transcripts logged, audio only with a debug setting (D-016)

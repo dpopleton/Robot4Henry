@@ -8,7 +8,7 @@ kind: code
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-11-20
+updated: 2026-11-26
 ---
 ## Goal
 Make the raw logs easy to read through, and review them regularly (part of the weekly review).
@@ -24,9 +24,11 @@ Safety policy: supervised use plus regular log review (see docs/roadmap/phases.m
 ## Done when
 Reviewing a week's conversations takes a few minutes.
 
-## Open questions
-- Must this be done before Henry's next chat session (so the weekly log review is real), or can that wait? Dan isn't sure yet (2026-11-20). No sessions have been logged since 3 Nov.
+## When
+Before Henry's first chat with the robot itself (a Phase 1 safety need,
+phases.md). Henry doesn't type, so that's when voice arrives in Phase 3.
 
 ## Log
 - 2026-10-08: created in the first full phase review (see journal 2026-W41).
 - 2026-11-20: Ongoing grill: the logs should hold everything needed to debug, not just the words. Whether this gates Henry's next chat is still open.
+- 2026-11-26: Phase 1 grill: yes, it must be done before Henry's first chat with the robot, and it's part of Phase 1's safety needs.

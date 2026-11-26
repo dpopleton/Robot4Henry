@@ -40,7 +40,7 @@ no MISO.
 | GND                        | GND (pin 23)    | Black               |
 | VCC                        | 3V3(OUT) (pin 36) | Red               |
 
-Later, for the sound board's volume (D-017, R-306), not wired yet:
+Dropped 2026-11-26 (D-027: the Waveshare sound card's volume is set from the laptop). Kept only in case the R30 PLUS board comes back as the fallback (D-017):
 
 | Signal | Pico 2 pin | Notes |
 |---|---|---|

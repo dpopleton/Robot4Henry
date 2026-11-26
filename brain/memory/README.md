@@ -33,8 +33,10 @@ just said.
    - **Key facts:** the LLM lists facts from Henry's lines only, at
      temperature 0. A fact is kept only if every word of its value appears
      in what Henry actually said (D-011).
-   - **Long-term:** the LLM lists up to 5 memorable sentences, each stored
-     in ChromaDB with the session id.
+   - **Long-term:** the LLM lists up to 5 memorable sentences, stored in
+     ChromaDB with the session id. They *replace* whatever that session
+     stored before (ids `<session_id>-<n>`), so re-resting a session never
+     leaves two sets.
    - **Archive:** a 2–3 sentence summary is saved on the session and it's
      marked processed.
 5. A session interrupted part-way (a crash, a kill) is picked up by the
@@ -68,7 +70,7 @@ from brain.memory.long_term import LongTermMemory
 short = ShortTermMemory()                  # add(role, text) returns an evicted exchange or None
 medium = MediumTermMemory(llm)             # update(evicted), format_for_prompt(), clear()
 facts = KeyFactsStore(db_path)             # set/get/delete/get_all, format_for_prompt()
-memories = LongTermMemory(chroma_path)     # store(text, metadata), retrieve(query, n)
+memories = LongTermMemory(chroma_path)     # replace_session(id, texts, metadata), store(text, metadata), retrieve(query, n)
 ```
 
 `DB_PATH` and `CHROMA_PATH` (`config/settings.py`) can be overridden with
@@ -88,9 +90,15 @@ python -m pytest -m llm          # scenario tests: does Qbot remember across ses
 ## Status and known gaps
 
 - All four layers and rest work on the dev machine.
-- Long-term ids are random, so re-resting a session after a crash can
-  store some memories twice. Stable ids per session, and a test of rest
-  running during a conversation, are R-110.
+- Rest is safe alongside a conversation: an `RLock` guards each shared
+  SQLite connection, and `tests/brain/test_rest_concurrency.py` runs rest
+  in the background during a conversation, two rests at once, and a
+  re-rest after a crash, against real SQLite and ChromaDB (R-110).
+- Long-term memories have stable ids per session and a re-rest replaces
+  them. Memories stored before this (2026-11-23) keep their random ids;
+  their sessions are already processed, so they're never re-rested.
+- `LongTermMemory` takes an `embedding_function`; tests pass a fake
+  (`tests/brain/fake_embedding.py`) so they need no embedding model.
 - Nothing is backed up: `storage/` is gitignored and lives only on the
   laptop (R-906).
 - Rest uses the same small model as conversation; a bigger rest model is

@@ -6,9 +6,9 @@ status: planned
 area: organs/voice
 kind: code
 depends_on: []
-decisions: [D-012, D-017]
+decisions: [D-012, D-027]
 cost_gbp: null
-updated: 2026-11-05
+updated: 2026-11-26
 ---
 ## Goal
 Local text-to-speech (e.g. Piper) on the brain computer, with a voice Henry picks.
@@ -21,7 +21,7 @@ Qbot talks back.
 - [ ] Check the chosen voice is fast enough on the robot laptop
 - [x] Henry picks the voice: **`en_GB-northern_english_male-medium`**, Piper defaults, no effects (preset below)
 - [ ] Tell the router while speaking (mute direction, mouth waves)
-- [ ] Play through the head's sound board by name (`plughw:CARD=PLUS,DEV=0`, D-017), with a software volume scaled in Python (or ALSA softvol) and clamped at a maximum; the hardware ceiling is the mouth Pico's job (R-306)
+- [ ] Play through the head's Waveshare sound card by name (`plughw:CARD=Device,DEV=0`, pinned by USB ID, D-027), with a software volume scaled in Python (or ALSA softvol) and clamped at a maximum; the hardware ceiling is set in R-306
 - [ ] Works in the virtual robot (D-012): speaks through the machine's own speakers, so it's built before the head's speakers exist (R-306)
 
 ## Voice preset
@@ -48,3 +48,4 @@ Qbot speaks its replies in Henry's chosen voice.
   levels (D-024). Found: Piper sometimes puts ~1.6 s of silence before a sentence ("Shall we build
   something amazing today?"); the virtual voice trims each sentence and adds a 0.2 s pause. The
   real text-to-speech will need the same.
+- 2026-11-26: the head's sound card is now the Waveshare USB TO AUDIO (D-027): the laptop sets its volume, and it's addressed as `CARD=Device`.

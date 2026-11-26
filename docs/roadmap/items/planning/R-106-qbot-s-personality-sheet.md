@@ -2,13 +2,13 @@
 id: R-106
 title: "Qbot's personality sheet"
 phase: 1
-status: planned
+status: next
 area: brain
 kind: planning
 depends_on: []
 decisions: []
 cost_gbp: null
-updated: 2026-11-03
+updated: 2026-11-26
 ---
 ## Goal
 A written character for Qbot — likes, dislikes, catchphrases, backstory — created with Henry, which the personality prompt is built from.
@@ -30,3 +30,4 @@ The personality sheet exists in the repo and the prompt is built from it.
 - 2026-10-15: question list ready: docs/henry/personality-questions.md (for 20 Oct).
 - 2026-10-22: Henry answered every question. Draft sheet in brain/personality.md: Qbot is a boy, Henry's age, crash-landed from the sun; calls Henry "Popplas". "Never hurt people who are nice" written as "never hurts anyone" (Dan agreed).
 - 2026-11-03: Dan approved the personality sheet (`henry_text_approved: true`). Next: build `_personality()` from it.
+- 2026-11-26: Phase 1 grill: the next code job: build the prompt from the approved sheet, then a scenario test that it sticks (calls Henry "Popplas", says he crash-landed from the sun, Henry's age, never hurts anyone).
